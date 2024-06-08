@@ -10,6 +10,10 @@
 *.userosscache
 *.sln.docstates
 
+# Makefile Generated files
+*.o
+*.exe
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
