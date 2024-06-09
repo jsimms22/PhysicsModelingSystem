@@ -50,10 +50,9 @@ static const char* fragment_shader_text =
 int main()
 {
     GLFWwindow* window;
-
     if (!glfwInit()) { 
-        std::cout << "window init failure" << std::endl;
-        exit;
+        std::cout << "GLFW init failure" << std::endl;
+        return 1;
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -61,15 +60,21 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
     window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
+    if (!window) { 
+        std::cout << "Terminating the window" << std::endl;
+        glfwTerminate(); 
+        return 1; 
+    }
 
     glfwMakeContextCurrent(window); // assigns a current OpenGL context
     auto iResult = glewInit();      // allows glew to initialize GL
     if (iResult != GLEW_OK) {       // ensure gl inits
-        std::cout << "GL init falure" << std::endl;
+        std::cout << "GLew init falure" << std::endl;
         glfwTerminate();            // otherwise end glfw proc
-        exit; 
+        return 1; 
     }
     glfwSwapInterval(1); 
+    // std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl; // 3.3.0 NVIDIA 552.44
 
     // NOTE: OpenGL error checks have been omitted for brevity
     GLuint vertex_buffer;
@@ -103,12 +108,6 @@ int main()
     glEnableVertexAttribArray(vcol_location);
     glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE,
                           sizeof(Vertex), (void*) offsetof(Vertex, col));
-    
-    if (!window) { 
-        std::cout << "Terminating the window" << std::endl;
-        glfwTerminate(); 
-        exit; 
-    }
 
     Mouse mouse = Mouse();
 

@@ -14,7 +14,7 @@ GL_INCLUDE_DIR = vendor/GL/libs
 OUTPUT = app
 
 # Source files and object files
-SRC_DIR = src/
+SRC_DIR = src
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 
