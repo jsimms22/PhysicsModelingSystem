@@ -1,33 +1,31 @@
 // std library
 #include <iostream>
+#include <array>
+#include <vector>
+#include <tuple>
 #include <memory>
-// c library
-#include "../include/linmath.h"
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../vendor/GLFW/include/glfw3.h"
 #include "../vendor/GL/include/glew.h"
+#include "../vendor/GLFW/include/glfw3.h"
 // ../include
 #include "../include/camera.hpp"
 #include "../include/graphics.hpp"
 #include "../include/shaders.hpp"
 #include "../include/math.hpp"
 #include "../include/hardware_input.hpp"
+#include "../include/custom_types.hpp"
 
-typedef struct Vertex
-{
-    vec2 pos;
-    vec3 col;
-} Vertex;
+using vec2f = vec2<float>;
+using vec2d = vec2<double>;
 
-static const Vertex vertices[3] =
-{
-    { { -0.6f, -0.4f }, { 1.f, 0.f, 0.f } },
-    { {  0.6f, -0.4f }, { 0.f, 1.f, 0.f } },
-    { {   0.f,  0.6f }, { 0.f, 0.f, 1.f } }
-};
- 
-static const char* vertex_shader_text =
+using vec3f = vec3<float>;
+using vec3d = vec3<double>;
+
+using Vertexf = Vertex<float>;
+using Vertexd = Vertex<double>;
+
+static inline const char* vertex_shader_text =
 "#version 110\n"
 "uniform mat4 MVP;\n"
 "attribute vec3 vCol;\n"
@@ -39,7 +37,7 @@ static const char* vertex_shader_text =
 "    color = vCol;\n"
 "}\n";
  
-static const char* fragment_shader_text =
+static inline const char* fragment_shader_text =
 "#version 110\n"
 "varying vec3 color;\n"
 "void main()\n"
@@ -55,9 +53,10 @@ int main()
         return 1;
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl; // 3.3.0 NVIDIA 552.44
     
     window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
     if (!window) { 
@@ -74,13 +73,20 @@ int main()
         return 1; 
     }
     glfwSwapInterval(1); 
-    // std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl; // 3.3.0 NVIDIA 552.44
+
+    // Create Vertex Buffer
+    std::array<Vertexf,3> vertices =
+    {
+        Vertexf(vec2f{ -0.6f, -0.4f }, vec3f{ 1.0f, 0.0f, 0.0f }),
+        Vertexf(vec2f{  0.6f, -0.4f }, vec3f{ 0.0f, 1.0f, 0.0f }),
+        Vertexf(vec2f{  0.0f,  0.6f }, vec3f{ 0.0f, 0.0f, 1.0f })
+    };
 
     // NOTE: OpenGL error checks have been omitted for brevity
     GLuint vertex_buffer;
     glGenBuffers(1, &vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
 
     const GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
@@ -102,12 +108,14 @@ int main()
     GLuint vertex_array;
     glGenVertexArrays(1, &vertex_array);
     glBindVertexArray(vertex_array);
+
     glEnableVertexAttribArray(vpos_location);
     glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
-                          sizeof(Vertex), (void*) offsetof(Vertex, pos));
+                          sizeof(Vertexf), reinterpret_cast<void*>(offsetof(Vertexf, pos)));
+
     glEnableVertexAttribArray(vcol_location);
     glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE,
-                          sizeof(Vertex), (void*) offsetof(Vertex, col));
+                          sizeof(Vertexf), reinterpret_cast<void*>(offsetof(Vertexf, col)));
 
     Mouse mouse = Mouse();
 
@@ -137,7 +145,7 @@ int main()
  
         glUseProgram(program);
         glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*) mvp);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
  
         glfwSwapBuffers(window);
         glfwPollEvents();
