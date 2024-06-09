@@ -19,6 +19,10 @@ SOFUNITWARE.
 #pragma once
 
 #include <cmath>
+// vendors
+#define GLFW_INCLUDE_NONE
+#include "../vendor/GL/include/glew.h"
+#include "../vendor/GLFW/include/glfw3.h"
 
 const double M_PI = std::acos(-1);
 
@@ -193,14 +197,27 @@ public:
 };
 
 template <typename UNIT>
-class Vertex
+class Vertex2
 {
 public:
-    vec2<UNIT> pos;
-    vec3<UNIT> col;
-    Vertex() {}
-    Vertex(vec2<UNIT> _pos, vec3<UNIT> _col) 
-        : pos{_pos}, col{_col} { }
-    Vertex(const Vertex& v) 
-        : pos{v.pos}, col{v.col} { }
+    vec2<UNIT> position;
+    vec3<UNIT> color;
+    Vertex2() {}
+    Vertex2(vec2<UNIT> _pos, vec3<UNIT> _col) 
+        : position{_pos}, color{_col} { }
+    Vertex2(const Vertex2& v) 
+        : position{v.pos}, color{v.col} { }
+};
+
+template <typename UNIT>
+class Vertex3
+{
+public:
+    vec3<UNIT> position;
+    vec3<UNIT> color;
+    Vertex3() {}
+    Vertex3(vec3<UNIT> _pos, vec3<UNIT> _col) 
+        : position{_pos}, color{_col} { }
+    Vertex3(const Vertex3& v) 
+        : position{v.pos}, color{v.col} { }
 };
