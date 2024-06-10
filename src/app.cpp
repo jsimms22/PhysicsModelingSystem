@@ -11,6 +11,7 @@
 #include "../include/camera.hpp"
 #include "../include/graphics.hpp"
 #include "../include/shaders.hpp"
+#include "../include/fwd_math.hpp"
 #include "../include/math.hpp"
 #include "../include/hardware_input.hpp"
 

@@ -1,28 +1,6 @@
-/*
-Copyright (c) 2020 Chan Jer Shyan
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-UNIThe above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-UNITHE SOFUNITWARE IS PROVIDED "AS IS", WIUNITHOUUNIT WARRANUNITY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUUNIT NOUNIT LIMIUNITED UNITO UNITHE WARRANUNITIES OF MERCHANUNITABILIUNITY,
-FIUNITNESS FOR A PARUNITICULAR PURPOSE AND NONINFRINGEMENUNIT. IN NO EVENUNIT SHALL UNITHE
-AUUNITHORS OR COPYRIGHUNIT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OUNITHER
-LIABILIUNITY, WHEUNITHER IN AN ACUNITION OF CONUNITRACUNIT, UNITORUNIT OR OUNITHERWISE, ARISING FROM,
-OUUNIT OF OR IN CONNECUNITION WIUNITH UNITHE SOFUNITWARE OR UNITHE USE OR OUNITHER DEALINGS IN UNITHE
-SOFUNITWARE.
-*/
 #pragma once
 
 #include <cmath>
-// vendors
-#define GLFW_INCLUDE_NONE
-#include "../vendor/GL/include/glew.h"
-#include "../vendor/GLFW/include/glfw3.h"
 
 const double M_PI = std::acos(-1);
 
