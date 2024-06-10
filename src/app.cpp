@@ -2,7 +2,6 @@
 #include <iostream>
 #include <array>
 #include <vector>
-#include <tuple>
 #include <memory>
 // vendors
 #define GLFW_INCLUDE_NONE
@@ -14,20 +13,6 @@
 #include "../include/shaders.hpp"
 #include "../include/math.hpp"
 #include "../include/hardware_input.hpp"
-#include "../include/custom_types.hpp"
-
-// Type aliases
-using vec2f = vec2<float>;
-using vec2d = vec2<double>;
-// ...
-using vec3f = vec3<float>;
-using vec3d = vec3<double>;
-// ...
-using Vertex2f = Vertex2<float>;
-using Vertex2d = Vertex2<double>;
-// ...
-using Vertex3f = Vertex3<float>;
-using Vertex3d = Vertex3<double>;
 
 // Sample shader file text buffers
 const GLchar* vertexSource =
@@ -83,13 +68,13 @@ int main()
     std::array<Vertex3f,6> vertices =
     {
         /* FRONT PANEL */
-        Vertex3f(vec3f{ -0.5f,  0.5f,  0.5f }, vec3f{ 1.0f, 0.0f, 0.0f }), // Top-Left
-        Vertex3f(vec3f{  0.5f,  0.5f,  0.5f }, vec3f{ 0.0f, 1.0f, 0.0f }), // Top-right
-        Vertex3f(vec3f{  0.5f, -0.5f,  0.5f }, vec3f{ 0.0f, 0.0f, 1.0f }), // Bottom-right
+        Vertex3(vec3f{ -0.5f,  0.5f,  0.5f }, vec3f{ 1.0f, 0.0f, 0.0f }), // Top-Left
+        Vertex3(vec3f{  0.5f,  0.5f,  0.5f }, vec3f{ 0.0f, 1.0f, 0.0f }), // Top-right
+        Vertex3(vec3f{  0.5f, -0.5f,  0.5f }, vec3f{ 0.0f, 0.0f, 1.0f }), // Bottom-right
         // ...
-        Vertex3f(vec3f{  0.5f, -0.5f,  0.5f }, vec3f{ 0.0f, 0.0f, 1.0f }), // Bottom-right
-        Vertex3f(vec3f{ -0.5f, -0.5f,  0.5f }, vec3f{ 0.0f, 1.0f, 0.0f }), // Bottom-left
-        Vertex3f(vec3f{ -0.5f,  0.5f,  0.5f }, vec3f{ 1.0f, 0.0f, 0.0f }), // Top-left
+        Vertex3(vec3f{  0.5f, -0.5f,  0.5f }, vec3f{ 0.0f, 0.0f, 1.0f }), // Bottom-right
+        Vertex3(vec3f{ -0.5f, -0.5f,  0.5f }, vec3f{ 0.0f, 1.0f, 0.0f }), // Bottom-left
+        Vertex3(vec3f{ -0.5f,  0.5f,  0.5f }, vec3f{ 1.0f, 0.0f, 0.0f }), // Top-left
     };
 
     // Create and Bind Vertex Buffers (vertices)
@@ -155,7 +140,7 @@ int main()
         
         float ratio;
         int width, height;
-        mat4x4 m, p, mvp;
+        mat4x4f m, p, mvp;
  
         glfwGetFramebufferSize(window, &width, &height);
         ratio = static_cast<float>(width) / static_cast<float>(height);
@@ -171,7 +156,7 @@ int main()
         mat4x4_mul(mvp, p, m);
         
         glUseProgram(program);
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, reinterpret_cast<const GLfloat*>(mvp));
+        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, reinterpret_cast<const GLfloat*>(mvp.data));
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
         //glDrawElements(GL_TRIANGLES, elements.size(), GL_UNSIGNED_INT, 0);
         

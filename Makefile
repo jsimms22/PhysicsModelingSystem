@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -std=c++17 -Wall -Wpedantic -Wshadow -Wextra 
+CFLAGS = -std=c++17 -Wall -Wpedantic -Wshadow -Wextra
 LDFLAGS = -lglfw3 -lglew32 -lopengl32
 
 # Path to the glfw and glew libraries
