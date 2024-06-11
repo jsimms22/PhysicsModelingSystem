@@ -3,6 +3,8 @@
 // std library
 #include <iostream>
 // vendors
+#define GLFW_INCLUDE_NONE
+#include "../vendor/GL/include/glew.h"
 #include "../vendor/GLFW/include/glfw3.h"
 
 class Mouse
@@ -26,9 +28,4 @@ public:
     double getDY() const { return ypos - pypos; }
 };
 
-void processInput(GLFWwindow* window)
-{
-    //std::cout << "input test" << std::endl;
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
+void processInput(GLFWwindow* window);

@@ -1,5 +1,8 @@
 #pragma once
 
+// SIMD
+#include <mmintrin.h>
+// project headers
 #include "types.hpp"
 
 template <typename UNIT>
@@ -10,6 +13,9 @@ void mat4x4_id(mat4x4<UNIT>& out);
 
 template <typename UNIT>
 void mat4x4_copy(mat4x4<UNIT>& out, const mat4x4<UNIT>& in);
+
+template <typename UNIT>
+void mat4x4_translation(mat4x4<UNIT>& out, const mat4x4<UNIT>& mat_in, const vec4<UNIT>& vec_in);
 
 template <typename UNIT>
 void mat4x4_mul(mat4x4<UNIT>& out, const mat4x4<UNIT>& in1, const mat4x4<UNIT>& in2);

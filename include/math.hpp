@@ -1,7 +1,7 @@
-// SIMD headers
-#include <mmintrin.h>
-// Project headers
-#include "../include/fwd_math.hpp"
+#pragma once
+
+// project headers
+#include "fwd_math.hpp"
 
 template <typename UNIT>
 void vec4_copy(vec4<UNIT>& out, const vec4<UNIT>& in) 
@@ -35,6 +35,16 @@ void mat4x4_copy(mat4x4<UNIT>& out, const mat4x4<UNIT>& in)
     vec4_copy(out.data[1], in.data[1]);
     vec4_copy(out.data[2], in.data[2]);
     vec4_copy(out.data[3], in.data[3]);
+}
+
+template <typename UNIT>
+void mat4x4_translation(mat4x4<UNIT>& out, const mat4x4<UNIT>& mat_in, const vec4<UNIT>& vec_in)
+{
+	mat4x4<UNIT> temp;
+	for(size_t c=0; c<4; ++c) {
+		temp.data[4].data[c] = mat_in.data[4].data[c] + vec_in.data[c];
+	}
+	mat4x4_copy(out, temp);
 }
 
 template <typename UNIT>

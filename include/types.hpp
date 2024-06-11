@@ -1,5 +1,6 @@
 #pragma once
 
+// std library
 #include <cmath>
 
 const double M_PI = std::acos(-1);
@@ -15,6 +16,8 @@ struct vec3 { UNIT data[3]; };
 // Type aliases
 using vec3f = vec3<float>;
 using vec3d = vec3<double>;
+
+
 
 template <typename UNIT>
 struct vec4 { UNIT data[4]; };
@@ -75,3 +78,31 @@ public:
 // Type aliases
 using Vertex4f = Vertex4<float>;
 using Vertex4d = Vertex4<double>;
+
+template <typename UNIT>
+struct Mesh
+{
+    //size_t numVertices;
+    std::vector<UNIT> vertices;
+    unsigned int numVertices;
+    unsigned int VAO;
+    unsigned int VBO;
+    unsigned int positionVBO;
+    unsigned int velocityVBO;
+};
+// Type aliases
+using Meshf = Mesh<float>;
+using Meshd = Mesh<double>;
+
+template <typename UNIT>
+struct Model
+{
+    Mesh<UNIT> mesh;
+    vec3<UNIT> position;
+    vec3<UNIT> rotation;
+    UNIT scale;
+    unsigned int renderMethod;
+};
+// Type aliases
+using Modelf = Model<float>;
+using Modeld = Model<double>;

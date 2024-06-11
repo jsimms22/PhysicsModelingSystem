@@ -8,33 +8,22 @@
 #include "../vendor/GL/include/glew.h"
 #include "../vendor/GLFW/include/glfw3.h"
 // project headers
-#include "../include/camera.hpp"
-#include "../include/graphics.hpp"
-#include "../include/shaders.hpp"
-#include "../include/fwd_math.hpp"
 #include "../include/math.hpp"
+#include "../include/graphics.hpp"
 #include "../include/hardware_input.hpp"
+#include "../include/shaders.hpp"
+#include "../include/camera.hpp"
+#include "../include/sys_callbacks.hpp"
+#include "../include/model.hpp"
+#include "../include/utility.hpp"
 
-// Sample shader file text buffers
-const GLchar* vertexSource =
-"#version 450\n"
-"uniform mat4 MVP;\n"
-"in vec3 vCol;\n"
-"in vec3 vPos;\n"
-"out vec3 color;\n"
-"void main()\n"
-"{\n"
-"    gl_Position = MVP * vec4(vPos, 1.0);\n"
-"    color = vCol;\n"
-"}\n";
-const GLchar* fragmentSource =
-"#version 450\n"
-"in vec3 color;\n"
-"out vec4 fragment;\n"
-"void main()\n"
-"{\n"
-"    fragment = vec4(color, 1.0);\n"
-"}\n";
+// Compile-Time Constants
+constexpr unsigned int WIDTH {1280};
+constexpr unsigned int HEIGHT = {720};
+constexpr unsigned int ADDITION_SPEED {10};
+constexpr unsigned int TARGET_FPS {144};
+#define CONTAINER_RADIUS 6.0f
+#define VERLET_RADIUS 0.15f
 
 int main()
 {
@@ -44,12 +33,12 @@ int main()
         return 1;
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     // std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl; // 3.3.0 NVIDIA 552.44
-    
-    window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
+
+    window = glfwCreateWindow(WIDTH, HEIGHT, "My Title", NULL, NULL);
     if (!window) { 
         std::cout << "Terminating the window" << std::endl;
         glfwTerminate(); 
@@ -63,106 +52,116 @@ int main()
         glfwTerminate();            // otherwise end glfw proc
         return 1; 
     }
-    glfwSwapInterval(1); 
+    /* Set up a callback function for when the window is resized */
+    // glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSwapInterval(1);
 
-    // Create Vertex Buffer
-    std::array<Vertex3f,6> vertices =
-    {
-        /* FRONT PANEL */
-        Vertex3(vec3f{ -0.5f,  0.5f,  0.5f }, vec3f{ 1.0f, 0.0f, 0.0f }), // Top-Left
-        Vertex3(vec3f{  0.5f,  0.5f,  0.5f }, vec3f{ 0.0f, 1.0f, 0.0f }), // Top-right
-        Vertex3(vec3f{  0.5f, -0.5f,  0.5f }, vec3f{ 0.0f, 0.0f, 1.0f }), // Bottom-right
-        // ...
-        Vertex3(vec3f{  0.5f, -0.5f,  0.5f }, vec3f{ 0.0f, 0.0f, 1.0f }), // Bottom-right
-        Vertex3(vec3f{ -0.5f, -0.5f,  0.5f }, vec3f{ 0.0f, 1.0f, 0.0f }), // Bottom-left
-        Vertex3(vec3f{ -0.5f,  0.5f,  0.5f }, vec3f{ 1.0f, 0.0f, 0.0f }), // Top-left
-    };
+    /* Callback function for mouse enter/exit */
+    // glfwSetCursorEnterCallback(window, cursor_enter_callback);
 
-    // Create and Bind Vertex Buffers (vertices)
-    GLuint vertex_buffer;
-    glGenBuffers(1, &vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
+    /* OpenGL Settings */
+    glClearColor(0.1, 0.1, 0.1, 1.0);
+    glClearStencil(0);
 
-    /*
-    std::array<GLuint,6> elements = {
-        0, 1, 2,
-        2, 3, 0
-    };
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
-    // Create and Bind Element Buffers (elements)
-    GLuint element_buffer;
-    glGenBuffers(1, &element_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements.data(), GL_STATIC_DRAW);
-    */
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
-    // Vertex Shader Calls
-    const GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertexSource, NULL);
-    glCompileShader(vertex_shader);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Fragment Shader Calls
-    const GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragmentSource, NULL);
-    glCompileShader(fragment_shader);
+    glPointSize(3.0);
 
-    // Link the vertex and fragment shader into a shader program
-    const GLuint program = glCreateProgram();
-    glAttachShader(program, vertex_shader);
-    glAttachShader(program, fragment_shader);
-    glBindFragDataLocation(program, 0, "outColor");
-    glLinkProgram(program);
+    /* Models & Shaders */
+    GLuint phongShader = createShader("shaders/phong_vertex.glsl", "shaders/phong_fragment.glsl");
+    GLuint instanceShader = createShader("shaders/instance_vertex.glsl", "shaders/instance_fragment.glsl");
+    GLuint baseShader = createShader("shaders/base_vertex.glsl", "shaders/base_fragment.glsl");
 
-    const GLint mvp_location = glGetUniformLocation(program, "MVP");
-    const GLint posAttrib = glGetAttribLocation(program, "vPos");
-    const GLint colAttrib = glGetAttribLocation(program, "vCol");
+    Meshf mesh = createMesh("models/sphere.obj", true);
+    //Meshf cubeMesh = createMesh("models/cube.obj", false);
+    
+    //Modelf model = createModel(mesh);
 
-    GLuint vertex_array;
-    glGenVertexArrays(1, &vertex_array);
-    glBindVertexArray(vertex_array);
+    // Container
+    vec4f containerPosition{ 1, 1, 1, 1 };
+    vec4f rotation{ 1, 1, 1, 1 };
 
-    glEnableVertexAttribArray(posAttrib);
-    glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE,
-                          sizeof(Vertex3f), reinterpret_cast<void*>(offsetof(Vertex3f, position)));
+    int totalFrames = 0;
+    int numActive = 10;
+    float view[16];
 
-    glEnableVertexAttribArray(colAttrib);
-    glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,
-                          sizeof(Vertex3f), reinterpret_cast<void*>(offsetof(Vertex3f, color)));
+    float dt = 0.000001f;
+    float lastFrameTime = static_cast<float>(glfwGetTime());
+
+    char title[100] = "";
+
+    srand(time(NULL));
 
     Mouse mouse = Mouse();
 
     while (!glfwWindowShouldClose(window)) {
+        // std::cout << "glfw is initialized" << std::endl;
         /* INPUT */
         mouse.updateMouse(window, mouse.getPosX(), mouse.getPosY()); // update mouse position
+        // std::cout << mouse.getPosX() << ", " << mouse.getPosY() << std::endl;
         processInput(window); // determine if user is attempting to close window
+        
+        /* Shader Uniforms */
+        glUseProgram(phongShader);
+        glUniformMatrix4fv(glGetUniformLocation(phongShader, "view"), 1, GL_FALSE, view);
+        glUseProgram(0);
+        glUseProgram(baseShader);
+        glUniformMatrix4fv(glGetUniformLocation(baseShader, "view"), 1, GL_FALSE, view);
+        glUseProgram(0);
+        glUseProgram(instanceShader);
+        glUniformMatrix4fv(glGetUniformLocation(instanceShader, "view"), 1, GL_FALSE, view);
+        glUseProgram(0);
 
-        // std::cout << "glfw is initialized" << std::endl;
-        
-        float ratio;
-        int width, height;
-        mat4x4f m, p, mvp;
+        /* Render here */
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        if (1.0 / dt >= TARGET_FPS - 5 && glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS && numActive < MAX_INSTANCES) {
+            numActive += ADDITION_SPEED;
+        }
  
-        glfwGetFramebufferSize(window, &width, &height);
-        ratio = static_cast<float>(width) / static_cast<float>(height);
- 
-        glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT);
- 
-        mat4x4_id(m);
-        mat4x4_rotate_Z(m, m, static_cast<float>(glfwGetTime()));
-        mat4x4_rotate_X(m, m, static_cast<float>(glfwGetTime()));
-        mat4x4_rotate_Y(m, m, static_cast<float>(glfwGetTime()));
-        mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-        mat4x4_mul(mvp, p, m);
-        
-        glUseProgram(program);
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, reinterpret_cast<const GLfloat*>(mvp.data));
-        glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-        //glDrawElements(GL_TRIANGLES, elements.size(), GL_UNSIGNED_INT, 0);
-        
+        if (totalFrames % 60 == 0) {
+            sprintf(title, "FPS : %-4.0f | Balls : %-10d", 1.0 / dt, numActive);
+            glfwSetWindowTitle(window, title);
+        }
+
+        // camera key captures
+
+        // force and position updates
+
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.positionVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * INSTANCE_STRIDE * numActive, mesh.vertices.data());
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.velocityVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * numActive, mesh.vertices.data());
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        /* Draw instanced verlet objects */
+        drawInstanced(mesh, instanceShader, GL_TRIANGLES, numActive, 1);
+
+        /* Container */
+        // drawMesh(cubeMesh, baseShader, GL_TRIANGLES, containerPosition, rotation, CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3);
+        // drawMesh(mesh, baseShader, GL_TRIANGLES, containerPosition, rotation, 0.1);
+        // drawMesh(mesh, baseShader, GL_POINTS, containerPosition, rotation, 0.1);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        /* Timing */
+        dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
+        while (dt < 1.0f / TARGET_FPS) {
+            dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
+        }
+        lastFrameTime = static_cast<float>(glfwGetTime());
+        totalFrames++;
     }
     
     glfwTerminate();
