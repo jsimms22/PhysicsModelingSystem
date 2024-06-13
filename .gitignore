@@ -9,7 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-
+test.*
 # Makefile Generated files
 *.o
 *.exe

@@ -17,10 +17,10 @@
 
 namespace fs = std::filesystem;
 
-constexpr size_t STRIDE {8};
-constexpr size_t INSTANCE_STRIDE {3};
-constexpr size_t MAX_INSTANCES {20000};
-constexpr size_t VERTEX_LIMIT {2000};
+constexpr int STRIDE {8};
+constexpr int INSTANCE_STRIDE {3};
+constexpr int MAX_INSTANCES {20000};
+constexpr int VERTEX_LIMIT {2000};
 
 Modelf createModel(Meshf mesh);
 
@@ -34,6 +34,8 @@ void processVertex(std::vector<float>& vertex_bin,
 
 void loadObject(std::string filename, std::vector<float>& vertex_bin);
 
-Meshf createMesh(std::string filename, bool instanced);
+Meshf createMeshFromFile(std::string filename, bool instanced);
+
+Meshf createMeshFromArray(float vertices[], unsigned int indices[]);
 
 void destroyMesh(Meshf mesh);

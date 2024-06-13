@@ -18,27 +18,38 @@ void destroyModel(Modelf model)
 }
 
 void processVertex(std::vector<float>& vertex_bin, 
-                    std::vector<std::string>& vertexData, 
+                    std::vector<std::string>& vertexMarker, 
                     std::array<Vertex3f, VERTEX_LIMIT>& v, 
                     std::array<Vertex3f, VERTEX_LIMIT>& vt, 
                     std::array<Vertex3f, VERTEX_LIMIT>& vn)
 {
-    size_t vertex_itr = stoi(vertexData[0]) - 1;
-    size_t texture_itr = stoi(vertexData[1]) - 1;
-    size_t normal_itr = stoi(vertexData[2]) - 1;
-
-    // std::cout << vertex_itr << ", " << texture_itr << ", " << normal_itr << std::endl;
+    size_t vertex_itr = stoi(vertexMarker[0]) - 1;
+    size_t texture_itr = stoi(vertexMarker[1]) - 1;
+    size_t normal_itr = stoi(vertexMarker[2]) - 1;
+    std::cout << "\nindex iterators: \n";
+    std::cout << vertex_itr+1 << "/" << texture_itr+1 << "/" << normal_itr+1 << std::endl;
     // { x, y, z, norm1, norm2, norm3, texture1, texture2 }
     vertex_bin.push_back(v[vertex_itr].position.data[0]); // x
     vertex_bin.push_back(v[vertex_itr].position.data[1]); // y
     vertex_bin.push_back(v[vertex_itr].position.data[2]); // z
+    std::cout << "\nvertex position: \n";
+    std::cout << v[vertex_itr].position.data[0] << ", " <<
+                 v[vertex_itr].position.data[1] << ", " <<
+                 v[vertex_itr].position.data[2] << std::endl;
 
     vertex_bin.push_back(vn[normal_itr].position.data[0]); // norm 1
     vertex_bin.push_back(vn[normal_itr].position.data[1]); // norm 2
     vertex_bin.push_back(vn[normal_itr].position.data[2]); // norm 3
+    std::cout << "\nvertex normal: \n";
+    std::cout << vn[normal_itr].position.data[0] << ", " <<
+                 vn[normal_itr].position.data[1] << ", " <<
+                 vn[normal_itr].position.data[2] << std::endl;
 
     vertex_bin.push_back(vt[texture_itr].position.data[0]); // texture 1
     vertex_bin.push_back(vt[texture_itr].position.data[1]); // texture 2
+    std::cout << "\nvertex texture: \n";
+    std::cout << vt[texture_itr].position.data[0] << ", " <<
+                 vt[texture_itr].position.data[1] << std::endl;
 }
 
 void loadObject(std::string filename, std::vector<float>& vertex_bin)
@@ -103,36 +114,38 @@ void loadObject(std::string filename, std::vector<float>& vertex_bin)
     file.close();
 }
 
-Meshf createMesh(std::string filename, bool instanced)
+Meshf createMeshFromFile(std::string filename, bool instanced)
 {
     std::vector<float> vertex_bin;
     loadObject(filename, vertex_bin);
-
     Meshf mesh;
     mesh.vertices = vertex_bin;
     mesh.numVertices = vertex_bin.size() / STRIDE;
+    std::cout << "number of vertices: " << mesh.numVertices << std::endl;
 
     // Create our Vertex Buffer and Vertex Array Objects
+    // Bind the Vertex Array Object first, 
     glGenVertexArrays(1, &(mesh.VAO));
     glBindVertexArray(mesh.VAO);
-
+    // Then bind and set vertex buffer(s), and then configure vertex attributes(s).
     glGenBuffers(1, &(mesh.VBO));
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * STRIDE * mesh.numVertices, mesh.vertices.data(), GL_STATIC_DRAW);
 
+    /* TODO use elements */
+    
     // Position
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     // Normal
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof(float), (void*)12);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3*sizeof(float)));
     // Texture
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, STRIDE * sizeof(float), (void*)24);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6*sizeof(float)));
 
     if (instanced) {
-        // Position
+        // instanced Position
         glGenBuffers(1, &(mesh.positionVBO));
         glBindBuffer(GL_ARRAY_BUFFER, mesh.positionVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * INSTANCE_STRIDE * MAX_INSTANCES, NULL, GL_STREAM_DRAW);
@@ -140,7 +153,7 @@ Meshf createMesh(std::string filename, bool instanced)
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, INSTANCE_STRIDE * sizeof(float), (void*)0);
         glVertexAttribDivisor(3, 1);
 
-        // Velocity
+        // instanced Velocity
         glGenBuffers(1, &(mesh.velocityVBO));
         glBindBuffer(GL_ARRAY_BUFFER, mesh.velocityVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * MAX_INSTANCES, NULL, GL_STREAM_DRAW);
@@ -166,4 +179,49 @@ void destroyMesh(Meshf mesh)
 {
     glDeleteVertexArrays(1, &(mesh.VAO));
     glDeleteBuffers(1, &(mesh.VBO));
+}
+
+Meshf createMeshFromArray(float vertices[], unsigned int indices[])
+{
+    Meshf mesh;
+    for (size_t i = 0; i < 40; ++i) {
+        if (vertices[i] = NULL) { break; }
+        mesh.vertices.push_back(vertices[i]);
+    }
+    mesh.numVertices = mesh.vertices.size();
+    mesh.sizeIndices = sizeof(indices);
+    // Generate the VAO, VBO, and EBO with only 1 object each
+	glGenVertexArrays(1, &(mesh.VAO));
+	glGenBuffers(1, &(mesh.VAO));
+    glGenBuffers(1, &(mesh.EBO));
+
+    // Make the VAO the current Vertex Array Object by binding it
+	glBindVertexArray(mesh.VAO);
+    // Bind the VBO specifying it's a GL_ARRAY_BUFFER
+	glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
+	// Introduce the vertices into the VBO
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), mesh.vertices.data(), GL_STATIC_DRAW);
+
+    // Bind the EBO specifying it's a GL_ELEMENT_ARRAY_BUFFER
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
+	// Introduce the indices into the EBO
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    // Configure the Vertex Attribute so that OpenGL knows how to read the VBO
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3*sizeof(float)));
+	glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(6*sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+	// Bind both the VBO and VAO to 0 so that we don't accidentally modify the VAO and VBO we created
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	// Bind the EBO to 0 so that we don't accidentally modify it
+	// MAKE SURE TO UNBIND IT AFTER UNBINDING THE VAO, as the EBO is linked in the VAO
+	// This does not apply to the VBO because the VBO is already linked to the VAO during glVertexAttribPointer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    return mesh;
 }

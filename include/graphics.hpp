@@ -13,8 +13,10 @@
 // project headers
 #include "../include/math.hpp"
 
-void drawMesh(Meshf mesh, unsigned int shaderID, GLenum mode, 
-              vec4f position, vec4f rotation, float scale);
+void drawMesh(Meshf& mesh, unsigned int shaderID, GLenum mode, 
+              vec3f& position, vec3f& rotation, float scale);
 
-void drawInstanced(Meshf mesh, unsigned int shaderID, 
+void drawInstanced(Meshf& mesh, unsigned int shaderID, 
                    GLenum mode, int num, float scale);
+
+void drawMeshFromArray(Meshf& mesh, unsigned int shaderID, GLenum mode, int num);

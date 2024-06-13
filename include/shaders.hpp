@@ -16,6 +16,8 @@ namespace fs = std::filesystem;
 
 std::string readFileContents(std::string filename);
 
+unsigned int compileShader(unsigned int type, const std::string& fileText);
+
 unsigned int createShader(std::string vertexFile, std::string fragmentFile);
 
 void detachShader();

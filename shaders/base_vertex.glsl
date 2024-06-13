@@ -8,11 +8,12 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-out vec3 fragmentPos;
 out vec3 fragmentVertexNormal;
 out vec2 fragmentTexCoord;
 
 void main()
 {
     gl_Position = projection * view * model * vec4(vertexPos, 1.0);
+    fragmentVertexNormal = vertexNormal;
+    fragmentTexCoord = vertexTexCoord;
 }

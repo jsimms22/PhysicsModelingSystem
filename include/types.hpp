@@ -2,6 +2,7 @@
 
 // std library
 #include <cmath>
+#include <vector>
 
 const double M_PI = std::acos(-1);
 
@@ -16,8 +17,6 @@ struct vec3 { UNIT data[3]; };
 // Type aliases
 using vec3f = vec3<float>;
 using vec3d = vec3<double>;
-
-
 
 template <typename UNIT>
 struct vec4 { UNIT data[4]; };
@@ -87,8 +86,10 @@ struct Mesh
     unsigned int numVertices;
     unsigned int VAO;
     unsigned int VBO;
+    unsigned int EBO;
     unsigned int positionVBO;
     unsigned int velocityVBO;
+    unsigned int sizeIndices;
 };
 // Type aliases
 using Meshf = Mesh<float>;

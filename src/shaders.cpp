@@ -9,46 +9,49 @@ std::string readFileContents(std::string filename)
     return buffer.str();
 }
 
-unsigned int createShader(std::string vertexFile, std::string fragmentFile)
+unsigned int compileShader(unsigned int type, const std::string& fileText)
 {
-    GLint success = 0;
-    GLint logSize = 0;
+    // Create a shader object and compile
+    unsigned int id = glCreateShader(type);
+    // OpenGL requires an lvalue convertable to GLchar**
+    const char* src = fileText.c_str();
+    glShaderSource(id, 1, &src, NULL);
+    glCompileShader(id);
 
-    // Create a shader object and compile it during runtime
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    std::string vertexShaderSource = readFileContents(vertexFile);
-    // std::cout << "vertexShaderSource output: " + vertexShaderSource << std::endl;
-    const char* vertex_charstr = vertexShaderSource.c_str();
-    // std::cout << "vertex_charstr output: " << vertex_charstr << std::endl;
-    glShaderSource(vertexShader, 1, &vertex_charstr, NULL);
-    glCompileShader(vertexShader);
-
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (success == GL_FALSE) {
-        glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &logSize);
-        GLchar* infoLog;
-        glGetShaderInfoLog(vertexShader, logSize, &logSize, infoLog);
-        glDeleteShader(vertexShader);
-        if (infoLog != NULL) { printf("Vertex Shader: %s\n", infoLog); }
+    // Error Handling
+    int result = 0; int length = 0;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+    if (result == GL_FALSE) {
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+        char* msgLog = (char*) alloca(length*sizeof(char));
+        glGetShaderInfoLog(id, length, &length, msgLog);
+        std::cout << "Failed to compile " 
+            << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") 
+            << " shader." << std::endl;
+        glDeleteShader(id);
+        //free(msgLog);
+        return 0;
     }
 
-    // Perform the same steps for the fragment shader
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    std::string fragmentShaderSource = readFileContents(fragmentFile);
-    // std::cout << "fragmentShaderSource output: " + fragmentShaderSource << std::endl;
-    const char* fragment_charstr = fragmentShaderSource.c_str();
-    // std::cout << "fragment_charstr output: " << fragment_charstr << std::endl;
-    glShaderSource(fragmentShader, 1, &fragment_charstr, NULL);
-    glCompileShader(fragmentShader);
+    return id;
+}
 
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (success == GL_FALSE) {
-        glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &logSize);
-        GLchar* infoLog;
-        glGetShaderInfoLog(fragmentShader, logSize, &logSize, infoLog);
-        glDeleteShader(fragmentShader);
-        if (infoLog != NULL) { printf("Fragment Shader: %s\n", infoLog); }
+unsigned int createShader(std::string vertexFile, std::string fragmentFile)
+{
+    // Create a shader object and compile it during runtime
+    std::string vertexShaderSource = readFileContents(vertexFile);
+    auto vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
+    if (vertexShader == 0) {
+        std::cout << "shader compilation failure" << std::endl;
+        return 0;
+    } 
+
+    // Perform the same steps for the fragment shader
+    std::string fragmentShaderSource = readFileContents(fragmentFile);
+    auto fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+    if (fragmentShader == 0) {
+        std::cout << "shader compilation failure" << std::endl;
+        return 0;
     }
 
     // Create a shader program and link the two shader steps together
@@ -56,6 +59,7 @@ unsigned int createShader(std::string vertexFile, std::string fragmentFile)
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
+    glValidateProgram(shaderProgram);
 
     // Make sure to cleanup the individual shaders after linking
     glDeleteShader(vertexShader);
