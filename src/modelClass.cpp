@@ -1,21 +1,5 @@
 // project headers
-#include "../include/model.hpp"
-
-Modelf createModel(Meshf mesh)
-{
-    Modelf model;
-    model.mesh = mesh;
-    model.position = { 0,  0,  -0.5 };
-    model.rotation = { 0,  0,   0 };
-    model.scale = 1;
-    model.renderMethod = GL_TRIANGLES;
-    return model;
-}
-
-void destroyModel(Modelf model)
-{
-    destroyMesh(model.mesh);
-}
+#include "../include/modelClass.hpp"
 
 void processVertex(std::vector<float>& vertex_bin, 
                     std::vector<std::string>& vertexMarker, 
@@ -52,7 +36,7 @@ void processVertex(std::vector<float>& vertex_bin,
     //              vt[texture_itr].position.data[1] << std::endl;
 }
 
-void loadObject(std::string filename, std::vector<float>& vertex_bin)
+void loadObject(fs::path filename, std::vector<float>& vertex_bin)
 {
     std::array<Vertex3f, VERTEX_LIMIT> v;
     std::array<Vertex3f, VERTEX_LIMIT> vt;
@@ -114,7 +98,7 @@ void loadObject(std::string filename, std::vector<float>& vertex_bin)
     file.close();
 }
 
-Meshf createMesh(std::string filename, bool instanced)
+Meshf createMesh(fs::path filename, bool instanced)
 {
     std::vector<float> vertex_bin;
     loadObject(filename, vertex_bin);
@@ -173,10 +157,4 @@ Meshf createMesh(std::string filename, bool instanced)
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     return mesh;
-}
-
-void destroyMesh(Meshf mesh)
-{
-    glDeleteVertexArrays(1, &(mesh.VAO));
-    glDeleteBuffers(1, &(mesh.VBO));
 }

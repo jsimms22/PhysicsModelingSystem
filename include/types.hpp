@@ -32,16 +32,3 @@ struct Mesh
 // Type aliases
 using Meshf = Mesh<float>;
 using Meshd = Mesh<double>;
-
-template <typename UNIT>
-struct Model
-{
-    Mesh<UNIT> mesh;
-    vec3<UNIT> position;
-    vec3<UNIT> rotation;
-    UNIT scale;
-    unsigned int renderMethod;
-};
-// Type aliases
-using Modelf = Model<float>;
-using Modeld = Model<double>;

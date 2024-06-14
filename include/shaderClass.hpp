@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <vector>
 #include <memory>
+#include <cerrno>
 // vendors
 #define GLFW_INCLUDE_NONE
 #include "../vendor/GL/include/glew.h"
@@ -14,12 +15,17 @@
 
 namespace fs = std::filesystem;
 
-std::string readFileContents(std::string filename);
+std::string readFileContents(fs::path filename);
 
 unsigned int compileShader(unsigned int type, const std::string& fileText);
 
-unsigned int createShader(std::string vertexFile, std::string fragmentFile);
+class Shader
+{
+public:
+    unsigned int ID;
+    Shader(fs::path vertexFile, fs::path fragmentFile);
 
-void detachShader();
-
-void destroyShader(unsigned int shaderID);
+    void attach() { glUseProgram(this->ID); }
+    void detach() { glUseProgram(0); }
+    void destroy() { glDeleteProgram(this->ID); }
+};

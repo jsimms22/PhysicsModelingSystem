@@ -6,20 +6,18 @@
 // project headers
 #include "fwd_math.hpp"
 #include "types.hpp"
+#include "modelClass.hpp"
 
-class Lighting
+template <typename UNIT>
+class Light : public Model<UNIT>
 {
 public:
-    vec3f position{ 0.0, 0.0, 0.0 };
-    vec4f color{ 1.0, 1.0, 1.0, 1.0 };
-    Meshf mesh;
-    float scale = 1.0;
+    vec4f color;
 
-    Lighting(const Meshf _mesh)
-        : mesh{_mesh} { }
-    
-    Lighting(const vec3f _pos, const vec4f _color, Meshf _mesh)
-        : position{_pos}, color{_color}, mesh{_mesh} { }
+    Light(Mesh<UNIT> _m, vec3<UNIT> _pos, vec3<UNIT> _rot, 
+             vec4<UNIT> _color, UNIT _s, unsigned int _rendMethod)
+        : Model<UNIT>{_m, _pos, _rot, _s, _rendMethod}
+    { this->color = _color; }
 
     void setPos(const vec3f _pos) { this->position = _pos; }
     void setColor(const vec4f _color) { this->color = _color; }
@@ -41,3 +39,6 @@ public:
         } 
     }
 };
+// Type aliases
+using Lightf = Light<float>;
+using Lightd = Light<double>;

@@ -2,9 +2,6 @@
 #include <iostream>
 #include <array>
 #include <vector>
-#include <memory>
-#include <chrono>
-#include <thread>
 // vendors
 #define GLFW_INCLUDE_NONE
 #include "../vendor/GL/include/glew.h"
@@ -13,20 +10,16 @@
 #include "../include/fwd_math.hpp"
 #include "../include/graphics.hpp"
 #include "../include/hardware_input.hpp"
-#include "../include/shaders.hpp"
+#include "../include/shaderClass.hpp"
 #include "../include/camera.hpp"
-#include "../include/model.hpp"
-#include "../include/lighting.hpp"
-
-using namespace std::this_thread;     // sleep_for, sleep_until
-using namespace std::chrono_literals; // ns, us, ms, s, h, etc.
-using std::chrono::system_clock;
+#include "../include/modelClass.hpp"
+#include "../include/lightClass.hpp"
+#include "../include/utility.hpp" // Contains target fps global constant
 
 // Compile-Time Constants
 constexpr unsigned int WIDTH {1280};
 constexpr unsigned int HEIGHT {1280};
 constexpr unsigned int ADDITION_SPEED {10};
-constexpr unsigned int TARGET_FPS {144};
 constexpr float CONTAINER_RADIUS {6.0};
 constexpr float ENV_LIGHT_RADIUS {CONTAINER_RADIUS*0.3};
 constexpr float VERLET_RADIUS {0.15};
@@ -78,44 +71,39 @@ int main()
     glPointSize(3.0);
 
     /* Models & Shaders */
-    unsigned int baseShader = createShader("shaders/base_vertex.glsl", "shaders/base_fragment.glsl");
-    if (baseShader == 0) { std::cout << "baseShader creation failed." << std::endl; return 0;}
-    unsigned int phongShader = createShader("shaders/phong_vertex.glsl", "shaders/phong_fragment.glsl");
-    if (phongShader == 0) { std::cout << "phongShader creation failed." << std::endl; return 0;};
-    unsigned int lightShader = createShader("shaders/light_vertex.glsl", "shaders/light_fragment.glsl");
-    if (lightShader == 0) { std::cout << "lightShader creation failed." << std::endl; return 0;};
-
-
+    Shader baseShader = Shader("shaders/base_vertex.glsl", "shaders/base_fragment.glsl");
+    Shader lightShader = Shader("shaders/light_vertex.glsl", "shaders/light_fragment.glsl");
     Meshf cubeMesh = createMesh("models/cube.obj", false);
     Meshf lightMesh = createMesh("models/sphere.obj", false);
     Meshf sphereMesh = createMesh("models/sphere.obj", false);
 
     // World stats
-    vec3f origin{ 0.0, 0.0, 0.0 };
+    vec3f origin{ 0.0f, 0.0f, 0.0f };
     // Init container
-    vec3f containerPosition{ 0.0, 0.0, 0.0 };
-    vec3f rotation{ 0.0, 0.0, 0.0 }; 
+    vec3f containerPosition{ 0.0f, 0.0f, 0.0f };
+    vec3f rotation{ 0.0f, 0.0f, 0.0f }; 
+    Modelf container = Model(cubeMesh, containerPosition, rotation, 
+                             CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3, GL_POINTS);
+    // Init sphere
+    Modelf sphere = Model(sphereMesh, origin, rotation, 
+                          CONTAINER_RADIUS, GL_TRIANGLES);
     // Init light cube
-    vec3f lightPosition{ 5.0, 5.0, -5.0 };
-    vec4f lightColor = { 0.9, 0.9, 0.8 , 1.0 };
-    Lighting envLight = Lighting(lightPosition, lightColor, lightMesh);
-    envLight.setScale(ENV_LIGHT_RADIUS);
+    vec3f lightPosition{ 5.0f, 5.0f, -5.0f };
+    vec4f lightColor{ 0.9f, 0.9f, 0.8f, 1.0f };
+    Lightf envLight = Light(lightMesh, lightPosition, rotation, 
+                            lightColor, ENV_LIGHT_RADIUS, GL_TRIANGLES);
     // Init camera
     vec3f initial_pos = { 0.0, 0.0, CAM_RADIUS*3 };
     Camera camera = Camera(initial_pos, WIDTH, HEIGHT);
     // Init mouse
     Mouse mouse = Mouse();
-    // Window stats
+    // Simulation stats
     int totalFrames = 0;
     int numActive = 0;
-    float dt = 0.000001f;
     float lastFrameTime = static_cast<float>(glfwGetTime());
-    char title[100] = "";
 
     // Display all active errors and clear buffer
-    while (glGetError() != GL_NO_ERROR) {
-        std::cout << glGetError() << std::endl;
-    }
+    clearErrors();
 
     while (!glfwWindowShouldClose(window)) {
         /*-------*/
@@ -138,47 +126,50 @@ int main()
         /*-----------------*/
         /* Shader Uniforms */
         /*-----------------*/
-        glUseProgram(baseShader);
+        baseShader.attach();
         // Updates and exports uniforms for camera
         camera.updateMatrix(45.0, 0.1, 1000.0);
-        camera.updateUniform(baseShader, "view");
-        camera.updateUniform(baseShader, "projection");
+        camera.updateUniform(baseShader.ID, "view");
+        camera.updateUniform(baseShader.ID, "projection");
+
         // Exports uniforms needed for lighting updates
-        glUniform4f(glGetUniformLocation(baseShader, "lightColor"), 
+        glUniform4f(glGetUniformLocation(baseShader.ID, "lightColor"), 
             envLight.color.data[0], envLight.color.data[1], envLight.color.data[2], envLight.color.data[3]);
-        glUniform3f(glGetUniformLocation(baseShader, "lightPos"), 
+        glUniform3f(glGetUniformLocation(baseShader.ID, "lightPos"), 
              envLight.position.data[0], envLight.position.data[1], envLight.position.data[2]);
-        glUniform3f(glGetUniformLocation(baseShader, "camPos"), 
+        glUniform3f(glGetUniformLocation(baseShader.ID, "camPos"), 
             camera.position.data[0], camera.position.data[1], camera.position.data[2]);
-        glUseProgram(0);
+        baseShader.detach();
 
-        glUseProgram(lightShader);
+        lightShader.attach();
+
         // Updates and exports uniforms for camera
         camera.updateMatrix(45.0, 0.1, 1000.0);
-        camera.updateUniform(lightShader, "view");
-        camera.updateUniform(lightShader, "projection");
+        camera.updateUniform(lightShader.ID, "view");
+        camera.updateUniform(lightShader.ID, "projection");
+
         // Exports uniforms needed for lighting updates
-        glUniform4f(glGetUniformLocation(lightShader, "lightColor"), lightColor.data[0], lightColor.data[1], lightColor.data[2], lightColor.data[3]);
-        glUseProgram(0);
+        glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.data[0], lightColor.data[1], lightColor.data[2], lightColor.data[3]);
+        lightShader.detach();
 
-        if (1.0 / dt >= TARGET_FPS - 5 && glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS && numActive < MAX_INSTANCES) {
-            numActive += ADDITION_SPEED;
-        }
+        // Determine if we can add more entities for stress testing physics calculations
+        if (1.0 / (static_cast<float>(glfwGetTime()) - lastFrameTime) >= TARGET_FPS - 5 
+            && glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS 
+            && numActive < MAX_INSTANCES) 
+        { numActive += ADDITION_SPEED; }
  
-        if (totalFrames % 60 == 0) {
-            sprintf(title, "FPS : %-4.0f | Balls : %-10d", 1.0 / dt, numActive);
-            glfwSetWindowTitle(window, title);
-        }
-
         // force and position updates
+        // force();
         
         /*----------------*/
         /* Render objects */
         /*----------------*/
-        drawMesh(envLight.mesh, lightShader, GL_TRIANGLES, envLight.position, rotation, envLight.scale);
-        drawMesh(cubeMesh, lightShader, GL_POINTS, containerPosition, rotation, CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3);
-        drawMesh(sphereMesh, baseShader, GL_TRIANGLES, origin, rotation, CONTAINER_RADIUS);
-        // drawMesh(cubeMesh, baseShader, GL_TRIANGLES, origin, rotation, CONTAINER_RADIUS);
+        drawMesh(envLight.mesh, lightShader.ID, envLight.renderMethod, 
+                 envLight.position, rotation, envLight.scale);
+        drawMesh(container.mesh, lightShader.ID, container.renderMethod, 
+                 container.position, container.rotation, container.scale);
+        drawMesh(sphere.mesh, baseShader.ID, sphere.renderMethod, 
+                 sphere.position, sphere.rotation, sphere.scale);
 
         /*----------------------*/
         /* Clean Up and Measure */
@@ -187,20 +178,13 @@ int main()
         glfwPollEvents();
 
         // Display all active errors and clear buffer
-        while (glGetError() != GL_NO_ERROR) {
-            std::cout << glGetError() << std::endl;
-        }
+        clearErrors();
 
         // Timing
-        dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
-        while (dt < 1.0f / TARGET_FPS) {
-            dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
-        }
-        lastFrameTime = static_cast<float>(glfwGetTime());
-        totalFrames++;
+        displayStats(window, totalFrames, lastFrameTime, numActive);
     }
     // Clean up shaders
-    destroyShader(baseShader);
+    baseShader.destroy();
     // Terminate window and glfw
     glfwDestroyWindow(window);
     glfwTerminate();

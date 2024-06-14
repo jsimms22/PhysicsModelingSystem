@@ -1,7 +1,7 @@
 // project headers
-#include "../include/shaders.hpp"
+#include "../include/shaderClass.hpp"
 
-std::string readFileContents(std::string filename)
+std::string readFileContents(fs::path filename)
 {
     std::ifstream file(filename);
     std::stringstream buffer;
@@ -36,45 +36,26 @@ unsigned int compileShader(unsigned int type, const std::string& fileText)
     return id;
 }
 
-unsigned int createShader(std::string vertexFile, std::string fragmentFile)
+Shader::Shader(fs::path vertexFile, fs::path fragmentFile)
 {
     // Create a shader object and compile it during runtime
-    std::string vertexShaderSource = readFileContents(vertexFile);
-    auto vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
-    if (vertexShader == 0) {
-        std::cout << "shader compilation failure" << std::endl;
-        return 0;
-    } 
+    std::string vertexSource = readFileContents(vertexFile);
+    unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexSource);
+    if (vertexShader == 0) { throw "shader compilation failure"; } 
 
     // Perform the same steps for the fragment shader
-    std::string fragmentShaderSource = readFileContents(fragmentFile);
-    auto fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
-    if (fragmentShader == 0) {
-        std::cout << "shader compilation failure" << std::endl;
-        return 0;
-    }
+    std::string fragmentSource = readFileContents(fragmentFile);
+    unsigned int fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentSource);
+    if (fragmentShader == 0) { throw "shader compilation failure"; }
 
     // Create a shader program and link the two shader steps together
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    glValidateProgram(shaderProgram);
+    this->ID = glCreateProgram();
+    glAttachShader(this->ID, vertexShader);
+    glAttachShader(this->ID, fragmentShader);
+    glLinkProgram(this->ID);
+    glValidateProgram(this->ID);
 
     // Make sure to cleanup the individual shaders after linking
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
-    // Return the program
-    return shaderProgram;
-}
-
-void detachShader()
-{
-    glUseProgram(0);
-}
-
-void destroyShader(unsigned int shaderID)
-{
-    glDeleteProgram(shaderID);
 }

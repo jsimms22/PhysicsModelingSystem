@@ -22,18 +22,36 @@ constexpr int INSTANCE_STRIDE {3};
 constexpr int MAX_INSTANCES {20000};
 constexpr int VERTEX_LIMIT {2000};
 
-Modelf createModel(Meshf mesh);
-
-void destroyModel(Modelf model);
-
 void processVertex(std::vector<float>& vertex_bin, 
                     std::vector<std::string>& vertexData, 
                     std::array<Vertex3f, VERTEX_LIMIT>& v, 
                     std::array<Vertex3f, VERTEX_LIMIT>& vt, 
                     std::array<Vertex3f, VERTEX_LIMIT>& vn);
 
-void loadObject(std::string filename, std::vector<float>& vertex_bin);
+void loadObject(fs::path filename, std::vector<float>& vertex_bin);
 
-Meshf createMesh(std::string filename, bool instanced);
+Meshf createMesh(fs::path filename, bool instanced);
 
-void destroyMesh(Meshf mesh);
+template <typename UNIT>
+class Model
+{
+public:
+    Mesh<UNIT> mesh;
+    vec3<UNIT> position;
+    vec3<UNIT> rotation;
+    UNIT scale;
+    unsigned int renderMethod;
+
+    Model(Mesh<UNIT> _m, vec3<UNIT> _pos, vec3<UNIT> _rot, UNIT _s, unsigned int _rendMethod)
+        : mesh{_m}, position{_pos}, rotation{_rot}, scale{_s}, renderMethod{_rendMethod} { }
+    
+    void destroyMesh() {
+        glDeleteVertexArrays(1, &(this->mesh.VAO));
+        glDeleteBuffers(1, &(this->mesh.VBO));
+     }
+
+     ~Model() { destroyMesh(); }
+};
+// Type aliases
+using Modelf = Model<float>;
+using Modeld = Model<double>;
