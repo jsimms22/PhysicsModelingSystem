@@ -10,14 +10,12 @@
 #include "../vendor/GL/include/glew.h"
 #include "../vendor/GLFW/include/glfw3.h"
 // project headers
-#include "../include/math.hpp"
+#include "../include/fwd_math.hpp"
 #include "../include/graphics.hpp"
 #include "../include/hardware_input.hpp"
 #include "../include/shaders.hpp"
 #include "../include/camera.hpp"
-#include "../include/sys_callbacks.hpp"
 #include "../include/model.hpp"
-#include "../include/utility.hpp"
 
 using namespace std::this_thread;     // sleep_for, sleep_until
 using namespace std::chrono_literals; // ns, us, ms, s, h, etc.
@@ -25,33 +23,12 @@ using std::chrono::system_clock;
 
 // Compile-Time Constants
 constexpr unsigned int WIDTH {1280};
-constexpr unsigned int HEIGHT = {720};
+constexpr unsigned int HEIGHT {1280};
 constexpr unsigned int ADDITION_SPEED {10};
 constexpr unsigned int TARGET_FPS {144};
 constexpr float CONTAINER_RADIUS {6.0};
 constexpr float VERLET_RADIUS {0.15};
-constexpr float cameraRadius {12.0};
-
-// Vertices coordinates
-float vertices[] =
-{ //     COORDINATES     /        COLORS      /   TexCoord  //
-	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
-	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	5.0f, 0.0f,
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	2.5f, 5.0f
-};
-
-// Indices for vertices order
-unsigned int indices[] =
-{
-	0, 1, 2,
-	0, 2, 3,
-	0, 1, 4,
-	1, 2, 4,
-	2, 3, 4,
-	3, 0, 4
-};
+constexpr float CAM_RADIUS {24.0};
 
 int main()
 {
@@ -72,7 +49,7 @@ int main()
     if (!window) { 
         std::cout << "Terminating the window" << std::endl;
         glfwTerminate(); 
-        return -1; 
+        return 1; 
     }
 
     // Assign a current OpenGL context
@@ -103,12 +80,19 @@ int main()
     if (baseShader == 0) { std::cout << "baseShader creation failed." << std::endl; return 0;}
     unsigned int phongShader = createShader("shaders/phong_vertex.glsl", "shaders/phong_fragment.glsl");
     if (phongShader == 0) { std::cout << "phongShader creation failed." << std::endl; return 0;};
+    unsigned int lightShader = createShader("shaders/light_vertex.glsl", "shaders/light_fragment.glsl");
+    if (lightShader == 0) { std::cout << "lightShader creation failed." << std::endl; return 0;};
 
-    Meshf cubeMesh = createMeshFromFile("models/cube.obj", false);
+    Meshf cubeMesh = createMesh("models/cube.obj", false);
+    Meshf lightMesh = createMesh("models/cube.obj", false);
+    Meshf sphereMesh = createMesh("models/sphere.obj", false);
 
     // Container
     vec3f containerPosition{ 0.0, 0.0, 0.0 };
     vec3f rotation{ 0.0, 0.0, 0.0 }; 
+    // Light cube
+    vec3f lightPosition{ 15.0, 15.0, -15.0 };
+    vec4f lightColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     int totalFrames = 0;
     int numActive = 0;
@@ -118,8 +102,8 @@ int main()
 
     char title[100] = "";
 
-    vec3f initial_pos = { 0.0, 0.0, cameraRadius*3 };
-    Camera camera = Camera(WIDTH, HEIGHT, initial_pos);
+    vec3f initial_pos = { 0.0, 0.0, CAM_RADIUS*3 };
+    Camera camera = Camera(initial_pos, WIDTH, HEIGHT);
     Mouse mouse = Mouse();
 
     while (glGetError() != GL_NO_ERROR) {
@@ -138,10 +122,18 @@ int main()
 
         /* Shader Uniforms */
         glUseProgram(baseShader);
-        camera.viewMatrix(45.0, 0.1, 100.0, baseShader);
+        camera.updateMatrix(45.0, 0.1, 1000.0);
+        camera.updateUniform(baseShader, "view");
+        camera.updateUniform(baseShader, "projection");
+        glUniform4f(glGetUniformLocation(baseShader, "lightColor"), lightColor.data[0], lightColor.data[1], lightColor.data[2], lightColor.data[3]);
+        glUniform3f(glGetUniformLocation(baseShader, "lightPos"), lightPosition.data[0], lightPosition.data[1], lightPosition.data[2]);\
+        glUniform3f(glGetUniformLocation(baseShader, "camPos"), camera.position.data[0], camera.position.data[1], camera.position.data[2]);
         glUseProgram(0);
-        glUseProgram(phongShader);
-        camera.viewMatrix(45.0, 0.1, 100.0, phongShader);
+        glUseProgram(lightShader);
+        camera.updateMatrix(45.0, 0.1, 1000.0);
+        camera.updateUniform(lightShader, "view");
+        camera.updateUniform(lightShader, "projection");
+        glUniform4f(glGetUniformLocation(lightShader, "lightColor"), lightColor.data[0], lightColor.data[1], lightColor.data[2], lightColor.data[3]);
         glUseProgram(0);
 
         if (1.0 / dt >= TARGET_FPS - 5 && glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS && numActive < MAX_INSTANCES) {
@@ -159,8 +151,9 @@ int main()
         // force and position updates
         
         /* Container */
-        drawMesh(cubeMesh, baseShader, GL_TRIANGLES, containerPosition, rotation, CONTAINER_RADIUS * 2 /*+ VERLET_RADIUS * 3*/);
-        // drawMesh(cubeMesh, baseShader, GL_POINTS, containerPosition, rotation, CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3);
+        drawMesh(lightMesh, lightShader, GL_TRIANGLES, lightPosition, rotation, CONTAINER_RADIUS*0.3);
+        drawMesh(cubeMesh, lightShader, GL_POINTS, containerPosition, rotation, CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3);
+        drawMesh(sphereMesh, baseShader, GL_TRIANGLES, containerPosition, rotation, CONTAINER_RADIUS);
 
         // Swaps back buffer with front buffer
         while (glGetError() != GL_NO_ERROR) {
@@ -178,9 +171,6 @@ int main()
         lastFrameTime = static_cast<float>(glfwGetTime());
         totalFrames++;
     }
-
-    
-
     // Clean up shaders
     destroyShader(baseShader);
     // Terminate window and glfw

@@ -8,7 +8,7 @@
 #include <filesystem>
 // project headers
 #include "types.hpp"
-#include "math.hpp"
+#include "fwd_math.hpp"
 #include "utility.hpp"
 // vendors
 #define GLFW_INCLUDE_NONE
@@ -34,8 +34,6 @@ void processVertex(std::vector<float>& vertex_bin,
 
 void loadObject(std::string filename, std::vector<float>& vertex_bin);
 
-Meshf createMeshFromFile(std::string filename, bool instanced);
-
-Meshf createMeshFromArray(float vertices[], unsigned int indices[]);
+Meshf createMesh(std::string filename, bool instanced);
 
 void destroyMesh(Meshf mesh);

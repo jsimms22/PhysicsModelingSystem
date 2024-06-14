@@ -1,7 +1,11 @@
 #pragma once
+
+// SIMD
+#include <mmintrin.h>
+// std library
 #include <iostream>
 // project headers
-#include "fwd_math.hpp"
+#include "../types.hpp"
 
 template <typename UNIT>
 void vec3_scale(vec3<UNIT>& out, UNIT scalar, vec3<UNIT> in)
@@ -113,56 +117,53 @@ void mat4x4_mul(mat4x4<UNIT>& out, const mat4x4<UNIT> in1, const mat4x4<UNIT> in
 
 template <typename UNIT>
 /* CHECK MAJORNESS */
-void mat4x4_mul_vec4(vec4<UNIT>& out, const mat4x4<UNIT> mat_in, const vec4<UNIT> vec_in)
-{
-	for(size_t j=0; j<4; ++j) {
-		out[j] = 0.0;
+void mat3x3_mul_vec3(vec3<UNIT>& out, const vec3<UNIT> vec_in, const mat3x3<UNIT> mat_in)
+{   
+    for(size_t j=0; j<4; ++j) {
+		out.data[j] = 0.0;
 		for(size_t i=0; i<4; ++i) {
-			out.data[j] += mat_in.data[i].data[j] * vec_in.data[i];
+			out.data[j] += mat_in.data[j].data[i] * vec_in.data[i];
         }
 	}
 }
 
 template <typename UNIT>
-void mat4x4_rotate_X(mat4x4<UNIT>& out, const mat4x4<UNIT> in, const UNIT angle)
+void mat3x3_rotate_X(vec3<UNIT>& out, const vec3<UNIT> in, const UNIT angle)
 {
 	float s = sinf(angle);
 	float c = cosf(angle);
-	mat4x4<UNIT> r = { // Rotation matrix
-		vec4<UNIT>{1.0, 0.0, 0.0, 0.0},
-		vec4<UNIT>{0.0,   c,   s, 0.0},
-		vec4<UNIT>{0.0,  -s,   c, 0.0},
-		vec4<UNIT>{0.0, 0.0, 0.0, 1.0}
+	mat3x3<UNIT> r = { // Rotation matrix
+		vec3<UNIT>{1.0, 0.0, 0.0},
+		vec3<UNIT>{0.0,   c,   s},
+		vec3<UNIT>{0.0,  -s,   c}
 	};
-	mat4x4_mul(out, in, r);
+	mat3x3_mul_vec3(out, in, r);
 }
 
 template <typename UNIT>
-void mat4x4_rotate_Y(mat4x4<UNIT>& out, const mat4x4<UNIT> in, const UNIT angle)
+void mat3x3_rotate_Y(vec3<UNIT>& out, const vec3<UNIT> in, const UNIT angle)
 {
 	float s = sinf(angle);
 	float c = cosf(angle);
-	mat4x4<UNIT> r = { // Rotation matrix
-		vec4<UNIT>{   c, 0.0,  -s, 0.0},
-		vec4<UNIT>{ 0.0, 1.0, 0.0, 0.0},
-		vec4<UNIT>{   s, 0.0,   c, 0.0},
-		vec4<UNIT>{ 0.0, 0.0, 0.0, 1.0}
+	mat3x3<UNIT> r = { // Rotation matrix
+		vec3<UNIT>{   c, 0.0,  -s},
+		vec3<UNIT>{ 0.0, 1.0, 0.0},
+		vec3<UNIT>{   s, 0.0,   c}
 	};
-	mat4x4_mul(out, in, r);
+	mat3x3_mul_vec3(out, in, r);
 }
 
 template <typename UNIT>
-void mat4x4_rotate_Z(mat4x4<UNIT>& out, const mat4x4<UNIT> in, const UNIT angle)
+void mat3x3_rotate_Z(vec3<UNIT>& out, const vec3<UNIT> in, const UNIT angle)
 {
 	float s = sinf(angle);
 	float c = cosf(angle);
-	mat4x4<UNIT> r = { // Rotation matrix
-		vec4<UNIT>{   c,   s, 0.0, 0.0},
-		vec4<UNIT>{  -s,   c, 0.0, 0.0},
-		vec4<UNIT>{ 0.0, 0.0, 1.0, 0.0},
-		vec4<UNIT>{ 0.0, 0.0, 0.0, 1.0}
+	mat3x3<UNIT> r = { // Rotation matrix
+		vec3<UNIT>{   c,   s, 0.0},
+		vec3<UNIT>{  -s,   c, 0.0},
+		vec3<UNIT>{ 0.0, 0.0, 1.0}
 	};
-	mat4x4_mul(out, in, r);
+	mat3x3_mul_vec3(out, in, r);
 }
 
 template <typename UNIT>
@@ -229,8 +230,8 @@ template <typename UNIT>
 void mat4x4_projection(mat4x4<UNIT>& out, UNIT FOV, UNIT aspect, UNIT near, UNIT far)
 {
 	UNIT TRIG_FOV = tan(FOV * 0.5); // tangent of half FOV
-    UNIT right = TRIG_FOV * near;   // half width of near plane
-    UNIT top = right / aspect;      // half height of near plane
+    // UNIT right = TRIG_FOV * near;   // half width of near plane
+    // UNIT top = right / aspect;      // half height of near plane
     out.data[0].data[0] = 1.0 / TRIG_FOV; // near / right;
     out.data[0].data[1] = 0.0;
     out.data[0].data[2] = 0.0;

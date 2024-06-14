@@ -1,9 +1,6 @@
 #pragma once
 
-// SIMD
-#include <mmintrin.h>
-// project headers
-#include "types.hpp"
+#include "math/math.hpp"
 
 template <typename UNIT>
 void vec3_scale(vec3<UNIT>& out, UNIT scalar, vec3<UNIT> in);
@@ -39,16 +36,16 @@ template <typename UNIT>
 void mat4x4_mul(mat4x4<UNIT>& out, const mat4x4<UNIT> in1, const mat4x4<UNIT> in2);
 
 template <typename UNIT>
-void mat4x4_mul_vec4(vec4<UNIT>& out, const mat4x4<UNIT> mat_in, const vec4<UNIT> vec_in);
+void mat4x4_mul_vec3(vec4<UNIT>& out, const vec4<UNIT> vec_in, const mat4x4<UNIT> mat_in);
 
 template <typename UNIT>
-void mat4x4_rotate_X(mat4x4<UNIT>& out, const mat4x4<UNIT> in, const UNIT angle);
+void mat3x3_rotate_X(vec3<UNIT>& out, const vec3<UNIT> in, const UNIT angle);
 
 template <typename UNIT>
-void mat4x4_rotate_Y(mat4x4<UNIT>& out, const mat4x4<UNIT> in, const UNIT angle);
+void mat3x3_rotate_Y(vec3<UNIT>& out, const vec3<UNIT> in, const UNIT angle);
 
 template <typename UNIT>
-void mat4x4_rotate_Z(mat4x4<UNIT>& out, const mat4x4<UNIT> in, const UNIT angle);
+void mat3x3_rotate_Z(vec3<UNIT>& out, const vec3<UNIT> in, const UNIT angle);
 
 template <typename UNIT>
 void mat4x4_ortho(mat4x4<UNIT>& M, UNIT l, UNIT r, UNIT b, UNIT t, UNIT n, UNIT f);
