@@ -1,7 +1,6 @@
 // project headers
 #include "../include/camera.hpp"
 
-
 void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
 {
     vec3f temp;
@@ -106,5 +105,13 @@ void Camera::inputs(GLFWwindow* window)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         // Makes sure the next time the camera looks around it doesn't jump
         firstClick = true;
+    }   
+}
+
+void Camera::resetCamera(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_F1) == GLFW_PRESS) {
+        this->position = this->resetLoc;
+        this->orientation = this->resetOrient;
     }
 }

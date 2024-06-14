@@ -14,12 +14,14 @@ class Camera
 public:
     // Camera "eye" location
     vec3f position;
+    vec3f resetLoc;
     // Relative target orientation
     vec3f orientation = {0.0, 0.0, -1.0};
+    vec3f resetOrient = {0.0, 0.0, -1.0};
     // World view orientation
     vec3f up = {0.0, 1.0, 0.0};
     vec3f right = {1.0, 0.0, 0.0};
-    vec3f forward = {0.0, 0.0, 1.0};
+    vec3f forward = {0.0, 0.0, -1.0};
     // Protects from moving camera while clicking window into focus
     bool firstClick = true;
     // Screen information
@@ -37,6 +39,7 @@ public:
     { 
         viewMatrix.set_all(0.0); 
         projectionMatrix.set_all(0.0);
+        resetLoc = _pos;
     }
     
     void updateMatrix(float FOVdeg, float nearPlane, float farPlane);
@@ -44,4 +47,6 @@ public:
     void updateUniform(unsigned int shaderID, std::string uniform);
 
     void inputs(GLFWwindow* window);
+
+    void resetCamera(GLFWwindow* window);
 };

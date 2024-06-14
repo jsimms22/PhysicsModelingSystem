@@ -8,15 +8,16 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-out vec3 fragmentVertexNormal; 
+out vec3 fragNormal; 
 out vec3 currentPos; 
-out vec2 fragmentTexCoord;
+out vec2 fragTexCoord;
 
 void main()
 {
+    // Output to fragment shader
+    fragNormal = vertexNormal;
+    fragTexCoord = vertexTexCoord;
     currentPos = vec3(model * vec4(vertexPos, 1.0f));
 
     gl_Position = projection * view * vec4(currentPos, 1.0);
-    fragmentVertexNormal = vertexNormal;
-    fragmentTexCoord = vertexTexCoord;
 }

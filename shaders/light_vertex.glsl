@@ -17,3 +17,4 @@ void main()
     fragmentVertexNormal = vertexNormal;
     fragmentTexCoord = vertexTexCoord;
 }
+

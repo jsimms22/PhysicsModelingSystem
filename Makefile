@@ -15,6 +15,7 @@ OUTPUT = app
 
 # Source files and object files
 SRC_DIR = src
+OBJ_DIR = bin
 SRC = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 
@@ -30,4 +31,4 @@ debug: CFLAGS += -DDEBUG -O0 -g
 debug: clean $(OUTPUT)
 
 clean:
-	rm -f $(OBJ) $(OUTPUT)
+	rm -f $(OBJ_DIR)/$(OBJ) $(OUTPUT)
