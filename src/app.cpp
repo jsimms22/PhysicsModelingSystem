@@ -11,9 +11,8 @@
 #include "../include/graphics.hpp"
 #include "../include/hardware_input.hpp"
 #include "../include/shaderClass.hpp"
-#include "../include/camera.hpp"
+#include "../include/cameraClass.hpp"
 #include "../include/modelClass.hpp"
-#include "../include/lightClass.hpp"
 #include "../include/utility.hpp" // Contains target fps global constant
 
 // Compile-Time Constants
@@ -73,9 +72,9 @@ int main()
     /* Models & Shaders */
     Shader baseShader = Shader("shaders/base_vertex.glsl", "shaders/base_fragment.glsl");
     Shader lightShader = Shader("shaders/light_vertex.glsl", "shaders/light_fragment.glsl");
-    Meshf cubeMesh = createMesh("models/cube.obj", false);
-    Meshf lightMesh = createMesh("models/sphere.obj", false);
-    Meshf sphereMesh = createMesh("models/sphere.obj", false);
+    Mesh cubeMesh = Mesh("models/cube.obj", false);
+    Mesh lightMesh = Mesh("models/sphere.obj", false);
+    Mesh sphereMesh = Mesh("models/sphere.obj", false);
 
     // World stats
     vec3f origin{ 0.0f, 0.0f, 0.0f };
@@ -88,7 +87,7 @@ int main()
     Modelf sphere = Model(sphereMesh, origin, rotation, 
                           CONTAINER_RADIUS, GL_TRIANGLES);
     // Init light cube
-    vec3f lightPosition{ 5.0f, 5.0f, -5.0f };
+    vec3f lightPosition{ 15.0f, 15.0f, 10.0f };
     vec4f lightColor{ 0.9f, 0.9f, 0.8f, 1.0f };
     Lightf envLight = Light(lightMesh, lightPosition, rotation, 
                             lightColor, ENV_LIGHT_RADIUS, GL_TRIANGLES);

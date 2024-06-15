@@ -7,7 +7,7 @@
 #include <array>
 #include <filesystem>
 // project headers
-#include "types.hpp"
+#include "meshClass.hpp"
 #include "fwd_math.hpp"
 #include "utility.hpp"
 // vendors
@@ -17,32 +17,17 @@
 
 namespace fs = std::filesystem;
 
-constexpr int STRIDE {8};
-constexpr int INSTANCE_STRIDE {3};
-constexpr int MAX_INSTANCES {20000};
-constexpr int VERTEX_LIMIT {2000};
-
-void processVertex(std::vector<float>& vertex_bin, 
-                    std::vector<std::string>& vertexData, 
-                    std::array<Vertex3f, VERTEX_LIMIT>& v, 
-                    std::array<Vertex3f, VERTEX_LIMIT>& vt, 
-                    std::array<Vertex3f, VERTEX_LIMIT>& vn);
-
-void loadObject(fs::path filename, std::vector<float>& vertex_bin);
-
-Meshf createMesh(fs::path filename, bool instanced);
-
 template <typename UNIT>
 class Model
 {
 public:
-    Mesh<UNIT> mesh;
+    Mesh mesh;
     vec3<UNIT> position;
     vec3<UNIT> rotation;
     UNIT scale;
     unsigned int renderMethod;
 
-    Model(Mesh<UNIT> _m, vec3<UNIT> _pos, vec3<UNIT> _rot, UNIT _s, unsigned int _rendMethod)
+    Model(Mesh _m, vec3<UNIT> _pos, vec3<UNIT> _rot, UNIT _s, unsigned int _rendMethod)
         : mesh{_m}, position{_pos}, rotation{_rot}, scale{_s}, renderMethod{_rendMethod} { }
     
     void destroyMesh() {
@@ -55,3 +40,38 @@ public:
 // Type aliases
 using Modelf = Model<float>;
 using Modeld = Model<double>;
+
+template <typename UNIT>
+class Light : public Model<UNIT>
+{
+public:
+    vec4f color;
+
+    Light(Mesh _m, vec3<UNIT> _pos, vec3<UNIT> _rot, 
+             vec4<UNIT> _color, UNIT _s, unsigned int _rendMethod)
+        : Model<UNIT>{_m, _pos, _rot, _s, _rendMethod}
+    { this->color = _color; }
+
+    void setPos(const vec3f _pos) { this->position = _pos; }
+    void setColor(const vec4f _color) { this->color = _color; }
+    void setScale(const float _s) { this->scale = _s; }
+
+    void input(GLFWwindow* window) 
+    {
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+            this->position.data[2] -= 1.0;
+        }
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+            this->position.data[2] += 1.0;
+        }
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+            this->position.data[0] -= 1.0;
+        } 
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+            this->position.data[0] += 1.0;
+        } 
+    }
+};
+// Type aliases
+using Lightf = Light<float>;
+using Lightd = Light<double>;

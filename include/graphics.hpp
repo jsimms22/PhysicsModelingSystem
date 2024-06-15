@@ -12,9 +12,10 @@
 #include "../vendor/GLFW/include/glfw3.h"
 // project headers
 #include "fwd_math.hpp"
+#include "meshClass.hpp"
 
-void drawMesh(Meshf& mesh, unsigned int shaderID, unsigned int mode, 
+void drawMesh(Mesh& mesh, unsigned int shaderID, unsigned int mode, 
               vec3f& position, vec3f& rotation, float scale);
 
-void drawInstanced(Meshf& mesh, unsigned int shaderID, 
+void drawInstanced(Mesh& mesh, unsigned int shaderID, 
                    unsigned int mode, int num, float scale);

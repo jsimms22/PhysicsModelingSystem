@@ -1,7 +1,7 @@
 // project headers
 #include "../include/graphics.hpp"
 
-void drawMesh(Meshf& mesh, unsigned int shaderID, unsigned int mode, 
+void drawMesh(Mesh& mesh, unsigned int shaderID, unsigned int mode, 
             vec3f& position, vec3f& rotation, float scale)
 {
     vec3f scaling{ scale, scale, scale };
@@ -33,18 +33,18 @@ void drawMesh(Meshf& mesh, unsigned int shaderID, unsigned int mode,
     glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, matrices.model.data->data);
 
     glBindVertexArray(mesh.VAO);
-    glDrawArrays(mode, 0, mesh.numVertices);
+    glDrawArrays(mode, 0, mesh.vertices.size());
     glUseProgram(0);
     glBindVertexArray(0);
 }
 
-void drawInstanced(Meshf& mesh, unsigned int shaderID, unsigned int mode, int num, float scale)
+void drawInstanced(Mesh& mesh, unsigned int shaderID, unsigned int mode, int num, float scale)
 {
     glUseProgram(shaderID);
     glUniform1f(glGetUniformLocation(shaderID, "scale"), scale);
 
     glBindVertexArray(mesh.VAO);
-    glDrawArraysInstanced(mode, 0, mesh.numVertices, num);
+    glDrawArraysInstanced(mode, 0, mesh.vertices.size(), num);
     glUseProgram(0);
     glBindVertexArray(0);
 }

@@ -10,7 +10,7 @@
 #include "../vendor/GL/include/glew.h"
 #include "../vendor/GLFW/include/glfw3.h"
 
-constexpr unsigned int TARGET_FPS {60};
+constexpr unsigned int TARGET_FPS {144};
 
 // Hash function for mapping specific strings to integers
 int hashString(const std::string& str);
