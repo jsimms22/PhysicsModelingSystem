@@ -14,8 +14,8 @@
 #include "fwd_math.hpp"
 #include "meshClass.hpp"
 
-void drawMesh(Mesh& mesh, unsigned int shaderID, unsigned int mode, 
+void drawMesh(Mesh& mesh, Shader& shader, unsigned int mode, 
               vec3f& position, vec3f& rotation, float scale);
 
-void drawInstanced(Mesh& mesh, unsigned int shaderID, 
-                   unsigned int mode, int num, float scale);
+// void drawInstanced(Mesh& mesh, unsigned int shaderID, 
+//                    unsigned int mode, int num, float scale);

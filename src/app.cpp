@@ -79,21 +79,21 @@ int main()
     // World stats
     vec3f origin{ 0.0f, 0.0f, 0.0f };
     // Init container
-    vec3f containerPosition{ 0.0f, 0.0f, 0.0f };
+    vec3f containerPos{ 0.0f, 0.0f, 0.0f };
     vec3f rotation{ 0.0f, 0.0f, 0.0f }; 
-    Modelf container = Model(cubeMesh, containerPosition, rotation, 
+    Model container = Model(cubeMesh, containerPos, rotation, 
                              CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3, GL_POINTS);
     // Init sphere
-    Modelf sphere = Model(sphereMesh, origin, rotation, 
+    Model sphere = Model(sphereMesh, origin, rotation, 
                           CONTAINER_RADIUS, GL_TRIANGLES);
     // Init light cube
     vec3f lightPosition{ 15.0f, 15.0f, 10.0f };
     vec4f lightColor{ 0.9f, 0.9f, 0.8f, 1.0f };
-    Lightf envLight = Light(lightMesh, lightPosition, rotation, 
+    Light envLight = Light(lightMesh, lightPosition, rotation, 
                             lightColor, ENV_LIGHT_RADIUS, GL_TRIANGLES);
     // Init camera
-    vec3f initial_pos = { 0.0, 0.0, CAM_RADIUS*3 };
-    Camera camera = Camera(initial_pos, WIDTH, HEIGHT);
+    vec3f cameraPos = { 0.0, 0.0, CAM_RADIUS * 3 };
+    Camera camera = Camera(cameraPos, WIDTH, HEIGHT);
     // Init mouse
     Mouse mouse = Mouse();
     // Simulation stats
@@ -103,7 +103,8 @@ int main()
 
     // Display all active errors and clear buffer
     clearErrors();
-
+    std::cout << "size of new vertex: " << sizeof(vertexf) << std::endl;
+    std::cout << "size of old vertex: " << STRIDE * sizeof(float) << std::endl;
     while (!glfwWindowShouldClose(window)) {
         /*-------*/
         /* Input */
@@ -133,11 +134,14 @@ int main()
 
         // Exports uniforms needed for lighting updates
         glUniform4f(glGetUniformLocation(baseShader.ID, "lightColor"), 
-            envLight.color.data[0], envLight.color.data[1], envLight.color.data[2], envLight.color.data[3]);
+                                         envLight.color.data[0], envLight.color.data[1], 
+                                         envLight.color.data[2], envLight.color.data[3]);
         glUniform3f(glGetUniformLocation(baseShader.ID, "lightPos"), 
-             envLight.position.data[0], envLight.position.data[1], envLight.position.data[2]);
+                                         envLight.position.data[0], envLight.position.data[1], 
+                                         envLight.position.data[2]);
         glUniform3f(glGetUniformLocation(baseShader.ID, "camPos"), 
-            camera.position.data[0], camera.position.data[1], camera.position.data[2]);
+                                         camera.position.data[0], camera.position.data[1], 
+                                         camera.position.data[2]);
         baseShader.detach();
 
         lightShader.attach();
@@ -148,7 +152,9 @@ int main()
         camera.updateUniform(lightShader.ID, "projection");
 
         // Exports uniforms needed for lighting updates
-        glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.data[0], lightColor.data[1], lightColor.data[2], lightColor.data[3]);
+        glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), 
+                                         lightColor.data[0], lightColor.data[1], 
+                                         lightColor.data[2], lightColor.data[3]);
         lightShader.detach();
 
         // Determine if we can add more entities for stress testing physics calculations
@@ -163,11 +169,11 @@ int main()
         /*----------------*/
         /* Render objects */
         /*----------------*/
-        drawMesh(envLight.mesh, lightShader.ID, envLight.renderMethod, 
+        drawMesh(envLight.mesh, lightShader, envLight.renderMethod, 
                  envLight.position, rotation, envLight.scale);
-        drawMesh(container.mesh, lightShader.ID, container.renderMethod, 
+        drawMesh(container.mesh, lightShader, container.renderMethod, 
                  container.position, container.rotation, container.scale);
-        drawMesh(sphere.mesh, baseShader.ID, sphere.renderMethod, 
+        drawMesh(sphere.mesh, baseShader, sphere.renderMethod, 
                  sphere.position, sphere.rotation, sphere.scale);
 
         /*----------------------*/

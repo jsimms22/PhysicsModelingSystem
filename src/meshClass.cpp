@@ -2,32 +2,26 @@
 #include "../include/meshClass.hpp"
 
 Mesh::Mesh(fs::path filename, bool instanced)
+    : VAO{}
 {
-    std::vector<Vertexf> vertex_bin;
+    std::vector<vertexf> vertexBin;
     // Load vertex data from file
-    loadObject(filename, vertex_bin);
-    this->vertices = vertex_bin;
+    loadObject(filename, vertexBin);
+    this->vertices = vertexBin;
 
     // Create our Vertex Buffer and Vertex Array Objects
-    // Bind the Vertex Array Object first, 
-    glGenVertexArrays(1, &(this->VAO));
-    glBindVertexArray(this->VAO);
+    // Bind the Vertex Array Object first,
+    this->VAO.bind();
     // Then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glGenBuffers(1, &(this->VBO));
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * STRIDE * this->vertices.size(), this->vertices.data(), GL_STATIC_DRAW);
+    // this->VBO = VBObj(this->vertices);
+    VBObj VBO(this->vertices);
 
-    /* TODO use elements */
-    
     // Position
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof(float), (void*)0);
+    VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), (void*)0);
     // Normal
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof(float), (void*)(3*sizeof(float)));
+    VAO.linkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), (void*)(3*sizeof(float)));
     // Texture
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, STRIDE * sizeof(float), (void*)(6*sizeof(float)));
+    VAO.linkAttrib(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), (void*)(6*sizeof(float)));
 
     if (instanced) {
     //     // instanced Position
@@ -48,40 +42,42 @@ Mesh::Mesh(fs::path filename, bool instanced)
     }
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    VBO.unbind();
 
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray(0);
+    this->VAO.unbind();
+   
+    
 
     // uncomment this call to draw in wireframe polygons.
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-void processVertex(std::vector<Vertexf>& vertex_bin, 
+void processVertex(std::vector<vertexf>& vertexBin, 
                     std::vector<std::string>& vertexMarker, 
                     std::vector<vec3f>& v, 
                     std::vector<vec2f>& vt, 
                     std::vector<vec3f>& vn)
 {
-    Vertexf temp;
-    size_t vertex_itr = stoi(vertexMarker[0]) - 1;
-    size_t texture_itr = stoi(vertexMarker[1]) - 1;
-    size_t normal_itr = stoi(vertexMarker[2]) - 1;
+    vertexf temp;
+    size_t vertItr = stoi(vertexMarker[0]) - 1;
+    size_t texItr = stoi(vertexMarker[1]) - 1;
+    size_t normItr = stoi(vertexMarker[2]) - 1;
 
-    temp.v = v[vertex_itr];
-    temp.vn = vn[normal_itr];
-    temp.vt = vt[texture_itr];
-    vertex_bin.push_back(temp);
+    temp.v = v[vertItr];
+    temp.vn = vn[normItr];
+    temp.vt = vt[texItr];
+    vertexBin.push_back(temp);
 }
 
-void loadObject(fs::path filename, std::vector<Vertexf>& vertex_bin)
+void loadObject(fs::path filename, std::vector<vertexf>& vertexBin)
 {
     std::vector<vec3f> v, vn;
     std::vector<vec2f> vt;
 
-    // size_t v_count, vt_count, vn_count, f_count;
-    // v_count = vt_count = vn_count = f_count = 0;
+    size_t v_count, vt_count, vn_count, f_count;
+    v_count = vt_count = vn_count = f_count = 0;
 
     std::ifstream file(filename);
     if (!file) {
@@ -92,43 +88,46 @@ void loadObject(fs::path filename, std::vector<Vertexf>& vertex_bin)
     std::string line;
     while (std::getline(file, line)) {
         std::istringstream iss(line);
-        std::string firstword, temp;
-        iss >> firstword;
+        std::string firstWord, temp;
+        iss >> firstWord;
 
-        switch (hashString(firstword)) {
+        switch (hashString(firstWord)) {
             case 1: // first word = "v"
-                vec3f hold1;
-                if(iss >> temp) { hold1.data[0] = std::stof(temp); }
-                if(iss >> temp) { hold1.data[1] = std::stof(temp); }
-                if(iss >> temp) { hold1.data[2] = std::stof(temp); }
-                v.push_back(hold1);
+                vec3f holdv;
+                if(iss >> temp) { holdv.data[0] = std::stof(temp); }
+                if(iss >> temp) { holdv.data[1] = std::stof(temp); }
+                if(iss >> temp) { holdv.data[2] = std::stof(temp); }
+                v.push_back(holdv);
+                ++v_count;
                 break;
             case 2: // first word = "vt"
-                vec2f hold2;
-                if(iss >> temp) { hold2.data[0] = std::stof(temp); }
-                if(iss >> temp) { hold2.data[1] = std::stof(temp); }
-                vt.push_back(hold2);
+                vec2f holdvt;
+                if(iss >> temp) { holdvt.data[0] = std::stof(temp); }
+                if(iss >> temp) { holdvt.data[1] = std::stof(temp); }
+                vt.push_back(holdvt);
+                ++vt_count;
                 break;
             case 3: // first word = "vn"
-                vec3f hold3;
-                if(iss >> temp) { hold3.data[0] = std::stof(temp); }
-                if(iss >> temp) { hold3.data[1] = std::stof(temp); }
-                if(iss >> temp) { hold3.data[2] = std::stof(temp); }
-                vn.push_back(hold3);
+                vec3f holdvn;
+                if(iss >> temp) { holdvn.data[0] = std::stof(temp); }
+                if(iss >> temp) { holdvn.data[1] = std::stof(temp); }
+                if(iss >> temp) { holdvn.data[2] = std::stof(temp); }
+                vn.push_back(holdvn);
+                ++vn_count;
                 break;
             case 4: // first word = "f"
                 std::vector<std::string> v1, v2, v3;
                 if(iss >> temp) { v1 = splitString(temp, '/'); }
                 if(iss >> temp) { v2 = splitString(temp, '/'); }
                 if(iss >> temp) { v3 = splitString(temp, '/'); }
-
-                processVertex(vertex_bin, v1, v, vt, vn);
-                processVertex(vertex_bin, v2, v, vt, vn);
-                processVertex(vertex_bin, v3, v, vt, vn);
+                processVertex(vertexBin, v1, v, vt, vn);
+                processVertex(vertexBin, v2, v, vt, vn);
+                processVertex(vertexBin, v3, v, vt, vn);
+                ++f_count;
                 break;
         }
     }
-    // std::cout << "Final counts: " << v_count << ", " << vt_count << ", " << vn_count << ", " << f_count << std::endl;
-    // std::cout << "bin size: " << vertex_bin.size() << std::endl;
+    std::cout << "Final counts: " << v_count << ", " << vt_count << ", " << vn_count << ", " << f_count << std::endl;
+    std::cout << "Vertex bin size: " << vertexBin.size() << std::endl;
     file.close();
 }

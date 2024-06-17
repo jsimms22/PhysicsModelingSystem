@@ -26,9 +26,9 @@ void Camera::inputs(GLFWwindow* window)
 {
     // Handles key inputs
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        vec3f temp1;
-        vec3_scale(temp1, speed, orientation);
-        vec3_add(position, position, temp1);
+        vec3f temp;
+        vec3_scale(temp, speed, orientation);
+        vec3_add(position, position, temp);
     } 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
         vec3f temp;

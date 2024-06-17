@@ -1,7 +1,7 @@
 // project headers
 #include "../include/graphics.hpp"
 
-void drawMesh(Mesh& mesh, unsigned int shaderID, unsigned int mode, 
+void drawMesh(Mesh& mesh, Shader& shader, unsigned int mode, 
             vec3f& position, vec3f& rotation, float scale)
 {
     vec3f scaling{ scale, scale, scale };
@@ -29,22 +29,24 @@ void drawMesh(Mesh& mesh, unsigned int shaderID, unsigned int mode,
     mat4x4_mul(matrices.model, matrices.rotation, matrices.scaling);
     mat4x4_mul(matrices.model, matrices.position, matrices.model);
 
-    glUseProgram(shaderID);
-    glUniformMatrix4fv(glGetUniformLocation(shaderID, "model"), 1, GL_FALSE, matrices.model.data->data);
+    shader.attach();
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, matrices.model.data->data);
 
-    glBindVertexArray(mesh.VAO);
+    // glBindVertexArray(mesh.VAO.ID);
+    mesh.VAO.bind();
     glDrawArrays(mode, 0, mesh.vertices.size());
-    glUseProgram(0);
-    glBindVertexArray(0);
+    shader.detach();
+    // glBindVertexArray(0);
+    mesh.VAO.unbind();
 }
 
-void drawInstanced(Mesh& mesh, unsigned int shaderID, unsigned int mode, int num, float scale)
-{
-    glUseProgram(shaderID);
-    glUniform1f(glGetUniformLocation(shaderID, "scale"), scale);
+// void drawInstanced(Mesh& mesh, unsigned int shaderID, unsigned int mode, int num, float scale)
+// {
+//     glUseProgram(shaderID);
+//     glUniform1f(glGetUniformLocation(shaderID, "scale"), scale);
 
-    glBindVertexArray(mesh.VAO);
-    glDrawArraysInstanced(mode, 0, mesh.vertices.size(), num);
-    glUseProgram(0);
-    glBindVertexArray(0);
-}
+//     glBindVertexArray(mesh.VAO.ID);
+//     glDrawArraysInstanced(mode, 0, mesh.vertices.size(), num);
+//     glUseProgram(0);
+//     glBindVertexArray(0);
+// }

@@ -11,33 +11,73 @@
 constexpr int STRIDE {8};
 constexpr int INSTANCE_STRIDE {3};
 constexpr int MAX_INSTANCES {20000};
-constexpr int VERTEX_LIMIT {2000};
+// constexpr int VERTEX_LIMIT {2000};
 
-void processVertex(std::vector<Vertexf>& vertex_bin, 
+void processVertex(std::vector<vertexf>& vertexBin, 
                     std::vector<std::string>& vertexMarker, 
                     std::vector<vec3f>& v, 
                     std::vector<vec2f>& vt, 
                     std::vector<vec3f>& vn);
 
-void loadObject(fs::path filename, std::vector<Vertexf>& vertex_bin);
+void loadObject(fs::path filename, std::vector<vertexf>& vertexBin);
+
+class VBObj
+{
+public:
+    unsigned int ID;
+    
+    // VBObj() { }
+    // Generates a VBO and links it to a list of vertices 
+    VBObj(std::vector<vertexf> vertices)
+    {
+        glGenBuffers(1, &(this->ID));
+	    glBindBuffer(GL_ARRAY_BUFFER, this->ID);
+	    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertexf), vertices.data(), GL_STATIC_DRAW);
+    }
+    void bind() { glBindBuffer(GL_ARRAY_BUFFER, this->ID); }
+    void unbind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+    void destroy() { glDeleteBuffers(1, &(this->ID));}
+};
+
+class VAObj
+{
+public:
+    unsigned int ID;
+    
+    VAObj() { glGenVertexArrays(1, &(this->ID)); }
+    // Links a VBO attribute 
+    void linkAttrib(VBObj& VBO, unsigned int order, unsigned int layout, 
+                    GLenum type, GLsizeiptr stride, void* offset)
+    {
+        VBO.bind();
+        glVertexAttribPointer(order, layout, type, GL_FALSE, stride, offset);
+        glEnableVertexAttribArray(order);
+        VBO.unbind();
+    }
+    void bind() { glBindVertexArray(this->ID); }
+    void unbind() { glBindVertexArray(0); }
+    void destroy() { glDeleteVertexArrays(1, &(this->ID)); }
+};
 
 // Vertex layout: span of 11 if fully packed
 // { x y z }{ n1 n2 n3 }{ r g b }{ tx1 tx2 }
 class Mesh
 {
 public:
-    std::vector<Vertexf> vertices;
+    std::vector<vertexf> vertices;
     std::vector<unsigned int> indices;
     // std::vector<Texture> textures;
-    unsigned int VAO;
-    unsigned int VBO;
+    // unsigned int VAO;
+    // unsigned int VBO;
+    VAObj VAO;
+    // VBObj VBO;
     // unsigned int positionVBO;
     // unsigned int velocityVBO;
 
-    Mesh(std::vector<Vertexf> _v)
+    Mesh(std::vector<vertexf> _v)
         : vertices{_v} { }
     Mesh(fs::path filename, bool instanced);
-    Mesh(std::vector<Vertexf> _v, std::vector<unsigned int>& _in/*, std::vector<Texture> _tex*/)
+    Mesh(std::vector<vertexf> _v, std::vector<unsigned int>& _in/*, std::vector<Texture> _tex*/)
         :vertices{_v}, indices{_in}/*, textures{_tex}*/ { }
 
     //void draw(Shader& shader, Camera& camera);

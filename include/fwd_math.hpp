@@ -2,6 +2,8 @@
 
 #include "math/math.hpp"
 
+const double M_PI = std::acos(-1);
+
 template <typename UNIT>
 void vec3_scale(vec3<UNIT>& out, UNIT scalar, vec3<UNIT> in);
 

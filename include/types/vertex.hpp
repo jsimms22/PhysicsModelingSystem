@@ -5,7 +5,7 @@
 #include "vec3.hpp"
 
 template <typename UNIT>
-struct Vertex
+struct vertex
 {
 public:
     vec3<UNIT> v;
@@ -14,5 +14,5 @@ public:
     // vec3<UNIT> color;
 };
 // Type aliases
-using Vertexf = Vertex<float>;
-using Vertexd = Vertex<double>;
+using vertexf = vertex<float>;
+using vertexd = vertex<double>;
