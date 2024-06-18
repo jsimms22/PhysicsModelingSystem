@@ -24,21 +24,6 @@ constexpr float ENV_LIGHT_RADIUS {CONTAINER_RADIUS*0.3};
 constexpr float VERLET_RADIUS {0.15};
 constexpr float CAM_RADIUS {24.0};
 
-// floor
-std::vector<vertexf> vertices =
-{
-    vertexf{vec3f{ -1.0f,   0.0f,  1.0f}, vec3f{  1.0f,   1.0f,   1.0f}, vec2f{  0.0f,   0.0f}},
-    vertexf{vec3f{ -1.0f,   0.0f, -1.0f}, vec3f{  1.0f,   1.0f,   1.0f}, vec2f{  0.0f,   1.0f}},
-    vertexf{vec3f{  1.0f,   0.0f, -1.0f}, vec3f{  1.0f,   1.0f,   1.0f}, vec2f{  1.0f,   1.0f}},
-    vertexf{vec3f{  1.0f,   0.0f,  1.0f}, vec3f{  1.0f,   1.0f,   1.0f}, vec2f{  1.0f,   0.0f}}
-};
-
-std::vector<unsigned int> indices =
-{
-    2, 1, 0,
-    3, 2, 0
-};
-
 int main()
 {
     // Initialize GLFW
@@ -92,12 +77,12 @@ int main()
     vec3f origin{ 0.0f, 0.0f, 0.0f };
     vec3f rotation{ 0.0f, 0.0f, 0.0f };
     // Init floor
-    Model floor{{vertices, indices}, {0.0f, -(CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3), 0.0f}, 
+    Model floor{{floorVertex(10, 10, 10), floorIndex(10)}, {0.0f, -(CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3), 0.0f}, 
                 rotation, CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3, GL_TRIANGLES};
     // Init container
     vec3f containerPos{ 0.0f, 0.0f, 0.0f };
-    // Model container{{"models/cube.obj", false}, containerPos, rotation, 
-    //                 CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3, GL_POINTS};
+    Model container{{"models/cube.obj", false}, containerPos, rotation, 
+                    CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3, GL_POINTS};
     // Init sphere
     Model sphere = Model({"models/sphere.obj", false}, origin, rotation, 
                           CONTAINER_RADIUS, GL_TRIANGLES);
@@ -118,8 +103,7 @@ int main()
 
     // Display all active errors and clear buffer
     clearErrors();
-    std::cout << "size of new vertex: " << sizeof(vertexf) << std::endl;
-    std::cout << "size of old vertex: " << STRIDE * sizeof(float) << std::endl;
+
     while (!glfwWindowShouldClose(window)) {
         /*-------*/
         /* Input */
@@ -186,8 +170,8 @@ int main()
         /*----------------*/
         drawMesh(envLight.mesh, lightShader, envLight.renderMethod, 
                  envLight.position, rotation, envLight.scale);
-        // drawMesh(container.mesh, lightShader, container.renderMethod, 
-        //          container.position, container.rotation, container.scale);
+        drawMesh(container.mesh, lightShader, container.renderMethod, 
+                 container.position, container.rotation, container.scale);
         drawMesh(sphere.mesh, baseShader, sphere.renderMethod, 
                  sphere.position, sphere.rotation, sphere.scale);
         drawMesh(floor.mesh, baseShader, floor.renderMethod, 

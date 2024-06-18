@@ -1,6 +1,49 @@
 // project headers
 #include "../include/graphics.hpp"
 
+std::vector<vertexf> floorVertex(size_t vertexCount, float length, float width)
+{
+    float coord_x = -(width / 2);
+    float coord_z = -(length / 2);
+    float dx = (width / vertexCount);
+    float dz = (length / vertexCount);
+    std::vector<vertexf> floor;
+    for (size_t i=0; i<vertexCount; ++i) {
+        for (size_t j=0; j<vertexCount; ++j) {
+            floor.push_back(vertexf
+                {   //position
+                    vec3f{ (coord_x + j*dx), 0.0f, (coord_z + i*dz) },
+                    // normal
+                    vec3f{ 1.0f, 1.0f, 1.0f },
+                    // texture
+                    vec2f{ 0.0f, 0.0f }
+                });
+        }
+    }
+    // std::cout << floor.size() << std::endl;
+    return floor;
+}
+
+std::vector<unsigned int> floorIndex(size_t vertexCount)
+{
+    std::vector<unsigned int> index;
+    for (size_t i=0; i<vertexCount-1; ++i) {
+        for (size_t j=0; j<vertexCount-1; ++j) {
+            int tl = (i*vertexCount) + j;
+            int tr = tl + 1;
+            int bl = ((i+1)*vertexCount) + j;
+            int br = bl + 1;
+            index.push_back(tl); index.push_back(bl); index.push_back(tr);
+            index.push_back(tr); index.push_back(bl); index.push_back(br);
+        }
+    }
+    // std::cout << index.size() << std::endl;
+    // for (int i=0; i<(index.size()-2); i+=3) {
+    //     std::cout << index[i] << "/" << index[i+1] << "/" << index[i+2] << std::endl;
+    // }
+    return index;
+}
+
 void drawMesh(Mesh& mesh, Shader& shader, unsigned int mode, 
             vec3f& position, vec3f& rotation, float scale)
 {

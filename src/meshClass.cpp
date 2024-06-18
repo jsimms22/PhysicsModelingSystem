@@ -151,7 +151,7 @@ void loadObject(fs::path filename, std::vector<vertexf>& vertexBin)
                 break;
         }
     }
-    std::cout << "Final counts: " << v_count << ", " << vt_count << ", " << vn_count << ", " << f_count << std::endl;
-    std::cout << "Vertex bin size: " << vertexBin.size() << std::endl;
+    // std::cout << "Final counts: " << v_count << ", " << vt_count << ", " << vn_count << ", " << f_count << std::endl;
+    // std::cout << "Vertex bin size: " << vertexBin.size() << std::endl;
     file.close();
 }
