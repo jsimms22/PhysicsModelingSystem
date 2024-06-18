@@ -66,6 +66,18 @@ void vec4_copy(vec4<UNIT>& out, const vec4<UNIT> in)
     out.data[3] = in.data[3];
 }
 
+template <typename UNIT>
+UNIT vec3_angle(vec3<UNIT> in1, vec3<UNIT> in2)
+{
+    UNIT angle;
+    UNIT comp1 = vec3_dot(in1,in2);
+    UNIT comp2 = sqrt(pow(in1.data[0],2) + pow(in1.data[1],2) + pow(in1.data[2],2));
+    UNIT comp3 = sqrt(pow(in2.data[0],2) + pow(in2.data[1],2) + pow(in2.data[2],2));
+    angle = acos(comp1 / (comp2 * comp3));
+    // std::cout << angle << std::endl;
+    return static_cast<UNIT>((acos(-1.0)/180.0))*angle;
+}
+
 // Unit/Identity Matrix
 // | 1 0 0 0 |
 // | 0 1 0 0 |
@@ -130,8 +142,8 @@ void mat3x3_mul_vec3(vec3<UNIT>& out, const vec3<UNIT> vec_in, const mat3x3<UNIT
 template <typename UNIT>
 void mat3x3_rotate_X(vec3<UNIT>& out, const vec3<UNIT> in, const UNIT angle)
 {
-	float s = sinf(angle);
-	float c = cosf(angle);
+	float s = sin(angle);
+	float c = cos(angle);
 	mat3x3<UNIT> r = { // Rotation matrix
 		vec3<UNIT>{1.0, 0.0, 0.0},
 		vec3<UNIT>{0.0,   c,   s},
@@ -143,8 +155,8 @@ void mat3x3_rotate_X(vec3<UNIT>& out, const vec3<UNIT> in, const UNIT angle)
 template <typename UNIT>
 void mat3x3_rotate_Y(vec3<UNIT>& out, const vec3<UNIT> in, const UNIT angle)
 {
-	float s = sinf(angle);
-	float c = cosf(angle);
+	float s = sin(angle);
+	float c = cos(angle);
 	mat3x3<UNIT> r = { // Rotation matrix
 		vec3<UNIT>{   c, 0.0,  -s},
 		vec3<UNIT>{ 0.0, 1.0, 0.0},
@@ -156,8 +168,8 @@ void mat3x3_rotate_Y(vec3<UNIT>& out, const vec3<UNIT> in, const UNIT angle)
 template <typename UNIT>
 void mat3x3_rotate_Z(vec3<UNIT>& out, const vec3<UNIT> in, const UNIT angle)
 {
-	float s = sinf(angle);
-	float c = cosf(angle);
+	float s = sin(angle);
+	float c = cos(angle);
 	mat3x3<UNIT> r = { // Rotation matrix
 		vec3<UNIT>{   c,   s, 0.0},
 		vec3<UNIT>{  -s,   c, 0.0},

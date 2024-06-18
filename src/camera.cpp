@@ -3,10 +3,8 @@
 
 void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
 {
-    vec3f temp;
-    vec3_add(temp, this->position, this->orientation);
-    //position = camera eye, temp = center, 
-    mat4x4_lookAt(this->viewMatrix, this->position, temp, this->up);
+    vec3_add(this->direction, this->position, this->orientation);
+    mat4x4_lookAt(this->viewMatrix, this->position, this->direction, this->up);
     mat4x4_projection(this->projectionMatrix, static_cast<float>(FOVdeg*(M_PI/180.0)), 
                       static_cast<float>(width/height), nearPlane, farPlane);
 }
@@ -27,26 +25,22 @@ void Camera::inputs(GLFWwindow* window)
     // Handles key inputs
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
         vec3f temp;
-        vec3_scale(temp, speed, orientation);
+        vec3_scale(temp, speed, forward);
         vec3_add(position, position, temp);
     } 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
         vec3f temp;
-        vec3_cross(temp, orientation, up);
-        vec3_normal(temp, temp);
-        vec3_scale(temp, -speed, temp);
+        vec3_scale(temp, -speed, right);
         vec3_add(position, position, temp);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
         vec3f temp;
-        vec3_scale(temp, -speed, orientation);
+        vec3_scale(temp, -speed, forward);
         vec3_add(position, position, temp);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         vec3f temp;
-        vec3_cross(temp, orientation, up);
-        vec3_normal(temp, temp);
-        vec3_scale(temp, speed, temp);
+        vec3_scale(temp, speed, right);
         vec3_add(position, position, temp);
     }
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
@@ -58,7 +52,7 @@ void Camera::inputs(GLFWwindow* window)
         vec3f temp;
         vec3_scale(temp, -speed, up);
         vec3_add(position, position, temp);
-    }
+    } 
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) { 
         speed = 0.4f; 
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
@@ -81,22 +75,24 @@ void Camera::inputs(GLFWwindow* window)
         // Fetches the coordinates of the cursor
         glfwGetCursorPos(window, &mouseX, &mouseY);
 
-        // Normalizes and shifts the coordinates of the cursor such that they begin in the middle of the screen
+        // Normalizes and shifts the coordinates of the cursor 
+        // such that they begin in the middle of the screen
         // and then "transforms" them into degrees 
-        // float rotX = sensitivity * (float)(mouseY - (height / 2)) / height;
-        float rotY = sensitivity * (float)(mouseX - (width / 2)) / width;
+        float rotX = sensitivity * (float)(mouseY - (height / 2)) / height; // yaw
+        float rotY = sensitivity * (float)(mouseX - (width / 2)) / width; // pitch
+        // std::cout << rotX << ", " << rotY << std::endl;
 
         // Calculates upcoming vertical change in the orientation
-        // glm::vec3 neworientation = glm::rotate(orientation, glm::radians(-rotX), glm::normalize(glm::cross(orientation, up)));
-
+        vec3f newOrientation = orientation;
+        mat3x3_rotate_X(newOrientation, newOrientation, static_cast<float>((M_PI/180.0)*(-rotX)));
         // Decides whether or not the next vertical orientation is legal or not
-        // if (abs(glm::angle(neworientation, up) - glm::radians(90.0f)) <= glm::radians(85.0f))
-        // {
-        //     orientation = neworientation;
-        // }
-
+        if (abs(vec3_angle(newOrientation, up) - static_cast<float>(M_PI/180.0)*(90.0f)) <= static_cast<float>(M_PI/180.0)*(85.0f))
+        {
+            orientation = newOrientation;
+        }
         // Rotates the orientation left and right
         mat3x3_rotate_Y(orientation, orientation, static_cast<float>((M_PI/180.0)*(-rotY)));
+        vec3_normal(orientation, orientation);
 
         // Sets mouse cursor to the middle of the screen so that it doesn't end up roaming around
         glfwSetCursorPos(window, (width / 2), (height / 2));
@@ -105,7 +101,10 @@ void Camera::inputs(GLFWwindow* window)
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         // Makes sure the next time the camera looks around it doesn't jump
         firstClick = true;
-    }   
+    }
+    // std::cout << "orientation: " << position.data[0] << ", "
+    //                              << position.data[1] << ", "
+    //                              << position.data[2] << std::endl;
 }
 
 void Camera::resetCamera(GLFWwindow* window)

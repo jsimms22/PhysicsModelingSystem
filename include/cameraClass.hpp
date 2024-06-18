@@ -17,7 +17,9 @@ public:
     vec3f resetLoc;
     // Relative target orientation
     vec3f orientation = {0.0, 0.0, -1.0};
-    vec3f resetOrient = {0.0, 0.0, -1.0};
+    vec3f resetOrient = orientation;
+    // Camera direction
+    vec3f direction;
     // World view orientation
     vec3f up = {0.0, 1.0, 0.0};
     vec3f right = {1.0, 0.0, 0.0};

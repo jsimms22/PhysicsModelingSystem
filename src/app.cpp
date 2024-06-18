@@ -22,7 +22,6 @@ constexpr unsigned int ADDITION_SPEED {10};
 constexpr float CONTAINER_RADIUS {6.0};
 constexpr float ENV_LIGHT_RADIUS {CONTAINER_RADIUS*0.3};
 constexpr float VERLET_RADIUS {0.15};
-constexpr float CAM_RADIUS {24.0};
 
 int main()
 {
@@ -77,7 +76,7 @@ int main()
     vec3f origin{ 0.0f, 0.0f, 0.0f };
     vec3f rotation{ 0.0f, 0.0f, 0.0f };
     // Init floor
-    Model floor{{floorVertex(10, 10, 10), floorIndex(10)}, {0.0f, -(CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3), 0.0f}, 
+    Model floor{{floorVertex(100, 10, 10), floorIndex(100)}, {0.0f, -(CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3), 0.0f}, 
                 rotation, CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3, GL_TRIANGLES};
     // Init container
     vec3f containerPos{ 0.0f, 0.0f, 0.0f };
@@ -92,7 +91,7 @@ int main()
     Light envLight = Light({"models/sphere.obj", false}, lightPosition, rotation, 
                             lightColor, ENV_LIGHT_RADIUS, GL_TRIANGLES);
     // Init camera
-    vec3f cameraPos = { 0.0, 0.0, CAM_RADIUS * 3 };
+    vec3f cameraPos = { 0.0, 0.0, 125.0 };
     Camera camera = Camera(cameraPos, WIDTH, HEIGHT);
     // Init mouse
     Mouse mouse = Mouse();

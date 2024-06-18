@@ -26,6 +26,9 @@ template <typename UNIT>
 void vec4_copy(vec4<UNIT>& out, const vec4<UNIT> in);
 
 template <typename UNIT>
+UNIT vec3_angle(vec3<UNIT> in1, vec3<UNIT> in2);
+
+template <typename UNIT>
 void mat4x4_id(mat4x4<UNIT>& out);
 
 template <typename UNIT>
