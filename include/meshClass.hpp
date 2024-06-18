@@ -59,6 +59,22 @@ public:
     void destroy() { glDeleteVertexArrays(1, &(this->ID)); }
 };
 
+class EBObj
+{
+public:
+    unsigned int ID;
+    
+    EBObj(std::vector<unsigned int> indices) 
+    { 
+        glGenBuffers(1, &(this->ID));
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+    }
+    void bind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ID); }
+    void unbind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+    void destroy() { glDeleteBuffers(1, &(this->ID)); }
+};
+
 // Vertex layout: span of 11 if fully packed
 // { x y z }{ n1 n2 n3 }{ r g b }{ tx1 tx2 }
 class Mesh
@@ -77,8 +93,7 @@ public:
     Mesh(std::vector<vertexf> _v)
         : vertices{_v} { }
     Mesh(fs::path filename, bool instanced);
-    Mesh(std::vector<vertexf> _v, std::vector<unsigned int>& _in/*, std::vector<Texture> _tex*/)
-        :vertices{_v}, indices{_in}/*, textures{_tex}*/ { }
+    Mesh(std::vector<vertexf> _v, std::vector<unsigned int> _in/*, std::vector<Texture> _tex*/);
 
     //void draw(Shader& shader, Camera& camera);
 };

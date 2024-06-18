@@ -34,7 +34,8 @@ void drawMesh(Mesh& mesh, Shader& shader, unsigned int mode,
 
     // glBindVertexArray(mesh.VAO.ID);
     mesh.VAO.bind();
-    glDrawArrays(mode, 0, mesh.vertices.size());
+    if (mesh.indices.size() == 0) { glDrawArrays(mode, 0, mesh.vertices.size()); }
+    else { glDrawElements(mode, mesh.indices.size(), GL_UNSIGNED_INT, 0); }
     shader.detach();
     // glBindVertexArray(0);
     mesh.VAO.unbind();

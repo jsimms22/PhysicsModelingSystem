@@ -1,6 +1,36 @@
 // project headers
 #include "../include/meshClass.hpp"
 
+Mesh::Mesh(std::vector<vertexf> _v, std::vector<unsigned int> _in/*, std::vector<Texture> _tex*/)
+    : VAO{}
+{
+    this->vertices = _v;
+    this->indices = _in;
+    // this->textures = _tex;
+
+    // Bind the Vertex Array Object first,
+    this->VAO.bind();
+    // Then bind and set vertex buffer(s)
+    VBObj VBO(this->vertices);
+    // Generates Element Buffer Object and links it to indices
+	EBObj EBO(this->indices);
+
+    // Position
+    VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), (void*)0);
+    // Normal
+    VAO.linkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), (void*)(3*sizeof(float)));
+    // Texture
+    VAO.linkAttrib(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), (void*)(6*sizeof(float)));
+
+    // Unbind all to prevent accidentally modifying them
+    this->VAO.unbind();
+    VBO.unbind();
+    EBO.unbind();
+   
+    // uncomment this call to draw in wireframe polygons.
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+}
+
 Mesh::Mesh(fs::path filename, bool instanced)
     : VAO{}
 {
@@ -9,12 +39,12 @@ Mesh::Mesh(fs::path filename, bool instanced)
     loadObject(filename, vertexBin);
     this->vertices = vertexBin;
 
-    // Create our Vertex Buffer and Vertex Array Objects
     // Bind the Vertex Array Object first,
     this->VAO.bind();
-    // Then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    // this->VBO = VBObj(this->vertices);
+    // Then bind and set vertex buffer(s)
     VBObj VBO(this->vertices);
+    // Generates Element Buffer Object and links it to indices
+	EBObj EBO(this->indices);
 
     // Position
     VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), (void*)0);
@@ -40,16 +70,10 @@ Mesh::Mesh(fs::path filename, bool instanced)
     //     glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
     //     glVertexAttribDivisor(4, 1);
     }
-
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    VBO.unbind();
-
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     this->VAO.unbind();
+    VBO.unbind();
+    EBO.unbind();
    
-    
-
     // uncomment this call to draw in wireframe polygons.
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
