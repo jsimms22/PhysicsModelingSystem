@@ -45,4 +45,6 @@ public:
     void setColor(const vec4f _color) { this->color = _color; }
     void setScale(const float _s) { this->scale = _s; }
     void input(GLFWwindow* window);
+
+    void updateUniform(unsigned int shaderID, std::string uniform);
 };

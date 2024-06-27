@@ -18,6 +18,11 @@ void Camera::updateUniform(unsigned int shaderID, std::string uniform)
     if (uniform == "view") {
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "view"), 1, GL_FALSE, viewMatrix.data->data);
     }
+    if (uniform == "camPos") {
+        glUniform3f(glGetUniformLocation(shaderID, "camPos"), 
+                                         this->position.data[0], this->position.data[1], 
+                                         this->position.data[2]);
+    }
 }
 
 void Camera::inputs(GLFWwindow* window)

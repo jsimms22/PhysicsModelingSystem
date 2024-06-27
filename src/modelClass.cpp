@@ -21,3 +21,17 @@ void Light::input(GLFWwindow* window)
         this->position.data[0] += 1.0;
     } 
 }
+
+void Light::updateUniform(unsigned int shaderID, std::string uniform)
+{
+    if (uniform == "lightColor") {
+        glUniform4f(glGetUniformLocation(shaderID, "lightColor"), 
+                                         this->color.data[0], this->color.data[1], 
+                                         this->color.data[2], this->color.data[3]);
+    }
+    if (uniform == "lightPos") {
+        glUniform3f(glGetUniformLocation(shaderID, "lightPos"), 
+                                         this->position.data[0], this->position.data[1], 
+                                         this->position.data[2]);
+    }
+}

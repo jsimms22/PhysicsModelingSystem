@@ -7,13 +7,13 @@
 #include "../vendor/GL/include/glew.h"
 #include "../vendor/GLFW/include/glfw3.h"
 // project headers
-#include "../include/fwd_math.hpp"
+#include "../include/fwd_math.hpp"      // Contains M_PI constant
 #include "../include/graphics.hpp"
 #include "../include/hardware_input.hpp"
 #include "../include/shaderClass.hpp"
 #include "../include/cameraClass.hpp"
 #include "../include/modelClass.hpp"
-#include "../include/utility.hpp" // Contains target fps global constant
+#include "../include/utility.hpp"       // Contains target fps global constant
 
 // Compile-Time Constants
 constexpr unsigned int WIDTH {1280};
@@ -48,24 +48,26 @@ int main()
     // Assign a current OpenGL context
     glfwMakeContextCurrent(window);
     // allows glew to initialize GL
-    auto iResult = glewInit();      
+    auto iResult = glewInit();
     if (iResult != GLEW_OK) {
         std::cout << "GLew init falure" << std::endl;
         glfwTerminate();
-        return 1; 
+        return 1;
     }
     // std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-    /* Set up a callback function for when the window is resized */
-    glfwSwapInterval(1);
 
     /* OpenGL Settings */
-    glViewport(0, 0, WIDTH, HEIGHT);    // Defines where we want glfw to render
-    glClearColor(0.07f, 0.13f, 0.17f, 1.0);   // Clears back buffer and renders new background
+    glfwSwapInterval(1);
+    glViewport(0, 0, WIDTH, HEIGHT);        // Defines where we want glfw to render
+    glClearColor(0.07f, 0.13f, 0.17f, 1.0); // Clears back buffer and renders new background
     glClearStencil(0);
-
-    glEnable(GL_DEPTH_TEST); glDepthFunc(GL_LESS);
-    glEnable(GL_CULL_FACE); glCullFace(GL_BACK); glFrontFace(GL_CCW);
-    glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glPointSize(3.0);
 
     /* Models & Shaders */
@@ -84,7 +86,7 @@ int main()
                     CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3, GL_POINTS};
     // Init sphere
     Model sphere = Model({"models/sphere.obj", false}, origin, rotation, 
-                          CONTAINER_RADIUS, GL_TRIANGLES);
+                         CONTAINER_RADIUS, GL_TRIANGLES);
     // Init light cube
     vec3f lightPosition{ 15.0f, 15.0f, 10.0f };
     vec4f lightColor{ 0.9f, 0.9f, 0.8f, 1.0f };
@@ -129,30 +131,19 @@ int main()
         camera.updateMatrix(45.0, 0.1, 1000.0);
         camera.updateUniform(baseShader.ID, "view");
         camera.updateUniform(baseShader.ID, "projection");
-
+        camera.updateUniform(baseShader.ID, "camPos");
         // Exports uniforms needed for lighting updates
-        glUniform4f(glGetUniformLocation(baseShader.ID, "lightColor"), 
-                                         envLight.color.data[0], envLight.color.data[1], 
-                                         envLight.color.data[2], envLight.color.data[3]);
-        glUniform3f(glGetUniformLocation(baseShader.ID, "lightPos"), 
-                                         envLight.position.data[0], envLight.position.data[1], 
-                                         envLight.position.data[2]);
-        glUniform3f(glGetUniformLocation(baseShader.ID, "camPos"), 
-                                         camera.position.data[0], camera.position.data[1], 
-                                         camera.position.data[2]);
+        envLight.updateUniform(baseShader.ID, "lightColor");
+        envLight.updateUniform(baseShader.ID, "lightPos");
         baseShader.detach();
 
         lightShader.attach();
-
         // Updates and exports uniforms for camera
         camera.updateMatrix(45.0, 0.1, 1000.0);
         camera.updateUniform(lightShader.ID, "view");
         camera.updateUniform(lightShader.ID, "projection");
-
         // Exports uniforms needed for lighting updates
-        glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), 
-                                         lightColor.data[0], lightColor.data[1], 
-                                         lightColor.data[2], lightColor.data[3]);
+        envLight.updateUniform(lightShader.ID, "lightColor");
         lightShader.detach();
 
         // Determine if we can add more entities for stress testing physics calculations
@@ -160,10 +151,12 @@ int main()
             && glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS 
             && numActive < MAX_INSTANCES) 
         { numActive += ADDITION_SPEED; }
- 
-        // force and position updates
+
+        /*----------------------------*/
+        /* force and position updates */
+        /*----------------------------*/
         // force();
-        
+
         /*----------------*/
         /* Render objects */
         /*----------------*/
@@ -175,7 +168,6 @@ int main()
                  sphere.position, sphere.rotation, sphere.scale);
         drawMesh(floor.mesh, baseShader, floor.renderMethod, 
                  floor.position, floor.rotation, floor.scale);
-
         /*----------------------*/
         /* Clean Up and Measure */
         /*----------------------*/
