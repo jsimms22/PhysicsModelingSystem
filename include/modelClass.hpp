@@ -5,7 +5,7 @@
 #include <fstream>
 #include <vector>
 #include <array>
-#include <filesystem>
+#include <memory>
 // project headers
 #include "meshClass.hpp"
 #include "fwd_math.hpp"
@@ -18,31 +18,67 @@
 class Model
 {
 public:
-    Mesh mesh;
-    vec3f position;
-    vec3f rotation;
-    float scale;
-    unsigned int renderMethod;
-
-    Model(Mesh _m, vec3f _pos, vec3f _rot, float _s, unsigned int _rendMethod)
-        : mesh{_m}, position{_pos}, rotation{_rot}, scale{_s}, renderMethod{_rendMethod} { }
+    // Constructor
+    Model(std::shared_ptr<Mesh> _sourceMesh,
+          float _scalar, 
+          unsigned int _renderMethod,
+          vec3f _positionVec = {0.0f, 0.0f, 0.0f},
+          vec3f _rotationVec = {0.0f, 0.0f, 0.0f});
     
-    void destroyMesh();
-     ~Model() { destroyMesh(); }
+    // Destructor
+    ~Model() { DestroyMesh(); }
+    
+    void DestroyMesh();
+    
+    // Getter and Setter for m_modelMesh
+    std::shared_ptr<Mesh> GetMesh() const { return m_modelMesh; }
+    void SetMesh(std::shared_ptr<Mesh> _mesh) { m_modelMesh = _mesh; }
+
+    // Getter and Setter for m_position
+    vec3f GetPosition() const { return m_position; }
+    vec3f& GetPosition() { return m_position; }
+    void SetPosition(const vec3f& _positionVec) { m_position = _positionVec; }
+
+    // Getter and Setter for m_rotation
+    vec3f GetRotation() const { return m_rotation; }
+    vec3f& GetRotation() { return m_rotation; }
+    void SetRotation(const vec3f& _rotationVec) { m_rotation = _rotationVec; }
+
+    // Getter and Setter for m_scale
+    float GetScale() const { return m_scale; }
+    void SetScale(float _scalarVec) { m_scale = _scalarVec; }
+
+    // Getter and Setter for m_renderMethod
+    unsigned int GetRenderMethod() const { return m_renderMethod; }
+    void SetRenderMethod(unsigned int _rendMethod) { m_renderMethod = _rendMethod; }
+
+protected:
+    std::shared_ptr<Mesh> m_modelMesh;
+    float m_scale = 1.f;
+    unsigned int m_renderMethod = GL_POINTS;
+    vec3f m_position = {0.0f, 0.0f, 0.0f};
+    vec3f m_rotation = {0.0f, 0.0f, 0.0f};
 };
 
 class Light : public Model
 {
 public:
-    vec4f color;
+    Light(std::shared_ptr<Mesh> _sourceMesh,
+        float _scalar, 
+        unsigned int _renderMethod,
+        vec4f _color = {0.9f, 0.9f, 0.8f, 1.0f},
+        vec3f _positionVec = {0.0f, 0.0f, 0.0f}, 
+        vec3f _rotationVec = {0.0f, 0.0f, 0.0f});
 
-    Light(Mesh _m, vec3f _pos, vec3f _rot, vec4f _color, float _s, unsigned int _rendMethod)
-        : Model{_m, _pos, _rot, _s, _rendMethod} { this->color = _color; }
+    vec4f GetColor() const { return m_color; }
+    void SetColor(const vec4f& _color) { m_color = _color; }
 
-    void setPos(const vec3f _pos) { this->position = _pos; }
-    void setColor(const vec4f _color) { this->color = _color; }
-    void setScale(const float _s) { this->scale = _s; }
-    void input(GLFWwindow* window);
+    // Updates positon using arrow keys
+    void UpdatePosition(GLFWwindow* window);
 
-    void updateUniform(unsigned int shaderID, std::string uniform);
+    // Updates named shader uniform
+    void UpdateUniform(const unsigned int& shaderID, const std::string& uniform);
+
+protected:
+    vec4f m_color = {0.9f, 0.9f, 0.8f, 1.0f};
 };
