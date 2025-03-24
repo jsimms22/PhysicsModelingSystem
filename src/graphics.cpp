@@ -44,8 +44,12 @@ std::vector<unsigned int> floorIndex(size_t vertexCount)
     return index;
 }
 
-void drawMesh(Mesh& mesh, Shader& shader, unsigned int mode, 
-            vec3f& position, vec3f& rotation, float scale)
+void drawMesh(std::shared_ptr<Mesh> mesh, 
+              Shader& shader, 
+              unsigned int mode, 
+              vec3f& position, 
+              vec3f& rotation, 
+              float scale)
 {
     vec3f scaling{ scale, scale, scale };
 
@@ -75,13 +79,16 @@ void drawMesh(Mesh& mesh, Shader& shader, unsigned int mode,
     shader.attach();
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, matrices.model.data->data);
 
-    // glBindVertexArray(mesh.VAO.ID);
-    mesh.VAO.bind();
-    if (mesh.indices.size() == 0) { glDrawArrays(mode, 0, mesh.vertices.size()); }
-    else { glDrawElements(mode, mesh.indices.size(), GL_UNSIGNED_INT, 0); }
+    mesh->VAO.bind();
+
+    if (mesh->indices.size() == 0) { 
+        glDrawArrays(mode, 0, mesh->vertices.size()); 
+    } else { 
+        glDrawElements(mode, mesh->indices.size(), GL_UNSIGNED_INT, 0); 
+    }
+
     shader.detach();
-    // glBindVertexArray(0);
-    mesh.VAO.unbind();
+    mesh->VAO.unbind();
 }
 
 // void drawInstanced(Mesh& mesh, unsigned int shaderID, unsigned int mode, int num, float scale)

@@ -70,28 +70,38 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glPointSize(3.0);
 
-    /* Models & Shaders */
+    // Shaders
     Shader baseShader = Shader("shaders/base_vertex.glsl", "shaders/base_fragment.glsl");
     Shader lightShader = Shader("shaders/light_vertex.glsl", "shaders/light_fragment.glsl");
-
-    // World stats
-    vec3f origin{ 0.0f, 0.0f, 0.0f };
-    vec3f rotation{ 0.0f, 0.0f, 0.0f };
+    
+    // Meshes
+    std::shared_ptr<Mesh> cubeMesh = std::make_shared<Mesh>("models/cube.obj", false);
+    std::shared_ptr<Mesh> sphereMesh = std::make_shared<Mesh>("models/sphere.obj", false);
+    std::shared_ptr<Mesh> floorMesh = std::make_shared<Mesh>(floorVertex(100, 10, 10), floorIndex(100));
+    
     // Init floor
-    Model floor{{floorVertex(100, 10, 10), floorIndex(100)}, {0.0f, -(CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3), 0.0f}, 
-                rotation, CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3, GL_TRIANGLES};
+    Model floor = Model(floorMesh,
+                        CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3, 
+                        GL_TRIANGLES,
+                        {0.0f, -(CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3), 0.0f});
+
     // Init container
-    vec3f containerPos{ 0.0f, 0.0f, 0.0f };
-    Model container{{"models/cube.obj", false}, containerPos, rotation, 
-                    CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3, GL_POINTS};
+    Model container = Model(cubeMesh,
+                            CONTAINER_RADIUS * 2 + VERLET_RADIUS * 3, 
+                            GL_POINTS);
+
     // Init sphere
-    Model sphere = Model({"models/sphere.obj", false}, origin, rotation, 
-                         CONTAINER_RADIUS, GL_TRIANGLES);
+    Model sphere = Model(sphereMesh,
+                         CONTAINER_RADIUS, 
+                         GL_TRIANGLES);
+
     // Init light cube
-    vec3f lightPosition{ 15.0f, 15.0f, 10.0f };
-    vec4f lightColor{ 0.9f, 0.9f, 0.8f, 1.0f };
-    Light envLight = Light({"models/sphere.obj", false}, lightPosition, rotation, 
-                            lightColor, ENV_LIGHT_RADIUS, GL_TRIANGLES);
+    Light envLight = Light(sphereMesh,
+                           ENV_LIGHT_RADIUS, 
+                           GL_TRIANGLES, 
+                           vec4f({0.9f, 0.9f, 0.8f, 1.0f}),
+                           vec3f({15.0f, 15.0f, 10.0f}));
+
     // Init camera
     vec3f cameraPos = { 0.0, 0.0, 125.0 };
     Camera camera = Camera(cameraPos, WIDTH, HEIGHT);
@@ -118,7 +128,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         /* Update env lighting position */
-        envLight.input(window); // use arrow keys
+        envLight.UpdatePosition(window); // use arrow keys
         /* Update camera position */
         camera.resetCamera(window); // checks if user wants to reset camera to initial position
         camera.inputs(window);  // use wasd + shift + ctrl
@@ -132,9 +142,10 @@ int main()
         camera.updateUniform(baseShader.ID, "view");
         camera.updateUniform(baseShader.ID, "projection");
         camera.updateUniform(baseShader.ID, "camPos");
+        
         // Exports uniforms needed for lighting updates
-        envLight.updateUniform(baseShader.ID, "lightColor");
-        envLight.updateUniform(baseShader.ID, "lightPos");
+        envLight.UpdateUniform(baseShader.ID, "lightColor");
+        envLight.UpdateUniform(baseShader.ID, "lightPos");
         baseShader.detach();
 
         lightShader.attach();
@@ -143,7 +154,7 @@ int main()
         camera.updateUniform(lightShader.ID, "view");
         camera.updateUniform(lightShader.ID, "projection");
         // Exports uniforms needed for lighting updates
-        envLight.updateUniform(lightShader.ID, "lightColor");
+        envLight.UpdateUniform(lightShader.ID, "lightColor");
         lightShader.detach();
 
         // Determine if we can add more entities for stress testing physics calculations
@@ -160,14 +171,15 @@ int main()
         /*----------------*/
         /* Render objects */
         /*----------------*/
-        drawMesh(envLight.mesh, lightShader, envLight.renderMethod, 
-                 envLight.position, rotation, envLight.scale);
-        drawMesh(container.mesh, lightShader, container.renderMethod, 
-                 container.position, container.rotation, container.scale);
-        drawMesh(sphere.mesh, baseShader, sphere.renderMethod, 
-                 sphere.position, sphere.rotation, sphere.scale);
-        drawMesh(floor.mesh, baseShader, floor.renderMethod, 
-                 floor.position, floor.rotation, floor.scale);
+        drawMesh(envLight.GetMesh(), lightShader, envLight.GetRenderMethod(), 
+                 envLight.GetPosition(), envLight.GetRotation(), envLight.GetScale());
+        drawMesh(container.GetMesh(), lightShader, container.GetRenderMethod(), 
+                 container.GetPosition(), container.GetRotation(), container.GetScale());
+        drawMesh(sphere.GetMesh(), baseShader, sphere.GetRenderMethod(), 
+                 sphere.GetPosition(), sphere.GetRotation(), sphere.GetScale());
+        drawMesh(floor.GetMesh(), baseShader, floor.GetRenderMethod(), 
+                 floor.GetPosition(), floor.GetRotation(), floor.GetScale());
+                 
         /*----------------------*/
         /* Clean Up and Measure */
         /*----------------------*/

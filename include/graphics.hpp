@@ -18,7 +18,7 @@ std::vector<vertexf> floorVertex(size_t vertexCount, float length, float width);
 
 std::vector<unsigned int> floorIndex(size_t vertexCount);
 
-void drawMesh(Mesh& mesh, Shader& shader, unsigned int mode, 
+void drawMesh(std::shared_ptr<Mesh> mesh, Shader& shader, unsigned int mode, 
               vec3f& position, vec3f& rotation, float scale);
 
 // void drawInstanced(Mesh& mesh, unsigned int shaderID, 
