@@ -15,8 +15,6 @@
 #include "../vendor/GL/include/glew.h"
 #include "../vendor/GLFW/include/glfw3.h"
 
-namespace fs = std::filesystem;
-
 class Model
 {
 public:
