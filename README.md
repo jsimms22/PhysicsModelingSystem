@@ -18,3 +18,6 @@ TODO:
 
 - add instanced rendering for models
 - update floor/terrain to be "infinite" by default
+- add simple gravity forces 
+- add simple non-elastic collision forces
+- refactor model update part of the game loop
