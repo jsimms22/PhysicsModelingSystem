@@ -15,9 +15,9 @@
 
 namespace fs = std::filesystem;
 
-std::string readFileContents(fs::path filename);
+std::string ReadFileContents(fs::path filename);
 
-unsigned int compileShader(unsigned int type, const std::string& fileText);
+unsigned int CompileShader(unsigned int type, const std::string& fileText);
 
 class Shader
 {
@@ -25,7 +25,7 @@ public:
     unsigned int ID;
     Shader(fs::path vertexFile, fs::path fragmentFile);
 
-    void attach() { glUseProgram(this->ID); }
-    void detach() { glUseProgram(0); }
-    void destroy() { glDeleteProgram(this->ID); }
+    void Attach() { glUseProgram(this->ID); }
+    void Detach() { glUseProgram(0); }
+    void Destroy() { glDeleteProgram(this->ID); }
 };

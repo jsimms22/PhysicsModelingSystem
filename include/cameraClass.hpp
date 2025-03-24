@@ -44,11 +44,11 @@ public:
         resetLoc = _pos;
     }
     
-    void updateMatrix(float FOVdeg, float nearPlane, float farPlane);
+    void UpdateMatrix(float FOVdeg, float nearPlane, float farPlane);
     
-    void updateUniform(unsigned int shaderID, std::string uniform);
+    void UpdateUniform(unsigned int shaderID, std::string uniform);
 
-    void inputs(GLFWwindow* window);
+    void UpdatePosition(GLFWwindow* window);
 
-    void resetCamera(GLFWwindow* window);
+    void ResetCamera(GLFWwindow* window);
 };

@@ -1,7 +1,7 @@
 // project headers
 #include "../include/cameraClass.hpp"
 
-void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
+void Camera::UpdateMatrix(float FOVdeg, float nearPlane, float farPlane)
 {
     vec3_add(this->direction, this->position, this->orientation);
     mat4x4_lookAt(this->viewMatrix, this->position, this->direction, this->up);
@@ -9,7 +9,7 @@ void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
                       static_cast<float>(width/height), nearPlane, farPlane);
 }
 
-void Camera::updateUniform(unsigned int shaderID, std::string uniform)
+void Camera::UpdateUniform(unsigned int shaderID, std::string uniform)
 {
     // Export the view and projection matrix to the shader
     if (uniform == "projection") {
@@ -25,7 +25,7 @@ void Camera::updateUniform(unsigned int shaderID, std::string uniform)
     }
 }
 
-void Camera::inputs(GLFWwindow* window)
+void Camera::UpdatePosition(GLFWwindow* window)
 {
     // Handles key inputs
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -112,7 +112,7 @@ void Camera::inputs(GLFWwindow* window)
     //                              << position.data[2] << std::endl;
 }
 
-void Camera::resetCamera(GLFWwindow* window)
+void Camera::ResetCamera(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_F1) == GLFW_PRESS) {
         this->position = this->resetLoc;

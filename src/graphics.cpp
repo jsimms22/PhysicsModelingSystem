@@ -1,7 +1,7 @@
 // project headers
 #include "../include/graphics.hpp"
 
-std::vector<vertexf> floorVertex(size_t vertexCount, float length, float width)
+std::vector<vertexf> FloorVertex(size_t vertexCount, float length, float width)
 {
     float coord_x = -(width / 2);
     float coord_z = -(length / 2);
@@ -24,7 +24,7 @@ std::vector<vertexf> floorVertex(size_t vertexCount, float length, float width)
     return floor;
 }
 
-std::vector<unsigned int> floorIndex(size_t vertexCount)
+std::vector<unsigned int> FloorIndex(size_t vertexCount)
 {
     std::vector<unsigned int> index;
     for (size_t i=0; i<vertexCount-1; ++i) {
@@ -44,7 +44,7 @@ std::vector<unsigned int> floorIndex(size_t vertexCount)
     return index;
 }
 
-void drawMesh(std::shared_ptr<Mesh> mesh, 
+void DrawMesh(std::shared_ptr<Mesh> mesh, 
               Shader& shader, 
               unsigned int mode, 
               vec3f& position, 
@@ -76,10 +76,10 @@ void drawMesh(std::shared_ptr<Mesh> mesh,
     mat4x4_mul(matrices.model, matrices.rotation, matrices.scaling);
     mat4x4_mul(matrices.model, matrices.position, matrices.model);
 
-    shader.attach();
+    shader.Attach();
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, matrices.model.data->data);
 
-    mesh->VAO.bind();
+    mesh->VAO.Bind();
 
     if (mesh->indices.size() == 0) { 
         glDrawArrays(mode, 0, mesh->vertices.size()); 
@@ -87,8 +87,8 @@ void drawMesh(std::shared_ptr<Mesh> mesh,
         glDrawElements(mode, mesh->indices.size(), GL_UNSIGNED_INT, 0); 
     }
 
-    shader.detach();
-    mesh->VAO.unbind();
+    shader.Detach();
+    mesh->VAO.Unbind();
 }
 
 // void drawInstanced(Mesh& mesh, unsigned int shaderID, unsigned int mode, int num, float scale)

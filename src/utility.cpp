@@ -2,7 +2,7 @@
 #include "../include/utility.hpp"
 
 // Hash function for mapping specific strings to integers
-int hashString(const std::string& str) {
+int HashString(const std::string& str) {
     if (str == "v") return 1;
     if (str == "vt") return 2;
     if (str == "vn") return 3;
@@ -11,7 +11,7 @@ int hashString(const std::string& str) {
 }
 
 // Function to split a string based on a delimiter
-std::vector<std::string> splitString(const std::string& str, char delimiter) {
+std::vector<std::string> SplitString(const std::string& str, char delimiter) {
     std::vector<std::string> tokens;
     std::stringstream ss(str);
     std::string token;
@@ -21,7 +21,7 @@ std::vector<std::string> splitString(const std::string& str, char delimiter) {
     return tokens;
 }
 
-void updateWindowTitle(GLFWwindow* window, float dt, int numActive)
+void UpdateWindowTitle(GLFWwindow* window, float dt, int numActive)
 {
     // sprintf(title, "FPS : %-4.0f | Balls : %-10d", 1.0 / dt, numActive);
     std::string title = "FPS: " + std::to_string(static_cast<int>((1.0f/dt)-4.0f)) + 
@@ -29,7 +29,7 @@ void updateWindowTitle(GLFWwindow* window, float dt, int numActive)
     glfwSetWindowTitle(window, title.c_str());
 }
 
-void displayStats(GLFWwindow* window, int& totalFrames, float& lastFrameTime, int numActive)
+void DisplayStats(GLFWwindow* window, int& totalFrames, float& lastFrameTime, int numActive)
 {
     float dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
     while (dt < 1.0f / TARGET_FPS) {
@@ -37,10 +37,10 @@ void displayStats(GLFWwindow* window, int& totalFrames, float& lastFrameTime, in
     }
     lastFrameTime = static_cast<float>(glfwGetTime());
     totalFrames++;
-    if (totalFrames % 60 == 0) { updateWindowTitle(window, dt, numActive); }
+    if (totalFrames % 60 == 0) { UpdateWindowTitle(window, dt, numActive); }
 }
 
-void clearErrors()
+void ClearErrors()
 {
     while (glGetError() != GL_NO_ERROR) {
         std::cout << glGetError() << std::endl;

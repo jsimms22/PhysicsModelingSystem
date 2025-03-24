@@ -77,7 +77,7 @@ int main()
     // Meshes
     std::shared_ptr<Mesh> cubeMesh = std::make_shared<Mesh>("models/cube.obj", false);
     std::shared_ptr<Mesh> sphereMesh = std::make_shared<Mesh>("models/sphere.obj", false);
-    std::shared_ptr<Mesh> floorMesh = std::make_shared<Mesh>(floorVertex(100, 10, 10), floorIndex(100));
+    std::shared_ptr<Mesh> floorMesh = std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100));
     
     // Init floor
     Model floor = Model(floorMesh,
@@ -113,15 +113,15 @@ int main()
     float lastFrameTime = static_cast<float>(glfwGetTime());
 
     // Display all active errors and clear buffer
-    clearErrors();
+    ClearErrors();
 
     while (!glfwWindowShouldClose(window)) {
         /*-------*/
         /* Input */
         /*-------*/
-        processInput(window); // determine if user is attempting to close window
-        mouse.updateMouse(window, mouse.getPosX(), mouse.getPosY()); // update mouse position
-        // std::cout << mouse.getPosX() << ", " << mouse.getPosY() << std::endl;
+        ProcessInput(window); // determine if user is attempting to close window
+        mouse.UpdateMouse(window, mouse.GetX(), mouse.GetY()); // update mouse position
+        // std::cout << mouse.GetX() << ", " << mouse.GetY() << std::endl;
     
         /* Clears back buffer before new buffer is drawn */
         glClearColor(0.07f, 0.13f, 0.17f, 1.0);
@@ -130,32 +130,32 @@ int main()
         /* Update env lighting position */
         envLight.UpdatePosition(window); // use arrow keys
         /* Update camera position */
-        camera.resetCamera(window); // checks if user wants to reset camera to initial position
-        camera.inputs(window);  // use wasd + shift + ctrl
+        camera.ResetCamera(window); // checks if user wants to reset camera to initial position
+        camera.UpdatePosition(window);  // use wasd + shift + ctrl
 
         /*-----------------*/
         /* Shader Uniforms */
         /*-----------------*/
-        baseShader.attach();
+        baseShader.Attach();
         // Updates and exports uniforms for camera
-        camera.updateMatrix(45.0, 0.1, 1000.0);
-        camera.updateUniform(baseShader.ID, "view");
-        camera.updateUniform(baseShader.ID, "projection");
-        camera.updateUniform(baseShader.ID, "camPos");
+        camera.UpdateMatrix(45.0, 0.1, 1000.0);
+        camera.UpdateUniform(baseShader.ID, "view");
+        camera.UpdateUniform(baseShader.ID, "projection");
+        camera.UpdateUniform(baseShader.ID, "camPos");
         
         // Exports uniforms needed for lighting updates
         envLight.UpdateUniform(baseShader.ID, "lightColor");
         envLight.UpdateUniform(baseShader.ID, "lightPos");
-        baseShader.detach();
+        baseShader.Detach();
 
-        lightShader.attach();
+        lightShader.Attach();
         // Updates and exports uniforms for camera
-        camera.updateMatrix(45.0, 0.1, 1000.0);
-        camera.updateUniform(lightShader.ID, "view");
-        camera.updateUniform(lightShader.ID, "projection");
+        camera.UpdateMatrix(45.0, 0.1, 1000.0);
+        camera.UpdateUniform(lightShader.ID, "view");
+        camera.UpdateUniform(lightShader.ID, "projection");
         // Exports uniforms needed for lighting updates
         envLight.UpdateUniform(lightShader.ID, "lightColor");
-        lightShader.detach();
+        lightShader.Detach();
 
         // Determine if we can add more entities for stress testing physics calculations
         if (1.0 / (static_cast<float>(glfwGetTime()) - lastFrameTime) >= TARGET_FPS - 5 
@@ -171,13 +171,16 @@ int main()
         /*----------------*/
         /* Render objects */
         /*----------------*/
-        drawMesh(envLight.GetMesh(), lightShader, envLight.GetRenderMethod(), 
+        DrawMesh(envLight.GetMesh(), lightShader, envLight.GetRenderMethod(), 
                  envLight.GetPosition(), envLight.GetRotation(), envLight.GetScale());
-        drawMesh(container.GetMesh(), lightShader, container.GetRenderMethod(), 
+
+        DrawMesh(container.GetMesh(), lightShader, container.GetRenderMethod(), 
                  container.GetPosition(), container.GetRotation(), container.GetScale());
-        drawMesh(sphere.GetMesh(), baseShader, sphere.GetRenderMethod(), 
+
+        DrawMesh(sphere.GetMesh(), baseShader, sphere.GetRenderMethod(), 
                  sphere.GetPosition(), sphere.GetRotation(), sphere.GetScale());
-        drawMesh(floor.GetMesh(), baseShader, floor.GetRenderMethod(), 
+
+        DrawMesh(floor.GetMesh(), baseShader, floor.GetRenderMethod(), 
                  floor.GetPosition(), floor.GetRotation(), floor.GetScale());
                  
         /*----------------------*/
@@ -187,13 +190,13 @@ int main()
         glfwPollEvents();
 
         // Display all active errors and clear buffer
-        clearErrors();
+        ClearErrors();
 
         // Timing
-        displayStats(window, totalFrames, lastFrameTime, numActive);
+        DisplayStats(window, totalFrames, lastFrameTime, numActive);
     }
     // Clean up shaders
-    baseShader.destroy();
+    baseShader.Destroy();
     // Terminate window and glfw
     glfwDestroyWindow(window);
     glfwTerminate();

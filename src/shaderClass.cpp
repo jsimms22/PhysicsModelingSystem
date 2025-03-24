@@ -1,7 +1,7 @@
 // project headers
 #include "../include/shaderClass.hpp"
 
-std::string readFileContents(fs::path filename)
+std::string ReadFileContents(fs::path filename)
 {
     std::ifstream file(filename);
     std::stringstream buffer;
@@ -9,7 +9,7 @@ std::string readFileContents(fs::path filename)
     return buffer.str();
 }
 
-unsigned int compileShader(unsigned int type, const std::string& fileText)
+unsigned int CompileShader(unsigned int type, const std::string& fileText)
 {
     // Create a shader object and compile
     unsigned int id = glCreateShader(type);
@@ -39,13 +39,13 @@ unsigned int compileShader(unsigned int type, const std::string& fileText)
 Shader::Shader(fs::path vertexFile, fs::path fragmentFile)
 {
     // Create a shader object and compile it during runtime
-    std::string vertexSource = readFileContents(vertexFile);
-    unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexSource);
+    std::string vertexSource = ReadFileContents(vertexFile);
+    unsigned int vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSource);
     if (vertexShader == 0) { throw "shader compilation failure"; } 
 
     // Perform the same steps for the fragment shader
-    std::string fragmentSource = readFileContents(fragmentFile);
-    unsigned int fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentSource);
+    std::string fragmentSource = ReadFileContents(fragmentFile);
+    unsigned int fragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
     if (fragmentShader == 0) { throw "shader compilation failure"; }
 
     // Create a shader program and link the two shader steps together

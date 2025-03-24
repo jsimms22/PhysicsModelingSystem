@@ -16,16 +16,16 @@ private:
     double pypos;
 public:
     Mouse() : xpos{0.0}, ypos{0.0}, pxpos{0.0}, pypos{0.0} { }
-    void updateMouse(GLFWwindow* _window, double xx, double yy)
+    void UpdateMouse(GLFWwindow* _window, double xx, double yy)
     {
         pxpos = xx;
         pypos = yy;
         glfwGetCursorPos(_window, &xx, &yy);
     }
-    double getPosX() const { return xpos; }
-    double getPosY() const { return ypos; }
-    double getDX() const { return xpos - pxpos; }
-    double getDY() const { return ypos - pypos; }
+    double GetX() const { return xpos; }
+    double GetY() const { return ypos; }
+    double GetDX() const { return xpos - pxpos; }
+    double GetDY() const { return ypos - pypos; }
 };
 
-void processInput(GLFWwindow* window);
+void ProcessInput(GLFWwindow* window);

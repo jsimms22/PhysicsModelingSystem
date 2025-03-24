@@ -13,16 +13,16 @@
 constexpr unsigned int TARGET_FPS {144};
 
 // Hash function for mapping specific strings to integers
-int hashString(const std::string& str);
+int HashString(const std::string& str);
 
 // Function to split a string based on a delimiter
-std::vector<std::string> splitString(const std::string& str, char delimiter);
+std::vector<std::string> SplitString(const std::string& str, char delimiter);
 
 // Update title bar
-void updateWindowTitle(GLFWwindow* window, float dt, int numActive);
+void UpdateWindowTitle(GLFWwindow* window, float dt, int numActive);
 
 // Calculate average FPS
-void displayStats(GLFWwindow* window, int& totalFrames, float& lastFrameTime, int numActive);
+void DisplayStats(GLFWwindow* window, int& totalFrames, float& lastFrameTime, int numActive);
 
 // Clear openGL error buffer
-void clearErrors();
+void ClearErrors();

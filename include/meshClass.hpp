@@ -13,13 +13,13 @@ constexpr int INSTANCE_STRIDE {3};
 constexpr int MAX_INSTANCES {20000};
 // constexpr int VERTEX_LIMIT {2000};
 
-void processVertex(std::vector<vertexf>& vertexBin, 
+void ProcessVertex(std::vector<vertexf>& vertexBin, 
                     std::vector<std::string>& vertexMarker, 
                     std::vector<vec3f>& v, 
                     std::vector<vec2f>& vt, 
                     std::vector<vec3f>& vn);
 
-void loadObject(fs::path filename, std::vector<vertexf>& vertexBin);
+void LoadObject(fs::path filename, std::vector<vertexf>& vertexBin);
 
 class VBObj
 {
@@ -34,9 +34,9 @@ public:
 	    glBindBuffer(GL_ARRAY_BUFFER, this->ID);
 	    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertexf), vertices.data(), GL_STATIC_DRAW);
     }
-    void bind() { glBindBuffer(GL_ARRAY_BUFFER, this->ID); }
-    void unbind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
-    void destroy() { glDeleteBuffers(1, &(this->ID));}
+    void Bind() { glBindBuffer(GL_ARRAY_BUFFER, this->ID); }
+    void Unbind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+    void Destroy() { glDeleteBuffers(1, &(this->ID));}
 };
 
 class VAObj
@@ -46,17 +46,17 @@ public:
     
     VAObj() { glGenVertexArrays(1, &(this->ID)); }
     // Links a VBO attribute 
-    void linkAttrib(VBObj& VBO, unsigned int order, unsigned int layout, 
+    void LinkAttribute(VBObj& VBO, unsigned int order, unsigned int layout, 
                     GLenum type, GLsizeiptr stride, void* offset)
     {
-        VBO.bind();
+        VBO.Bind();
         glVertexAttribPointer(order, layout, type, GL_FALSE, stride, offset);
         glEnableVertexAttribArray(order);
-        VBO.unbind();
+        VBO.Unbind();
     }
-    void bind() { glBindVertexArray(this->ID); }
-    void unbind() { glBindVertexArray(0); }
-    void destroy() { glDeleteVertexArrays(1, &(this->ID)); }
+    void Bind() { glBindVertexArray(this->ID); }
+    void Unbind() { glBindVertexArray(0); }
+    void Destroy() { glDeleteVertexArrays(1, &(this->ID)); }
 };
 
 class EBObj
@@ -70,9 +70,9 @@ public:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
     }
-    void bind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ID); }
-    void unbind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
-    void destroy() { glDeleteBuffers(1, &(this->ID)); }
+    void Bind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ID); }
+    void Unbind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
+    void Destroy() { glDeleteBuffers(1, &(this->ID)); }
 };
 
 // Vertex layout: span of 11 if fully packed

@@ -9,23 +9,23 @@ Mesh::Mesh(std::vector<vertexf> _v, std::vector<unsigned int> _in/*, std::vector
     // this->textures = _tex;
 
     // Bind the Vertex Array Object first,
-    this->VAO.bind();
+    this->VAO.Bind();
     // Then bind and set vertex buffer(s)
     VBObj VBO(this->vertices);
     // Generates Element Buffer Object and links it to indices
 	EBObj EBO(this->indices);
 
     // Position
-    VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), (void*)0);
+    VAO.LinkAttribute(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), (void*)0);
     // Normal
-    VAO.linkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), (void*)(3*sizeof(float)));
+    VAO.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), (void*)(3*sizeof(float)));
     // Texture
-    VAO.linkAttrib(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), (void*)(6*sizeof(float)));
+    VAO.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), (void*)(6*sizeof(float)));
 
     // Unbind all to prevent accidentally modifying them
-    this->VAO.unbind();
-    VBO.unbind();
-    EBO.unbind();
+    this->VAO.Unbind();
+    VBO.Unbind();
+    EBO.Unbind();
    
     // uncomment this call to draw in wireframe polygons.
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -36,22 +36,22 @@ Mesh::Mesh(fs::path filename, bool instanced)
 {
     std::vector<vertexf> vertexBin;
     // Load vertex data from file
-    loadObject(filename, vertexBin);
+    LoadObject(filename, vertexBin);
     this->vertices = vertexBin;
 
     // Bind the Vertex Array Object first,
-    this->VAO.bind();
+    this->VAO.Bind();
     // Then bind and set vertex buffer(s)
     VBObj VBO(this->vertices);
     // Generates Element Buffer Object and links it to indices
 	EBObj EBO(this->indices);
 
     // Position
-    VAO.linkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), (void*)0);
+    VAO.LinkAttribute(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), (void*)0);
     // Normal
-    VAO.linkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), (void*)(3*sizeof(float)));
+    VAO.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), (void*)(3*sizeof(float)));
     // Texture
-    VAO.linkAttrib(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), (void*)(6*sizeof(float)));
+    VAO.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), (void*)(6*sizeof(float)));
 
     if (instanced) {
     //     // instanced Position
@@ -70,15 +70,15 @@ Mesh::Mesh(fs::path filename, bool instanced)
     //     glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
     //     glVertexAttribDivisor(4, 1);
     }
-    this->VAO.unbind();
-    VBO.unbind();
-    EBO.unbind();
+    this->VAO.Unbind();
+    VBO.Unbind();
+    EBO.Unbind();
    
     // uncomment this call to draw in wireframe polygons.
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-void processVertex(std::vector<vertexf>& vertexBin, 
+void ProcessVertex(std::vector<vertexf>& vertexBin, 
                     std::vector<std::string>& vertexMarker, 
                     std::vector<vec3f>& v, 
                     std::vector<vec2f>& vt, 
@@ -95,7 +95,7 @@ void processVertex(std::vector<vertexf>& vertexBin,
     vertexBin.push_back(temp);
 }
 
-void loadObject(fs::path filename, std::vector<vertexf>& vertexBin)
+void LoadObject(fs::path filename, std::vector<vertexf>& vertexBin)
 {
     std::vector<vec3f> v, vn;
     std::vector<vec2f> vt;
@@ -115,7 +115,7 @@ void loadObject(fs::path filename, std::vector<vertexf>& vertexBin)
         std::string firstWord, temp;
         iss >> firstWord;
 
-        switch (hashString(firstWord)) {
+        switch (HashString(firstWord)) {
             case 1: // first word = "v"
                 vec3f holdv;
                 if(iss >> temp) { holdv.data[0] = std::stof(temp); }
@@ -141,12 +141,12 @@ void loadObject(fs::path filename, std::vector<vertexf>& vertexBin)
                 break;
             case 4: // first word = "f"
                 std::vector<std::string> v1, v2, v3;
-                if(iss >> temp) { v1 = splitString(temp, '/'); }
-                if(iss >> temp) { v2 = splitString(temp, '/'); }
-                if(iss >> temp) { v3 = splitString(temp, '/'); }
-                processVertex(vertexBin, v1, v, vt, vn);
-                processVertex(vertexBin, v2, v, vt, vn);
-                processVertex(vertexBin, v3, v, vt, vn);
+                if(iss >> temp) { v1 = SplitString(temp, '/'); }
+                if(iss >> temp) { v2 = SplitString(temp, '/'); }
+                if(iss >> temp) { v3 = SplitString(temp, '/'); }
+                ProcessVertex(vertexBin, v1, v, vt, vn);
+                ProcessVertex(vertexBin, v2, v, vt, vn);
+                ProcessVertex(vertexBin, v3, v, vt, vn);
                 ++f_count;
                 break;
         }
