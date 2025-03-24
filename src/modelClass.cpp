@@ -14,7 +14,7 @@ Model::Model(std::shared_ptr<Mesh> _sourceMesh,
 
 void Model::DestroyMesh() 
 {
-    //this->mesh.VAO.Destroy();
+    m_modelMesh->VAO.Destroy();
 }
 
 Light::Light(std::shared_ptr<Mesh> _sourceMesh,
