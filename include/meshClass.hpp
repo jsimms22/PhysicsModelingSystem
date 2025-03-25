@@ -8,11 +8,6 @@
 #include "cameraClass.hpp"
 #include "utility.hpp"
 
-constexpr int STRIDE {8};
-constexpr int INSTANCE_STRIDE {3};
-constexpr int MAX_INSTANCES {20000};
-// constexpr int VERTEX_LIMIT {2000};
-
 void ProcessVertex(std::vector<vertexf>& vertexBin, 
                     std::vector<std::string>& vertexMarker, 
                     std::vector<vec3f>& v, 

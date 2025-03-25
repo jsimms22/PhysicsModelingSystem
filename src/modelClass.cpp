@@ -3,13 +3,9 @@
 
 Model::Model(std::shared_ptr<Mesh> _sourceMesh,
              float _scalar, 
-             unsigned int _renderMethod, 
-             vec3f _positionVec /*= {0.0f, 0.0f, 0.0f}*/, 
-             vec3f _rotationVec /*= {0.0f, 0.0f, 0.0f}*/)
+             unsigned int _renderMethod)
 : m_modelMesh{_sourceMesh}, m_scale{_scalar}, m_renderMethod{_renderMethod} 
 { 
-    m_position = _positionVec;
-    m_rotation = _rotationVec;
 }
 
 void Model::DestroyMesh() 
@@ -19,15 +15,9 @@ void Model::DestroyMesh()
 
 Light::Light(std::shared_ptr<Mesh> _sourceMesh,
              float _scalar, 
-             unsigned int _renderMethod,
-             vec4f _color /*= {255.0f, 255.0f, 255.0f}*/,
-             vec3f _positionVec /*= {0.0f, 0.0f, 0.0f}*/, 
-             vec3f _rotationVec /*= {0.0f, 0.0f, 0.0f}*/)
+             unsigned int _renderMethod)
 : Model{_sourceMesh, _scalar, _renderMethod} 
 {
-    m_color = _color;
-    m_position = _positionVec;
-    m_rotation = _rotationVec;
 }
 
 void Light::UpdatePosition(GLFWwindow* window) 

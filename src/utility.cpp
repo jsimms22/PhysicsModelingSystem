@@ -1,5 +1,8 @@
 /// project headers
 #include "../include/utility.hpp"
+#include "../include/globalSettings.hpp"    // Contains our settings singleton
+
+GlobalSettings& settings = GlobalSettings::Instance();
 
 // Hash function for mapping specific strings to integers
 int HashString(const std::string& str) {
@@ -29,10 +32,10 @@ void UpdateWindowTitle(GLFWwindow* window, float dt, int numActive)
     glfwSetWindowTitle(window, title.c_str());
 }
 
-void DisplayStats(GLFWwindow* window, int& totalFrames, float& lastFrameTime, int numActive)
+void DisplayStats(GLFWwindow* window, std::size_t& totalFrames, float& lastFrameTime, std::size_t numActive)
 {
     float dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
-    while (dt < 1.0f / TARGET_FPS) {
+    while (dt < 1.0f / settings.TARGET_FPS) {
         dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
     }
     lastFrameTime = static_cast<float>(glfwGetTime());

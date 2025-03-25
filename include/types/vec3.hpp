@@ -1,5 +1,7 @@
 #pragma once
 
+// TODO: define methods/getters/setters
+
 template <typename UNIT>
 struct vec3 { UNIT data[3]; };
 // Type aliases

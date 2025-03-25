@@ -44,13 +44,18 @@ std::vector<unsigned int> FloorIndex(size_t vertexCount)
     return index;
 }
 
-void DrawMesh(std::shared_ptr<Mesh> mesh, 
-              Shader& shader, 
-              unsigned int mode, 
-              vec3f& position, 
-              vec3f& rotation, 
-              float scale)
+void DrawModelMesh(std::shared_ptr<Model> pModel, bool bInstanced)
 {
+    if (!pModel) { return; }
+
+    // Retrive 
+    std::shared_ptr<Mesh> mesh = pModel->GetMesh();
+    std::shared_ptr<Shader> shader = pModel->GetShader();
+    unsigned int mode = pModel->GetRenderMethod();
+    vec3f& position = pModel->GetPosition();
+    vec3f& rotation = pModel->GetRotation();
+    float scale = pModel->GetScale();
+
     vec3f scaling{ scale, scale, scale };
 
     struct {
@@ -75,19 +80,24 @@ void DrawMesh(std::shared_ptr<Mesh> mesh,
     /* Model matrix */
     mat4x4_mul(matrices.model, matrices.rotation, matrices.scaling);
     mat4x4_mul(matrices.model, matrices.position, matrices.model);
+    
+    shader->Attach();
 
-    shader.Attach();
-    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, matrices.model.data->data);
+    if (!bInstanced) {
+        glUniformMatrix4fv(glGetUniformLocation(shader->ID, "model"), 1, GL_FALSE, matrices.model.data->data);
 
-    mesh->VAO.Bind();
+        mesh->VAO.Bind();
 
-    if (mesh->indices.size() == 0) { 
-        glDrawArrays(mode, 0, mesh->vertices.size()); 
-    } else { 
-        glDrawElements(mode, mesh->indices.size(), GL_UNSIGNED_INT, 0); 
+        if (mesh->indices.size() == 0) { 
+            glDrawArrays(mode, 0, mesh->vertices.size()); 
+        } else { 
+            glDrawElements(mode, mesh->indices.size(), GL_UNSIGNED_INT, 0); 
+        }
+    } else {
+
     }
 
-    shader.Detach();
+    shader->Detach();
     mesh->VAO.Unbind();
 }
 

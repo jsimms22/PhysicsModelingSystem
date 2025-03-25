@@ -13,13 +13,13 @@
 // project headers
 #include "fwd_math.hpp"
 #include "meshClass.hpp"
+#include "modelClass.hpp"
 
 std::vector<vertexf> FloorVertex(size_t vertexCount, float length, float width);
 
 std::vector<unsigned int> FloorIndex(size_t vertexCount);
 
-void DrawMesh(std::shared_ptr<Mesh> mesh, Shader& shader, unsigned int mode, 
-              vec3f& position, vec3f& rotation, float scale);
+void DrawModelMesh(std::shared_ptr<Model> pModel, bool bInstanced);
 
 // void drawInstanced(Mesh& mesh, unsigned int shaderID, 
 //                    unsigned int mode, int num, float scale);

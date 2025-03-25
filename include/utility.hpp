@@ -10,8 +10,6 @@
 #include "../vendor/GL/include/glew.h"
 #include "../vendor/GLFW/include/glfw3.h"
 
-constexpr unsigned int TARGET_FPS {144};
-
 // Hash function for mapping specific strings to integers
 int HashString(const std::string& str);
 
@@ -22,7 +20,7 @@ std::vector<std::string> SplitString(const std::string& str, char delimiter);
 void UpdateWindowTitle(GLFWwindow* window, float dt, int numActive);
 
 // Calculate average FPS
-void DisplayStats(GLFWwindow* window, int& totalFrames, float& lastFrameTime, int numActive);
+void DisplayStats(GLFWwindow* window, std::size_t& totalFrames, float& lastFrameTime, std::size_t numActive);
 
 // Clear openGL error buffer
 void ClearErrors();
