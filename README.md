@@ -13,3 +13,11 @@ Math Overview:
 https://morning-flow.com/2023/02/06/the-math-behind-the-lookat-transform/
 https://www.songho.ca/opengl/gl_projectionmatrix.html
 https://open.gl/transformations
+
+TODO:
+
+- add instanced rendering for models
+- update floor/terrain to be "infinite" by default
+- add simple gravity forces 
+- add simple non-elastic collision forces
+- refactor model update part of the game loop
