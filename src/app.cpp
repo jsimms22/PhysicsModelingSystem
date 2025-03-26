@@ -103,22 +103,22 @@ int main()
         baseShader->Attach();
         // Updates and exports uniforms for camera
         camera.UpdateMatrix(45.0f, 0.1f, 1000.0f);
-        camera.UpdateUniform(baseShader->ID, "view");
-        camera.UpdateUniform(baseShader->ID, "projection");
-        camera.UpdateUniform(baseShader->ID, "camPos");
+        camera.UpdateUniform(baseShader->GetID(), "view");
+        camera.UpdateUniform(baseShader->GetID(), "projection");
+        camera.UpdateUniform(baseShader->GetID(), "camPos");
         
         // Exports uniforms needed for lighting updates
-        envLight->UpdateUniform(baseShader->ID, "lightColor");
-        envLight->UpdateUniform(baseShader->ID, "lightPos");
+        envLight->UpdateUniform(baseShader->GetID(), "lightColor");
+        envLight->UpdateUniform(baseShader->GetID(), "lightPos");
         baseShader->Detach();
 
         lightShader->Attach();
         // Updates and exports uniforms for camera
         camera.UpdateMatrix(45.0f, 0.1f, 1000.0f);
-        camera.UpdateUniform(lightShader->ID, "view");
-        camera.UpdateUniform(lightShader->ID, "projection");
+        camera.UpdateUniform(lightShader->GetID(), "view");
+        camera.UpdateUniform(lightShader->GetID(), "projection");
         // Exports uniforms needed for lighting updates
-        envLight->UpdateUniform(lightShader->ID, "lightColor");
+        envLight->UpdateUniform(lightShader->GetID(), "lightColor");
         lightShader->Detach();
 
         // Determine if we can add more entities for stress testing physics calculations

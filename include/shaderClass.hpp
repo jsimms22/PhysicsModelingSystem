@@ -22,11 +22,14 @@ unsigned int CompileShader(unsigned int type, const std::string& fileText);
 class Shader
 {
 public:
-    unsigned int ID;
     Shader(fs::path vertexFile, fs::path fragmentFile);
     ~Shader() { Destroy(); }
 
-    void Attach() { glUseProgram(this->ID); }
+    void Attach() { glUseProgram(m_ID); }
     void Detach() { glUseProgram(0); }
-    void Destroy() { glDeleteProgram(this->ID); }
+    void Destroy() { glDeleteProgram(m_ID); }
+    unsigned int GetID() const { return m_ID; }
+
+private:
+    unsigned int m_ID;
 };

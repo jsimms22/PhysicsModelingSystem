@@ -37,7 +37,7 @@ public:
 
     // Force Calculation Settings
     // TODO: properly calculate forces
-    vec3f gravityVec = {0.0f,-9.8f,0.0f};
+    vec3f GRAVITY = {0.0f,-9.8f,0.0f};
 
     // Delete copy constructor and assignment operator to prevent copying the singleton
     GlobalSettings(const GlobalSettings&) = delete;

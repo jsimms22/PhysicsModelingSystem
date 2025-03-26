@@ -25,8 +25,8 @@ void ApplyForces(std::vector<std::shared_ptr<Model>>& container, const std::shar
     
         // Apply simple gravity to the balls
         vec3f result;
-        //vec3_scale(settings.gravityVec, static_cast<float>(glfwGetTime()) - lastFrameTime ,settings.gravityVec);
-        vec3_add(result, settings.gravityVec, i_model->GetPosition());
+        //vec3_scale(settings.GRAVITY, static_cast<float>(glfwGetTime()) - lastFrameTime ,settings.GRAVITY);
+        vec3_add(result, settings.GRAVITY, i_model->GetPosition());
         
         // Only apply normal gravity vector if the model would not clip into the or be below the floor
         if (((i_model->GetPosition().data[1] - i_model->GetScale()) > floor->GetPosition().data[1]) && (result.data[1] - i_model->GetScale()) >= floor->GetPosition().data[1])

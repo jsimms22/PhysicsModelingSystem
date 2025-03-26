@@ -84,7 +84,7 @@ void DrawModelMesh(std::shared_ptr<Model> pModel, bool bInstanced)
     shader->Attach();
 
     if (!bInstanced) {
-        glUniformMatrix4fv(glGetUniformLocation(shader->ID, "model"), 1, GL_FALSE, matrices.model.data->data);
+        glUniformMatrix4fv(glGetUniformLocation(shader->GetID(), "model"), 1, GL_FALSE, matrices.model.data->data);
 
         mesh->VAO.Bind();
 

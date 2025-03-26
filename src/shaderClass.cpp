@@ -49,11 +49,11 @@ Shader::Shader(fs::path vertexFile, fs::path fragmentFile)
     if (fragmentShader == 0) { throw "shader compilation failure"; }
 
     // Create a shader program and link the two shader steps together
-    this->ID = glCreateProgram();
-    glAttachShader(this->ID, vertexShader);
-    glAttachShader(this->ID, fragmentShader);
-    glLinkProgram(this->ID);
-    glValidateProgram(this->ID);
+    m_ID = glCreateProgram();
+    glAttachShader(m_ID, vertexShader);
+    glAttachShader(m_ID, fragmentShader);
+    glLinkProgram(m_ID);
+    glValidateProgram(m_ID);
 
     // Make sure to cleanup the individual shaders after linking
     glDeleteShader(vertexShader);

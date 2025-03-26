@@ -52,22 +52,23 @@ private:
 
 class Mouse
 {
-private:
-    double xpos;
-    double ypos;
-    double pxpos;
-    double pypos;
 public:
-    Mouse() : xpos{0.0}, ypos{0.0}, pxpos{0.0}, pypos{0.0} { }
+    Mouse() : m_xpos{0.0}, m_ypos{0.0}, m_pxpos{0.0}, m_pypos{0.0} { }
     // update mouse position
     void UpdateMouse(GLFWwindow* _window, double xx, double yy)
     {
-        pxpos = xx;
-        pypos = yy;
+        m_pxpos = xx;
+        m_pypos = yy;
         glfwGetCursorPos(_window, &xx, &yy);
     }
-    double GetX() const { return xpos; }
-    double GetY() const { return ypos; }
-    double GetDX() const { return xpos - pxpos; }
-    double GetDY() const { return ypos - pypos; }
+    double GetX() const { return m_xpos; }
+    double GetY() const { return m_ypos; }
+    double GetDX() const { return m_xpos - m_pxpos; }
+    double GetDY() const { return m_ypos - m_pypos; }
+    
+private:
+    double m_xpos;
+    double m_ypos;
+    double m_pxpos;
+    double m_pypos;
 };

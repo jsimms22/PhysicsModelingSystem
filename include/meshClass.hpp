@@ -19,27 +19,27 @@ void LoadObject(fs::path filename, std::vector<vertexf>& vertexBin);
 class VBObj
 {
 public:
-    unsigned int ID;
-    
     // VBObj() { }
     // Generates a VBO and links it to a list of vertices 
     VBObj(std::vector<vertexf> vertices)
     {
-        glGenBuffers(1, &(this->ID));
-	    glBindBuffer(GL_ARRAY_BUFFER, this->ID);
+        glGenBuffers(1, &(m_ID));
+	    glBindBuffer(GL_ARRAY_BUFFER, m_ID);
 	    glBufferData(GL_ARRAY_BUFFER, static_cast<long long int>(vertices.size() * sizeof(vertexf)), vertices.data(), GL_STATIC_DRAW);
     }
-    void Bind() { glBindBuffer(GL_ARRAY_BUFFER, this->ID); }
+    void Bind() { glBindBuffer(GL_ARRAY_BUFFER, m_ID); }
     void Unbind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
-    void Destroy() { glDeleteBuffers(1, &(this->ID));}
+    void Destroy() { glDeleteBuffers(1, &(m_ID));}
+    unsigned int GetID() const { return m_ID; }
+    
+private:
+    unsigned int m_ID;
 };
 
 class VAObj
 {
 public:
-    unsigned int ID;
-    
-    VAObj() { glGenVertexArrays(1, &(this->ID)); }
+    VAObj() { glGenVertexArrays(1, &(m_ID)); }
     // Links a VBO attribute 
     void LinkAttribute(VBObj& VBO, unsigned int order, int layout, 
                     unsigned int type, int stride, void* offset)
@@ -49,25 +49,31 @@ public:
         glEnableVertexAttribArray(order);
         VBO.Unbind();
     }
-    void Bind() { glBindVertexArray(this->ID); }
+    void Bind() { glBindVertexArray(m_ID); }
     void Unbind() { glBindVertexArray(0); }
-    void Destroy() { glDeleteVertexArrays(1, &(this->ID)); }
+    void Destroy() { glDeleteVertexArrays(1, &(m_ID)); }
+    unsigned int GetID() const { return m_ID; }
+
+private:
+    unsigned int m_ID;
 };
 
 class EBObj
 {
 public:
-    unsigned int ID;
-    
     EBObj(std::vector<unsigned int> indices) 
     { 
-        glGenBuffers(1, &(this->ID));
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+        glGenBuffers(1, &(m_ID));
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<long long int>(indices.size() * sizeof(unsigned int)), indices.data(), GL_STATIC_DRAW);
     }
-    void Bind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ID); }
+    void Bind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID); }
     void Unbind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
-    void Destroy() { glDeleteBuffers(1, &(this->ID)); }
+    void Destroy() { glDeleteBuffers(1, &(m_ID)); }
+    unsigned int GetID() const { return m_ID; }
+
+private:
+    unsigned int m_ID;
 };
 
 // Vertex layout: span of 11 if fully packed
