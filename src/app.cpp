@@ -36,16 +36,16 @@ int main()
     std::vector<std::shared_ptr<Model>> modelContainer;
     // Init floor
     std::shared_ptr<Model> floor = std::make_shared<Model>(floorMesh,
-                                                           settings.CONTAINER_RADIUS * 2 + settings.VERLET_RADIUS * 3,
+                                                           settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f,
                                                            GL_TRIANGLES);
-    floor->SetPosition({0.0f, -(settings.CONTAINER_RADIUS * 2 + settings.VERLET_RADIUS * 3), 0.0f});
+    floor->SetPosition({0.0f, -(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f), 0.0f});
     floor->SetShader(baseShader);
     floor->SetIsPhysicalized(false);
     modelContainer.push_back(floor);
 
     // Init container
     std::shared_ptr<Model> container = std::make_shared<Model>(cubeMesh,
-                            settings.CONTAINER_RADIUS * 2 + settings.VERLET_RADIUS * 3, 
+                            settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f, 
                             GL_POINTS);
     container->SetShader(lightShader);
     container->SetIsPhysicalized(false);
@@ -61,7 +61,7 @@ int main()
 
     // Init light cube
     std::shared_ptr<Light> envLight = std::make_shared<Light>(sphereMesh,
-                                                              settings.CONTAINER_RADIUS*0.3,
+                                                              settings.CONTAINER_RADIUS*0.3f,
                                                               GL_TRIANGLES);
     envLight->SetShader(lightShader);
     envLight->SetIsPhysicalized(false);
@@ -69,7 +69,7 @@ int main()
     envLight->SetColor(vec4f({0.9f, 0.9f, 0.8f, 1.0f}));
 
     // Init camera
-    Camera camera = Camera(vec3f({0.0, 0.0, 125.0}), settings.WIDTH, settings.HEIGHT);
+    Camera camera = Camera(vec3f({0.0f, 0.0f, 125.0f}), settings.WIDTH, settings.HEIGHT);
     // Init mouse
     Mouse mouse = Mouse();
     // Simulation stats
@@ -102,7 +102,7 @@ int main()
         /*-----------------*/
         baseShader->Attach();
         // Updates and exports uniforms for camera
-        camera.UpdateMatrix(45.0, 0.1, 1000.0);
+        camera.UpdateMatrix(45.0f, 0.1f, 1000.0f);
         camera.UpdateUniform(baseShader->ID, "view");
         camera.UpdateUniform(baseShader->ID, "projection");
         camera.UpdateUniform(baseShader->ID, "camPos");
@@ -114,7 +114,7 @@ int main()
 
         lightShader->Attach();
         // Updates and exports uniforms for camera
-        camera.UpdateMatrix(45.0, 0.1, 1000.0);
+        camera.UpdateMatrix(45.0f, 0.1f, 1000.0f);
         camera.UpdateUniform(lightShader->ID, "view");
         camera.UpdateUniform(lightShader->ID, "projection");
         // Exports uniforms needed for lighting updates
@@ -123,7 +123,7 @@ int main()
 
         // Determine if we can add more entities for stress testing physics calculations
         // TODO: Move to a command system that does not rely on the game loop frame time
-        if (1.0 / (static_cast<float>(glfwGetTime()) - lastFrameTime) >= settings.TARGET_FPS - 5 
+        if (1.0f / (static_cast<float>(glfwGetTime()) - lastFrameTime) >= settings.TARGET_FPS - 5 
             && glfwGetKey(MainAppWnd->GetWindowPtr(), GLFW_KEY_V) == GLFW_PRESS 
             && numActive < settings.MAX_INSTANCES) { 
             numActive += settings.ADDITION_SPEED;

@@ -5,7 +5,7 @@ void Camera::UpdateMatrix(float FOVdeg, float nearPlane, float farPlane)
 {
     vec3_add(this->direction, this->position, this->orientation);
     mat4x4_lookAt(this->viewMatrix, this->position, this->direction, this->up);
-    mat4x4_projection(this->projectionMatrix, static_cast<float>(FOVdeg*(M_PI/180.0)), 
+    mat4x4_projection(this->projectionMatrix, static_cast<float>(FOVdeg*(M_PI / 180.0f)), 
                       static_cast<float>(width/height), nearPlane, farPlane);
 }
 
@@ -83,8 +83,8 @@ void Camera::UpdatePosition(GLFWwindow* window)
         // Normalizes and shifts the coordinates of the cursor 
         // such that they begin in the middle of the screen
         // and then "transforms" them into degrees 
-        float rotX = sensitivity * (float)(mouseY - (height / 2)) / height; // yaw
-        float rotY = sensitivity * (float)(mouseX - (width / 2)) / width; // pitch
+        float rotX = sensitivity * static_cast<float>((mouseY - static_cast<float>((height / 2))) / height); // yaw
+        float rotY = sensitivity * static_cast<float>((mouseX - (width / 2)) / width); // pitch
         // std::cout << rotX << ", " << rotY << std::endl;
 
         // Calculates upcoming vertical change in the orientation

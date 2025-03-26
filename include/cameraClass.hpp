@@ -16,27 +16,27 @@ public:
     vec3f position;
     vec3f resetLoc;
     // Relative target orientation
-    vec3f orientation = {0.0, 0.0, -1.0};
+    vec3f orientation = {0.0f, 0.0f, -1.0f};
     vec3f resetOrient = orientation;
     // Camera direction
     vec3f direction;
     // World view orientation
-    vec3f up = {0.0, 1.0, 0.0};
-    vec3f right = {1.0, 0.0, 0.0};
-    vec3f forward = {0.0, 0.0, -1.0};
+    vec3f up = {0.0f, 1.0f, 0.0f};
+    vec3f right = {1.0f, 0.0f, 0.0f};
+    vec3f forward = {0.0f, 0.0f, -1.0f};
     // Protects from moving camera while clicking window into focus
     bool firstClick = true;
     // Screen information
-    int width;
-    int height;
+    unsigned int width;
+    unsigned int height;
     // Parameters for modifying camera movement
-    float speed = 0.1;
-    float sensitivity = 100.0;
+    float speed = 0.1f;
+    float sensitivity = 100.0f;
     // Various matrices for interacting with shaders
     mat4x4f viewMatrix;
     mat4x4f projectionMatrix;
 
-    Camera( vec3f _pos, int _width, int _height)
+    Camera( vec3f _pos, unsigned int _width, unsigned int _height)
         : position{_pos}, width{_width}, height{_height} 
     { 
         viewMatrix.set_all(0.0); 

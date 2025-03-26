@@ -27,7 +27,7 @@ public:
 
     // Model Settings
     float CONTAINER_RADIUS {6.0f};
-    float VERLET_RADIUS {0.15};
+    float VERLET_RADIUS {0.15f};
 
     // Game Loop Settings
     unsigned int TARGET_FPS {30};
@@ -37,7 +37,7 @@ public:
 
     // Force Calculation Settings
     // TODO: properly calculate forces
-    vec3f gravityVec = {0.0,-9.8,0.0};
+    vec3f gravityVec = {0.0f,-9.8f,0.0f};
 
     // Delete copy constructor and assignment operator to prevent copying the singleton
     GlobalSettings(const GlobalSettings&) = delete;

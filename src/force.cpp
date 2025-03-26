@@ -5,11 +5,13 @@
 
 bool IsColliding(std::shared_ptr<Model>& model1, std::shared_ptr<Model>& model2)
 {
+    if (!model1 || !model2) { return false; }
     return true;
 }
 
 void ApplyCollisionForce(std::shared_ptr<Model>& model1, std::shared_ptr<Model>& model2)
 {
+    if (!model1 || !model2) { return; }
     return;
 }
 

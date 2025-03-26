@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -std=c++17 -Wall -Wpedantic -Wshadow -Wextra
+CFLAGS = -std=c++20 -Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wpedantic -Wsign-conversion -Wnull-dereference -Wformat=2 -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wuseless-cast
 LDFLAGS = -lglfw3 -lglew32 -lopengl32
 
 # Path to the vendor libs

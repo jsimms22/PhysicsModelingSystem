@@ -27,7 +27,7 @@ public:
     {
         glGenBuffers(1, &(this->ID));
 	    glBindBuffer(GL_ARRAY_BUFFER, this->ID);
-	    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertexf), vertices.data(), GL_STATIC_DRAW);
+	    glBufferData(GL_ARRAY_BUFFER, static_cast<long long int>(vertices.size() * sizeof(vertexf)), vertices.data(), GL_STATIC_DRAW);
     }
     void Bind() { glBindBuffer(GL_ARRAY_BUFFER, this->ID); }
     void Unbind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
@@ -41,8 +41,8 @@ public:
     
     VAObj() { glGenVertexArrays(1, &(this->ID)); }
     // Links a VBO attribute 
-    void LinkAttribute(VBObj& VBO, unsigned int order, unsigned int layout, 
-                    GLenum type, GLsizeiptr stride, void* offset)
+    void LinkAttribute(VBObj& VBO, unsigned int order, int layout, 
+                    unsigned int type, int stride, void* offset)
     {
         VBO.Bind();
         glVertexAttribPointer(order, layout, type, GL_FALSE, stride, offset);
@@ -63,7 +63,7 @@ public:
     { 
         glGenBuffers(1, &(this->ID));
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<long long int>(indices.size() * sizeof(unsigned int)), indices.data(), GL_STATIC_DRAW);
     }
     void Bind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ID); }
     void Unbind() { glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); }
@@ -85,8 +85,7 @@ public:
     // unsigned int positionVBO;
     // unsigned int velocityVBO;
 
-    Mesh(std::vector<vertexf> _v)
-        : vertices{_v} { }
+    Mesh(std::vector<vertexf> _v) : vertices{_v} { }
     Mesh(fs::path filename, bool instanced);
     Mesh(std::vector<vertexf> _v, std::vector<unsigned int> _in/*, std::vector<Texture> _tex*/);
 

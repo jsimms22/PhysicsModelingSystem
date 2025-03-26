@@ -16,11 +16,11 @@ Mesh::Mesh(std::vector<vertexf> _v, std::vector<unsigned int> _in/*, std::vector
 	EBObj EBO(this->indices);
 
     // Position
-    VAO.LinkAttribute(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), (void*)0);
+    VAO.LinkAttribute(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(0));
     // Normal
-    VAO.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), (void*)(3*sizeof(float)));
+    VAO.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(3*sizeof(float)));
     // Texture
-    VAO.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), (void*)(6*sizeof(float)));
+    VAO.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(6*sizeof(float)));
 
     // Unbind all to prevent accidentally modifying them
     this->VAO.Unbind();
@@ -47,11 +47,11 @@ Mesh::Mesh(fs::path filename, bool instanced)
 	EBObj EBO(this->indices);
 
     // Position
-    VAO.LinkAttribute(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), (void*)0);
+    VAO.LinkAttribute(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(0));
     // Normal
-    VAO.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), (void*)(3*sizeof(float)));
+    VAO.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(3*sizeof(float)));
     // Texture
-    VAO.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), (void*)(6*sizeof(float)));
+    VAO.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(6*sizeof(float)));
 
     if (instanced) {
     //     // instanced Position
@@ -85,9 +85,9 @@ void ProcessVertex(std::vector<vertexf>& vertexBin,
                     std::vector<vec3f>& vn)
 {
     vertexf temp;
-    size_t vertItr = stoi(vertexMarker[0]) - 1;
-    size_t texItr = stoi(vertexMarker[1]) - 1;
-    size_t normItr = stoi(vertexMarker[2]) - 1;
+    size_t vertItr = stoull(vertexMarker[0]) - 1;
+    size_t texItr = stoull(vertexMarker[1]) - 1;
+    size_t normItr = stoull(vertexMarker[2]) - 1;
 
     temp.v = v[vertItr];
     temp.vn = vn[normItr];

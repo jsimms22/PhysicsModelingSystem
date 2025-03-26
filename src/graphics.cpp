@@ -1,15 +1,15 @@
 // project headers
 #include "../include/graphics.hpp"
 
-std::vector<vertexf> FloorVertex(size_t vertexCount, float length, float width)
+std::vector<vertexf> FloorVertex(unsigned int vertexCount, float length, float width)
 {
     float coord_x = -(width / 2);
     float coord_z = -(length / 2);
     float dx = (width / vertexCount);
     float dz = (length / vertexCount);
     std::vector<vertexf> floor;
-    for (size_t i=0; i<vertexCount; ++i) {
-        for (size_t j=0; j<vertexCount; ++j) {
+    for (unsigned int i=0; i<vertexCount; ++i) {
+        for (unsigned int j=0; j<vertexCount; ++j) {
             floor.push_back(vertexf
                 {   //position
                     vec3f{ (coord_x + j*dx), 0.0f, (coord_z + i*dz) },
@@ -24,15 +24,15 @@ std::vector<vertexf> FloorVertex(size_t vertexCount, float length, float width)
     return floor;
 }
 
-std::vector<unsigned int> FloorIndex(size_t vertexCount)
+std::vector<unsigned int> FloorIndex(unsigned int vertexCount)
 {
     std::vector<unsigned int> index;
-    for (size_t i=0; i<vertexCount-1; ++i) {
-        for (size_t j=0; j<vertexCount-1; ++j) {
-            int tl = (i*vertexCount) + j;
-            int tr = tl + 1;
-            int bl = ((i+1)*vertexCount) + j;
-            int br = bl + 1;
+    for (unsigned int i=0; i<vertexCount-1; ++i) {
+        for (unsigned int j=0; j<vertexCount-1; ++j) {
+            unsigned int tl = (i*vertexCount) + j;
+            unsigned int tr = tl + 1;
+            unsigned int bl = ((i+1)*vertexCount) + j;
+            unsigned int br = bl + 1;
             index.push_back(tl); index.push_back(bl); index.push_back(tr);
             index.push_back(tr); index.push_back(bl); index.push_back(br);
         }

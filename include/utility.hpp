@@ -15,12 +15,3 @@ int HashString(const std::string& str);
 
 // Function to split a string based on a delimiter
 std::vector<std::string> SplitString(const std::string& str, char delimiter);
-
-// Update title bar
-void UpdateWindowTitle(GLFWwindow* window, float dt, int numActive);
-
-// Calculate average FPS
-void DisplayStats(GLFWwindow* window, std::size_t& totalFrames, float& lastFrameTime, std::size_t numActive);
-
-// Clear openGL error buffer
-void ClearErrors();

@@ -15,9 +15,9 @@
 #include "meshClass.hpp"
 #include "modelClass.hpp"
 
-std::vector<vertexf> FloorVertex(size_t vertexCount, float length, float width);
+std::vector<vertexf> FloorVertex(unsigned int vertexCount, float length, float width);
 
-std::vector<unsigned int> FloorIndex(size_t vertexCount);
+std::vector<unsigned int> FloorIndex(unsigned int vertexCount);
 
 void DrawModelMesh(std::shared_ptr<Model> pModel, bool bInstanced);
 
