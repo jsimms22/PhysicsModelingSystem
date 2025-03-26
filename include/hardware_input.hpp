@@ -3,7 +3,6 @@
 // std library
 #include <iostream>
 #include <memory>
-#include <stdexcept>
 
 // vendors
 #define GLFW_INCLUDE_NONE
