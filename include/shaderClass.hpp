@@ -24,6 +24,7 @@ class Shader
 public:
     unsigned int ID;
     Shader(fs::path vertexFile, fs::path fragmentFile);
+    ~Shader() { Destroy(); }
 
     void Attach() { glUseProgram(this->ID); }
     void Detach() { glUseProgram(0); }

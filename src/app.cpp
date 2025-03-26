@@ -204,9 +204,6 @@ int main()
         // Timing
         DisplayStats(MainAppWnd->GetWindowPtr(), totalFrames, lastFrameTime, numActive);
     }
-    // Clean up shaders
-    baseShader->Destroy();
-    lightShader->Destroy();
-
+    
     return 0;
 }
