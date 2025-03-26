@@ -19,9 +19,9 @@ class Model
 {
 public:
     // Constructor
-    Model(std::shared_ptr<Mesh> _sourceMesh,
-          float _scalar, 
-          unsigned int _renderMethod);
+    Model() = default;
+    Model(std::shared_ptr<Mesh> _sourceMesh, unsigned int _renderMethod = GL_TRIANGLES);
+    Model(std::shared_ptr<Mesh> _sourceMesh, float _scalar, unsigned int _renderMethod);
     
     // Destructor
     ~Model() { DestroyMesh(); }
