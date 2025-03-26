@@ -2,10 +2,47 @@
 
 // std library
 #include <iostream>
+#include <memory>
+#include <stdexcept>
+
 // vendors
 #define GLFW_INCLUDE_NONE
 #include "../vendor/GL/include/glew.h"
 #include "../vendor/GLFW/include/glfw3.h"
+
+class GLFWContext
+{
+public:
+    // Constructor
+    GLFWContext() = default;
+    
+    // Destructor
+    ~GLFWContext() { if (m_bInitialized) { glfwTerminate(); } }
+
+    bool Initialize();
+
+private:
+    bool m_bInitialized = false;
+};
+
+class Window
+{
+public:
+    Window(const std::unique_ptr<GLFWContext>& context, int width, int height, const char* title);
+
+    ~Window();
+
+    void SwapBuffers();
+    void PollEvents();
+    bool ShouldClose() const;
+    void ProcessInput();
+
+    // BAD!
+    GLFWwindow* GetWindowPtr() { return m_pWindow; }
+    
+private:
+    GLFWwindow* m_pWindow;
+};
 
 class Mouse
 {
@@ -27,5 +64,3 @@ public:
     double GetDX() const { return xpos - pxpos; }
     double GetDY() const { return ypos - pypos; }
 };
-
-void ProcessInput(GLFWwindow* window);

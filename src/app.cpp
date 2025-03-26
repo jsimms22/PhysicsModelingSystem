@@ -2,6 +2,7 @@
 #include <iostream>
 #include <array>
 #include <vector>
+#include <stdexcept>
 // vendors
 #define GLFW_INCLUDE_NONE
 #include "../vendor/GL/include/glew.h"
@@ -9,61 +10,18 @@
 // project headers
 #include "../include/fwd_math.hpp"
 #include "../include/graphics.hpp"
-#include "../include/hardware_input.hpp"
+#include "../include/hardware_input.hpp"    // Contains GLFW and Window classes for now
 #include "../include/shaderClass.hpp"
 #include "../include/cameraClass.hpp"
 #include "../include/modelClass.hpp"
 #include "../include/utility.hpp"
-#include "../include/globalSettings.hpp"    // Contains our settings singleton
+#include "../include/globalSettings.hpp"    // Contains our settings singleton 
 
 int main()
 {
     GlobalSettings& settings = GlobalSettings::Instance();
-
-    // Initialize GLFW
-    if (!glfwInit()) { 
-        std::cout << "GLFW init failure" << std::endl;
-        return 1;
-    }
-
-    // Tells GLFW what version of opengl we are using: 3.3.0 NVIDIA 552.44
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    // Tell GLFW we only want the modern functions via core profile
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Create window
-    static GLFWwindow* MainAppWnd = glfwCreateWindow(settings.WIDTH, settings.HEIGHT, "Unnamed Engine", NULL, NULL);
-    if (!MainAppWnd) { 
-        std::cout << "Terminating the window" << std::endl;
-        glfwTerminate(); 
-        return GLEW_ERROR_NO_GLX_DISPLAY; 
-    }
-
-    // Assign a current OpenGL context
-    glfwMakeContextCurrent(MainAppWnd);
-    // allows glew to initialize GL
-    auto iResult = glewInit();
-    if (iResult != GLEW_OK) {
-        std::cout << "GLew init falure" << std::endl;
-        glfwTerminate();
-        return 1;
-    }
-    // std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-
-    /* OpenGL Settings */
-    glfwSwapInterval(1);
-    glViewport(0, 0, settings.WIDTH, settings.HEIGHT);        // Defines where we want glfw to render
-    glClearColor(0.07f, 0.13f, 0.17f, 1.0); // Clears back buffer and renders new background
-    glClearStencil(0);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glPointSize(3.0);
+    std::unique_ptr<GLFWContext> GFLWInstance = std::make_unique<GLFWContext>();
+    std::unique_ptr<Window> MainAppWnd = std::make_unique<Window>(GFLWInstance,settings.WIDTH,settings.HEIGHT, "My Window");
 
     // Shaders
     std::shared_ptr<Shader> baseShader = std::make_shared<Shader>("shaders/base_vertex.glsl", "shaders/base_fragment.glsl");
@@ -121,12 +79,12 @@ int main()
     // Display all active errors and clear buffer
     ClearErrors();
 
-    while (!glfwWindowShouldClose(MainAppWnd)) {
+    while (!MainAppWnd->ShouldClose()) {
         /*-------*/
         /* Input */
         /*-------*/
-        ProcessInput(MainAppWnd); // determine if user is attempting to close window
-        mouse.UpdateMouse(MainAppWnd, mouse.GetX(), mouse.GetY()); // update mouse position
+        MainAppWnd->ProcessInput(); // determine if user is attempting to close window
+        mouse.UpdateMouse(MainAppWnd->GetWindowPtr(), mouse.GetX(), mouse.GetY()); // update mouse position
         // std::cout << mouse.GetX() << ", " << mouse.GetY() << std::endl;
     
         /* Clears back buffer before new buffer is drawn */
@@ -134,10 +92,10 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
         /* Update env lighting position */
-        envLight->UpdatePosition(MainAppWnd); // use arrow keys
+        envLight->UpdatePosition(MainAppWnd->GetWindowPtr()); // use arrow keys
         /* Update camera position */
-        camera.ResetCamera(MainAppWnd); // checks if user wants to reset camera to initial position
-        camera.UpdatePosition(MainAppWnd);  // use wasd + shift + ctrl
+        camera.ResetCamera(MainAppWnd->GetWindowPtr()); // checks if user wants to reset camera to initial position
+        camera.UpdatePosition(MainAppWnd->GetWindowPtr());  // use wasd + shift + ctrl
 
         /*-----------------*/
         /* Shader Uniforms */
@@ -166,7 +124,7 @@ int main()
         // Determine if we can add more entities for stress testing physics calculations
         // TODO: Move to a command system that does not rely on the game loop frame time
         if (1.0 / (static_cast<float>(glfwGetTime()) - lastFrameTime) >= settings.TARGET_FPS - 5 
-            && glfwGetKey(MainAppWnd, GLFW_KEY_V) == GLFW_PRESS 
+            && glfwGetKey(MainAppWnd->GetWindowPtr(), GLFW_KEY_V) == GLFW_PRESS 
             && numActive < settings.MAX_INSTANCES) { 
             numActive += settings.ADDITION_SPEED;
             if (modelContainer.size() < numActive)
@@ -237,22 +195,18 @@ int main()
         /*----------------------*/
         /* Clean Up and Measure */
         /*----------------------*/
-        glfwSwapBuffers(MainAppWnd);
-        glfwPollEvents();
+        MainAppWnd->SwapBuffers();
+        MainAppWnd->PollEvents();
 
         // Display all active errors and clear buffer
         ClearErrors();
 
         // Timing
-        DisplayStats(MainAppWnd, totalFrames, lastFrameTime, numActive);
+        DisplayStats(MainAppWnd->GetWindowPtr(), totalFrames, lastFrameTime, numActive);
     }
     // Clean up shaders
     baseShader->Destroy();
     lightShader->Destroy();
-    
-    // Terminate window and glfw
-    glfwDestroyWindow(MainAppWnd);
-    glfwTerminate();
 
     return 0;
 }
