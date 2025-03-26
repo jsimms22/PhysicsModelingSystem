@@ -78,15 +78,14 @@ int main()
     float lastFrameTime = static_cast<float>(glfwGetTime());
 
     // Display all active errors and clear buffer
-    ClearErrors();
+    MainAppWnd->ClearErrors();
 
     while (!MainAppWnd->ShouldClose()) {
         /*-------*/
         /* Input */
         /*-------*/
-        MainAppWnd->ProcessInput(); // determine if user is attempting to close window
-        mouse.UpdateMouse(MainAppWnd->GetWindowPtr(), mouse.GetX(), mouse.GetY()); // update mouse position
-        // std::cout << mouse.GetX() << ", " << mouse.GetY() << std::endl;
+        MainAppWnd->ProcessInput();
+        mouse.UpdateMouse(MainAppWnd->GetWindowPtr(), mouse.GetX(), mouse.GetY());
     
         /* Clears back buffer before new buffer is drawn */
         glClearColor(0.07f, 0.13f, 0.17f, 1.0);
@@ -128,6 +127,7 @@ int main()
             && glfwGetKey(MainAppWnd->GetWindowPtr(), GLFW_KEY_V) == GLFW_PRESS 
             && numActive < settings.MAX_INSTANCES) { 
             numActive += settings.ADDITION_SPEED;
+            
             if (modelContainer.size() < numActive)
             {
                 // Init sphere
@@ -141,30 +141,23 @@ int main()
         /*----------------------------*/
         /* force and position updates */
         /*----------------------------*/
-
-        // TODO: implement euler/verlet and scale force vector for dt (frame generation time)
+        // TODO: implement euler for gravity and collisions
         ApplyForces(modelContainer, floor);
 
         /*----------------*/
         /* Render objects */
         /*----------------*/
-        // TODO: include light into model container, need to properly virtualize base/child model classes and add OnUpdate etc methods
+        // TODO: implement proper virtual model class and concrete classes
         DrawModelMesh(envLight,false);
-        for (std::shared_ptr<Model> model : modelContainer) {
-            DrawModelMesh(model,false);
-        }
+        for (std::shared_ptr<Model> model : modelContainer) { DrawModelMesh(model,false); }
                  
         /*----------------------*/
         /* Clean Up and Measure */
         /*----------------------*/
         MainAppWnd->SwapBuffers();
         MainAppWnd->PollEvents();
-
-        // Display all active errors and clear buffer
-        ClearErrors();
-
-        // Timing
-        DisplayStats(MainAppWnd->GetWindowPtr(), totalFrames, lastFrameTime, numActive);
+        MainAppWnd->ClearErrors();
+        MainAppWnd->DisplayStats(totalFrames, lastFrameTime, numActive);
     }
 
     return 0;

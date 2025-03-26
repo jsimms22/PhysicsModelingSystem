@@ -34,7 +34,14 @@ public:
     void SwapBuffers();
     void PollEvents();
     bool ShouldClose() const;
+    // determine if user is attempting to close window
     void ProcessInput();
+    // Clear openGL error buffer
+    void ClearErrors() const;
+    // Calculate average FPS
+    void DisplayStats(std::size_t& totalFrames, float& lastFrameTime, std::size_t numActive);
+    // Update title bar
+    void UpdateWindowTitle(float dt, int numActive);
 
     // BAD!
     GLFWwindow* GetWindowPtr() { return m_pWindow; }
@@ -52,6 +59,7 @@ private:
     double pypos;
 public:
     Mouse() : xpos{0.0}, ypos{0.0}, pxpos{0.0}, pypos{0.0} { }
+    // update mouse position
     void UpdateMouse(GLFWwindow* _window, double xx, double yy)
     {
         pxpos = xx;

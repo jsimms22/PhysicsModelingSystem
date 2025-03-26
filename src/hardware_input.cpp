@@ -1,6 +1,8 @@
 // project headers
+#include <string>
 #include <stdexcept>
 #include "../include/hardware_input.hpp"
+#include "../include/globalSettings.hpp"    // Contains our settings singleton
 
 bool GLFWContext::Initialize()
 {
@@ -71,4 +73,32 @@ void Window::ProcessInput()
     if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS) { 
         glfwSetWindowShouldClose(m_pWindow, true);
     }
+}
+
+void Window::ClearErrors() const
+{
+    while (glGetError() != GL_NO_ERROR) {
+        std::cout << glGetError() << std::endl;
+    }
+}
+
+void Window::DisplayStats(std::size_t& totalFrames, float& lastFrameTime, std::size_t numActive)
+{
+    GlobalSettings& settings = GlobalSettings::Instance();
+
+    float dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
+    while (dt < 1.0f / settings.TARGET_FPS) {
+        dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
+    }
+    lastFrameTime = static_cast<float>(glfwGetTime());
+    totalFrames++;
+    if (totalFrames % 60 == 0) { UpdateWindowTitle(dt, numActive); }
+}
+
+void Window::UpdateWindowTitle(float dt, int numActive)
+{
+    // sprintf(title, "FPS : %-4.0f | Balls : %-10d", 1.0 / dt, numActive);
+    std::string title = "FPS: " + std::to_string(static_cast<int>((1.0f/dt)-4.0f)) + 
+                        " | Balls: " + std::to_string(numActive);
+    glfwSetWindowTitle(m_pWindow, title.c_str());
 }
