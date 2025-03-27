@@ -8,8 +8,8 @@
 #include <unordered_map>
 // project headers
 #include "fwd_math.hpp"
-#include "../include/meshClass.hpp"
-#include "../include/shaderClass.hpp"
+#include "meshClass.hpp"
+#include "shaderClass.hpp"
 // vendors
 #define GLFW_INCLUDE_NONE
 #include "../vendor/GL/include/glew.h"

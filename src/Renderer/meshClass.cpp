@@ -1,5 +1,5 @@
 // project headers
-#include "../include/meshClass.hpp"
+#include "../../include/meshClass.hpp"
 
 Mesh::Mesh(std::vector<vertexf> _v, std::vector<unsigned int> _in/*, std::vector<Texture> _tex*/)
     : VAO{}

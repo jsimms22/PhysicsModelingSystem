@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../include/fwd_math.hpp"
+#include "fwd_math.hpp"
 
 // TODO: Rework settings to be something better than a singleton at some point
 // TODO: Until then the members should probably be static

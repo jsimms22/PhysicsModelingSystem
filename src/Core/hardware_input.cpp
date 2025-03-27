@@ -1,8 +1,8 @@
 // project headers
 #include <string>
 #include <stdexcept>
-#include "../include/hardware_input.hpp"
-#include "../include/globalSettings.hpp"    // Contains our settings singleton
+#include "../../include/hardware_input.hpp"
+#include "../../include/globalSettings.hpp"    // Contains our settings singleton
 
 bool GLFWContext::Initialize()
 {

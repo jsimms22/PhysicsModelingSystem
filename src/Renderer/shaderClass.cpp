@@ -1,5 +1,5 @@
 // project headers
-#include "../include/shaderClass.hpp"
+#include "../../include/shaderClass.hpp"
 
 std::string ReadFileContents(fs::path filename)
 {

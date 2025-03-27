@@ -21,5 +21,4 @@ std::vector<unsigned int> FloorIndex(unsigned int vertexCount);
 
 void DrawModelMesh(std::shared_ptr<IModel> pModel, bool bInstanced);
 
-// void drawInstanced(Mesh& mesh, unsigned int shaderID, 
-//                    unsigned int mode, int num, float scale);
+// void DrawInstancedMesh(std::shared_ptr<IModel> pModel);

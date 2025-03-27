@@ -1,7 +1,7 @@
 // project headers
-#include "../include/force.hpp"
+#include "../../include/force.hpp"
 
-#include "../include/globalSettings.hpp"
+#include "../../include/globalSettings.hpp"
 
 bool IsColliding(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel>& model2)
 {

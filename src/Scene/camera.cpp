@@ -1,5 +1,5 @@
 // project headers
-#include "../include/cameraClass.hpp"
+#include "../../include/cameraClass.hpp"
 
 void Camera::UpdateMatrix(float FOVdeg, float nearPlane, float farPlane)
 {

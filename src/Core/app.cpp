@@ -5,18 +5,18 @@
 #include <stdexcept>
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../vendor/GL/include/glew.h"
-#include "../vendor/GLFW/include/glfw3.h"
+#include "../../vendor/GL/include/glew.h"
+#include "../../vendor/GLFW/include/glfw3.h"
 // project headers
-#include "../include/fwd_math.hpp"
-#include "../include/graphics.hpp"
-#include "../include/hardware_input.hpp"    // Contains GLFW and Window classes for now
-#include "../include/shaderClass.hpp"
-#include "../include/cameraClass.hpp"
-#include "../include/modelClass.hpp"
-#include "../include/utility.hpp"
-#include "../include/globalSettings.hpp"    // Contains our settings singleton 
-#include "../include/force.hpp"
+#include "../../include/fwd_math.hpp"
+#include "../../include/graphics.hpp"
+#include "../../include/hardware_input.hpp"    // Contains GLFW and Window classes for now
+#include "../../include/shaderClass.hpp"
+#include "../../include/cameraClass.hpp"
+#include "../../include/modelClass.hpp"
+#include "../../include/utility.hpp"
+#include "../../include/globalSettings.hpp"    // Contains our settings singleton 
+#include "../../include/force.hpp"
 
 int main()
 {

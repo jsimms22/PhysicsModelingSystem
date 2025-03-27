@@ -16,20 +16,22 @@ OUTPUT = $(OUTPUT_DIR)/app
 
 # Source files and object files
 SRC_DIR = src
-SRC = $(wildcard $(SRC_DIR)/*.cpp)
+SRC = $(wildcard $(SRC_DIR)/**/*.cpp)
 OBJ_DIR = $(OUTPUT_DIR)
 OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 # Ensure the build directory exists
 $(shell mkdir -p $(OBJ_DIR))
 
+# Ensure the respective object directories exist
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@mkdir -p $(dir $@)  # Create the directory for the object file
+	$(CC) $(CFLAGS) -c -o $@ $< -I $(GLFW_INCLUDE_DIR) -I $(GL_INCLUDE_DIR)
+
 all: $(OUTPUT)
 
 $(OUTPUT): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ -L $(GLFW_LIB_DIR) -L $(GL_LIB_DIR) $(LDFLAGS)
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	$(CC) $(CFLAGS) -c -o $@ $< -I $(GLFW_INCLUDE_DIR) -I $(GL_INCLUDE_DIR)
 
 debug: CFLAGS += -DDEBUG -O0 -g
 debug: clean $(OUTPUT)
