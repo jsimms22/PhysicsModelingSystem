@@ -44,7 +44,7 @@ std::vector<unsigned int> FloorIndex(unsigned int vertexCount)
     return index;
 }
 
-void DrawModelMesh(std::shared_ptr<BaseModel> pModel, bool bInstanced)
+void DrawModelMesh(std::shared_ptr<IModel> pModel, bool bInstanced)
 {
     if (!pModel) { return; }
 
