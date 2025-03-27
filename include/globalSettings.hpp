@@ -28,6 +28,7 @@ public:
     // Model Settings
     float CONTAINER_RADIUS {6.0f};
     float VERLET_RADIUS {0.15f};
+    vec3f TERRAIN_FLOOR {0.0f, -(CONTAINER_RADIUS * 2.0f + VERLET_RADIUS * 3.0f), 0.0f};
 
     // Game Loop Settings
     unsigned int TARGET_FPS {30};

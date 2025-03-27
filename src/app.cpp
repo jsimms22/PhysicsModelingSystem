@@ -33,36 +33,37 @@ int main()
     std::shared_ptr<Mesh> sphereMesh = std::make_shared<Mesh>("models/sphere.obj", false);
     std::shared_ptr<Mesh> floorMesh = std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100));
     
-    std::vector<std::shared_ptr<BaseModel>> modelContainer;
-    
-    // Init floor
-    std::shared_ptr<Terrain> floor = std::make_shared<Terrain>(floorMesh);
-    floor->SetScale(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f);
-    floor->SetPosition({0.0f, -(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f), 0.0f});
-    floor->SetShader(baseShader);
-    modelContainer.push_back(floor);
-
+    std::vector<std::shared_ptr<IModel>> modelContainer;
+    // Init floor terrain
+    modelContainer.push_back(CreateModelFactory(ModelType::Terrain, 
+                                                floorMesh, 
+                                                baseShader, 
+                                                {0.0f, -(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f), 0.0f}, 
+                                                settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f));
     // Init container
-    std::shared_ptr<Shape> container = std::make_shared<Shape>(cubeMesh);
-    container->SetScale(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f);
-    container->SetRenderMethod(GL_POINTS);
-    container->SetShader(lightShader);
-    modelContainer.push_back(container);
-
+    modelContainer.push_back(CreateModelFactory(ModelType::Shape, 
+                                                cubeMesh, 
+                                                lightShader, 
+                                                {0.0f, 0.0f, 0.0f}, 
+                                                settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f,
+                                                GL_POINTS));
     // Init sphere
-    std::shared_ptr<Shape> sphere = std::make_shared<Shape>(sphereMesh);
-    sphere->SetScale(settings.CONTAINER_RADIUS);
-    sphere->SetShader(baseShader);
-    sphere->SetIsPhysicalized(false);
-    modelContainer.push_back(sphere);
-
+    modelContainer.push_back(CreateModelFactory(ModelType::Shape, 
+                                                sphereMesh, 
+                                                baseShader, 
+                                                {0.0f, 0.0f, 0.0f}, 
+                                                settings.CONTAINER_RADIUS,
+                                                GL_TRIANGLES,
+                                                false));
     // Init light cube
-    std::shared_ptr<Light> envLight = std::make_shared<Light>(sphereMesh);
-    envLight->SetScale(settings.CONTAINER_RADIUS*0.3f);
-    envLight->SetShader(lightShader);
-    envLight->SetIsPhysicalized(false);
-    envLight->SetPosition(vec3f({15.0f, 15.0f, 10.0f}));
-    envLight->SetColor(vec4f({0.9f, 0.9f, 0.8f, 1.0f}));
+    modelContainer.push_back(CreateModelFactory(ModelType::Light, 
+                                                sphereMesh, 
+                                                lightShader, 
+                                                {15.0f, 15.0f, 10.0f}, 
+                                                settings.CONTAINER_RADIUS*0.3f));
+    modelContainer.back()->AddMesh(baseShader, "lightColor");
+    modelContainer.back()->AddMesh(baseShader, "lightPos");
+    modelContainer.back()->AddMesh(lightShader,"lightColor");
 
     // Init camera
     Camera camera = Camera(vec3f({0.0f, 0.0f, 125.0f}), settings.WIDTH, settings.HEIGHT);
@@ -87,8 +88,6 @@ int main()
         glClearColor(0.07f, 0.13f, 0.17f, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        /* Update env lighting position */
-        envLight->UpdatePosition(MainAppWnd->GetWindowPtr()); // use arrow keys
         /* Update camera position */
         camera.ResetCamera(MainAppWnd->GetWindowPtr()); // checks if user wants to reset camera to initial position
         camera.UpdatePosition(MainAppWnd->GetWindowPtr());  // use wasd + shift + ctrl
@@ -96,16 +95,13 @@ int main()
         /*-----------------*/
         /* Shader Uniforms */
         /*-----------------*/
+
         baseShader->Attach();
         // Updates and exports uniforms for camera
         camera.UpdateMatrix(45.0f, 0.1f, 1000.0f);
         camera.UpdateUniform(baseShader->GetID(), "view");
         camera.UpdateUniform(baseShader->GetID(), "projection");
         camera.UpdateUniform(baseShader->GetID(), "camPos");
-        
-        // Exports uniforms needed for lighting updates
-        envLight->UpdateUniform(baseShader->GetID(), "lightColor");
-        envLight->UpdateUniform(baseShader->GetID(), "lightPos");
         baseShader->Detach();
 
         lightShader->Attach();
@@ -113,9 +109,9 @@ int main()
         camera.UpdateMatrix(45.0f, 0.1f, 1000.0f);
         camera.UpdateUniform(lightShader->GetID(), "view");
         camera.UpdateUniform(lightShader->GetID(), "projection");
-        // Exports uniforms needed for lighting updates
-        envLight->UpdateUniform(lightShader->GetID(), "lightColor");
         lightShader->Detach();
+        
+        for (std::shared_ptr<IModel> model : modelContainer) { model->Update(); }
 
         // Determine if we can add more entities for stress testing physics calculations
         // TODO: Move to a command system that does not rely on the game loop frame time
@@ -127,10 +123,11 @@ int main()
             if (modelContainer.size() < numActive)
             {
                 // Init sphere
-                modelContainer.push_back(std::make_shared<Shape>(sphereMesh));
-                modelContainer.back()->SetScale(settings.CONTAINER_RADIUS);
-                modelContainer.back()->SetShader(baseShader);
-                modelContainer.back()->SetPosition({static_cast<float>(modelContainer.size()) * sphere->GetScale()*2,20,0});
+                modelContainer.push_back(CreateModelFactory(ModelType::Shape, 
+                                                            sphereMesh, 
+                                                            baseShader, 
+                                                            {static_cast<float>(modelContainer.size()) * settings.CONTAINER_RADIUS*2,20,0}, 
+                                                            settings.CONTAINER_RADIUS));
             }
         }
 
@@ -138,14 +135,13 @@ int main()
         /* force and position updates */
         /*----------------------------*/
         // TODO: implement euler for gravity and collisions
-        ApplyForces(modelContainer, floor);
+        ApplyForces(modelContainer);
 
         /*----------------*/
         /* Render objects */
         /*----------------*/
         // TODO: implement proper virtual model class and concrete classes
-        DrawModelMesh(envLight,false);
-        for (std::shared_ptr<BaseModel> model : modelContainer) { DrawModelMesh(model,false); }
+        for (std::shared_ptr<IModel> model : modelContainer) { DrawModelMesh(model,false); }
                  
         /*----------------------*/
         /* Clean Up and Measure */

@@ -3,24 +3,24 @@
 
 #include "../include/globalSettings.hpp"
 
-bool IsColliding(std::shared_ptr<BaseModel>& model1, std::shared_ptr<BaseModel>& model2)
+bool IsColliding(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel>& model2)
 {
     if (!model1 || !model2) { return false; }
     return true;
 }
 
-void ApplyCollisionForce(std::shared_ptr<BaseModel>& model1, std::shared_ptr<BaseModel>& model2)
+void ApplyCollisionForce(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel>& model2)
 {
     if (!model1 || !model2) { return; }
     return;
 }
 
-void ApplyForces(std::vector<std::shared_ptr<BaseModel>>& container, const std::shared_ptr<BaseModel>& floor)
+void ApplyForces(std::vector<std::shared_ptr<IModel>>& container)
 {
     // TODO: Rework settings
     GlobalSettings& settings = GlobalSettings::Instance();
 
-    for (std::shared_ptr<BaseModel>& i_model : container) {
+    for (std::shared_ptr<IModel>& i_model : container) {
         if (!i_model->IsPhysicalized()) { continue; }
     
         // Apply simple gravity to the balls
@@ -29,17 +29,17 @@ void ApplyForces(std::vector<std::shared_ptr<BaseModel>>& container, const std::
         vec3_add(result, settings.GRAVITY, i_model->GetPosition());
         
         // Only apply normal gravity vector if the model would not clip into the or be below the floor
-        if (((i_model->GetPosition().data[1] - i_model->GetScale()) > floor->GetPosition().data[1]) && (result.data[1] - i_model->GetScale()) >= floor->GetPosition().data[1])
+        if (((i_model->GetPosition().data[1] - i_model->GetScale()) > settings.TERRAIN_FLOOR.data[1]) && (result.data[1] - i_model->GetScale()) >= settings.TERRAIN_FLOOR.data[1])
         {
             i_model->SetPosition(result);
         } else {
             // If model's bounds has fallen below the floor reset position to floor.y + .5*model height
-            result.data[1] = floor->GetPosition().data[1] + i_model->GetScale();
+            result.data[1] = settings.TERRAIN_FLOOR.data[1] + i_model->GetScale();
             i_model->SetPosition(result);
         }
         
         // Apply simple collision to the balls
-        for (std::shared_ptr<BaseModel>& j_model : container) {
+        for (std::shared_ptr<IModel>& j_model : container) {
             if (i_model == j_model) { continue; }
             // Check for collision
             if (IsColliding(i_model, j_model)) {
