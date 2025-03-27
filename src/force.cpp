@@ -3,24 +3,24 @@
 
 #include "../include/globalSettings.hpp"
 
-bool IsColliding(std::shared_ptr<Model>& model1, std::shared_ptr<Model>& model2)
+bool IsColliding(std::shared_ptr<BaseModel>& model1, std::shared_ptr<BaseModel>& model2)
 {
     if (!model1 || !model2) { return false; }
     return true;
 }
 
-void ApplyCollisionForce(std::shared_ptr<Model>& model1, std::shared_ptr<Model>& model2)
+void ApplyCollisionForce(std::shared_ptr<BaseModel>& model1, std::shared_ptr<BaseModel>& model2)
 {
     if (!model1 || !model2) { return; }
     return;
 }
 
-void ApplyForces(std::vector<std::shared_ptr<Model>>& container, const std::shared_ptr<Model>& floor)
+void ApplyForces(std::vector<std::shared_ptr<BaseModel>>& container, const std::shared_ptr<BaseModel>& floor)
 {
     // TODO: Rework settings
     GlobalSettings& settings = GlobalSettings::Instance();
 
-    for (std::shared_ptr<Model>& i_model : container) {
+    for (std::shared_ptr<BaseModel>& i_model : container) {
         if (!i_model->IsPhysicalized()) { continue; }
     
         // Apply simple gravity to the balls
@@ -39,7 +39,7 @@ void ApplyForces(std::vector<std::shared_ptr<Model>>& container, const std::shar
         }
         
         // Apply simple collision to the balls
-        for (std::shared_ptr<Model>& j_model : container) {
+        for (std::shared_ptr<BaseModel>& j_model : container) {
             if (i_model == j_model) { continue; }
             // Check for collision
             if (IsColliding(i_model, j_model)) {

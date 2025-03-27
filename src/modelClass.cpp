@@ -1,25 +1,6 @@
 // project headers
 #include "../include/modelClass.hpp"
 
-Model::Model(std::shared_ptr<Mesh> _sourceMesh,
-             float _scalar, 
-             unsigned int _renderMethod)
-: m_modelMesh{_sourceMesh}, m_scale{_scalar}, m_renderMethod{_renderMethod} 
-{ 
-}
-
-void Model::DestroyMesh() 
-{
-    m_modelMesh->VAO.Destroy();
-}
-
-Light::Light(std::shared_ptr<Mesh> _sourceMesh,
-             float _scalar, 
-             unsigned int _renderMethod)
-: Model{_sourceMesh, _scalar, _renderMethod} 
-{
-}
-
 void Light::UpdatePosition(GLFWwindow* window) 
 {
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
