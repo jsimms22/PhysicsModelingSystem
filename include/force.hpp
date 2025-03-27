@@ -9,4 +9,4 @@
 
 // TODO: move force update calculations to here
 
-void ApplyForces(std::vector<std::shared_ptr<Model>>& container, const std::shared_ptr<Model>& floor);
+void ApplyForces(std::vector<std::shared_ptr<BaseModel>>& container, const std::shared_ptr<BaseModel>& floor);

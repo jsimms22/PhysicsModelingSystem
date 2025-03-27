@@ -33,36 +33,32 @@ int main()
     std::shared_ptr<Mesh> sphereMesh = std::make_shared<Mesh>("models/sphere.obj", false);
     std::shared_ptr<Mesh> floorMesh = std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100));
     
-    std::vector<std::shared_ptr<Model>> modelContainer;
+    std::vector<std::shared_ptr<BaseModel>> modelContainer;
+    
     // Init floor
-    std::shared_ptr<Model> floor = std::make_shared<Model>(floorMesh,
-                                                           settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f,
-                                                           GL_TRIANGLES);
+    std::shared_ptr<Terrain> floor = std::make_shared<Terrain>(floorMesh);
+    floor->SetScale(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f);
     floor->SetPosition({0.0f, -(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f), 0.0f});
     floor->SetShader(baseShader);
-    floor->SetIsPhysicalized(false);
     modelContainer.push_back(floor);
 
     // Init container
-    std::shared_ptr<Model> container = std::make_shared<Model>(cubeMesh,
-                            settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f, 
-                            GL_POINTS);
+    std::shared_ptr<Shape> container = std::make_shared<Shape>(cubeMesh);
+    container->SetScale(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f);
+    container->SetRenderMethod(GL_POINTS);
     container->SetShader(lightShader);
-    container->SetIsPhysicalized(false);
     modelContainer.push_back(container);
 
     // Init sphere
-    std::shared_ptr<Model> sphere = std::make_shared<Model>(sphereMesh,
-                                                            settings.CONTAINER_RADIUS,
-                                                            GL_TRIANGLES);
+    std::shared_ptr<Shape> sphere = std::make_shared<Shape>(sphereMesh);
+    sphere->SetScale(settings.CONTAINER_RADIUS);
     sphere->SetShader(baseShader);
     sphere->SetIsPhysicalized(false);
     modelContainer.push_back(sphere);
 
     // Init light cube
-    std::shared_ptr<Light> envLight = std::make_shared<Light>(sphereMesh,
-                                                              settings.CONTAINER_RADIUS*0.3f,
-                                                              GL_TRIANGLES);
+    std::shared_ptr<Light> envLight = std::make_shared<Light>(sphereMesh);
+    envLight->SetScale(settings.CONTAINER_RADIUS*0.3f);
     envLight->SetShader(lightShader);
     envLight->SetIsPhysicalized(false);
     envLight->SetPosition(vec3f({15.0f, 15.0f, 10.0f}));
@@ -131,10 +127,10 @@ int main()
             if (modelContainer.size() < numActive)
             {
                 // Init sphere
-                modelContainer.push_back(std::make_shared<Model>(sphereMesh, settings.CONTAINER_RADIUS, GL_TRIANGLES));
-                float size = static_cast<float>(modelContainer.size());
+                modelContainer.push_back(std::make_shared<Shape>(sphereMesh));
+                modelContainer.back()->SetScale(settings.CONTAINER_RADIUS);
                 modelContainer.back()->SetShader(baseShader);
-                modelContainer.back()->SetPosition({size*sphere->GetScale()*2,20,0});
+                modelContainer.back()->SetPosition({static_cast<float>(modelContainer.size()) * sphere->GetScale()*2,20,0});
             }
         }
 
@@ -149,7 +145,7 @@ int main()
         /*----------------*/
         // TODO: implement proper virtual model class and concrete classes
         DrawModelMesh(envLight,false);
-        for (std::shared_ptr<Model> model : modelContainer) { DrawModelMesh(model,false); }
+        for (std::shared_ptr<BaseModel> model : modelContainer) { DrawModelMesh(model,false); }
                  
         /*----------------------*/
         /* Clean Up and Measure */

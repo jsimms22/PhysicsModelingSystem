@@ -44,7 +44,7 @@ std::vector<unsigned int> FloorIndex(unsigned int vertexCount)
     return index;
 }
 
-void DrawModelMesh(std::shared_ptr<Model> pModel, bool bInstanced)
+void DrawModelMesh(std::shared_ptr<BaseModel> pModel, bool bInstanced)
 {
     if (!pModel) { return; }
 
@@ -52,8 +52,8 @@ void DrawModelMesh(std::shared_ptr<Model> pModel, bool bInstanced)
     std::shared_ptr<Mesh> mesh = pModel->GetMesh();
     std::shared_ptr<Shader> shader = pModel->GetShader();
     unsigned int mode = pModel->GetRenderMethod();
-    vec3f& position = pModel->GetPosition();
-    vec3f& rotation = pModel->GetRotation();
+    vec3f position = pModel->GetPosition();
+    vec3f rotation = pModel->GetRotation();
     float scale = pModel->GetScale();
 
     vec3f scaling{ scale, scale, scale };
