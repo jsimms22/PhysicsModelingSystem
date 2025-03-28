@@ -1,5 +1,8 @@
+// vendors
 // project headers
-#include "../../include/graphics.hpp"
+#include "../Renderer/graphics.hpp"
+#include "../Renderer/meshClass.hpp"
+// std library
 
 std::vector<vertexf> FloorVertex(unsigned int vertexCount, float length, float width)
 {

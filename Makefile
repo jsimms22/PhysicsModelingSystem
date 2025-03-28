@@ -38,3 +38,4 @@ debug: clean $(OUTPUT)
 
 clean:
 	rm -f $(OBJ) $(OUTPUT)
+	rmdir $(OUTPUT_DIR)/**

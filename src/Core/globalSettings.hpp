@@ -1,6 +1,9 @@
 #pragma once
 
-#include "fwd_math.hpp"
+// vendors
+// project headers
+#include "../fwd_math.hpp"
+// std library
 
 // TODO: Rework settings to be something better than a singleton at some point
 // TODO: Until then the members should probably be static

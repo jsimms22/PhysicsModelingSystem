@@ -1,5 +1,7 @@
+// vendors
 // project headers
-#include "../../include/cameraClass.hpp"
+#include "../Scene/cameraClass.hpp"
+// std library
 
 void Camera::UpdateMatrix(float FOVdeg, float nearPlane, float farPlane)
 {

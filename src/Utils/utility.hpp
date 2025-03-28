@@ -1,14 +1,13 @@
 #pragma once
 
-// std library
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <sstream>
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../vendor/GL/include/glew.h"
-#include "../vendor/GLFW/include/glfw3.h"
+#include "../../vendor/GL/include/glew.h"
+#include "../../vendor/GLFW/include/glfw3.h"
+// project headers
+// std library
+#include <string>
+#include <vector>
 
 // Hash function for mapping specific strings to integers
 int HashString(const std::string& str);

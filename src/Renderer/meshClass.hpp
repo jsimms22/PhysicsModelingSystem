@@ -1,12 +1,16 @@
 #pragma once
 
-// std library
-#include <vector>
+// vendors
+#define GLFW_INCLUDE_NONE
+#include "../../vendor/GL/include/glew.h"
+#include "../../vendor/GLFW/include/glfw3.h"
 // project headers
-#include "types/vertex.hpp"
-#include "shaderClass.hpp"
-#include "cameraClass.hpp"
-#include "utility.hpp"
+#include "../types.hpp"
+// std library
+#include <filesystem>
+#include <vector>
+
+namespace fs = std::filesystem;
 
 void ProcessVertex(std::vector<vertexf>& vertexBin, 
                     std::vector<std::string>& vertexMarker, 

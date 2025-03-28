@@ -1,5 +1,10 @@
+// vendors
 // project headers
-#include "../../include/meshClass.hpp"
+#include "../Renderer/meshClass.hpp"
+#include "../Utils/utility.hpp"
+// std library
+#include <fstream>
+#include <iostream>
 
 Mesh::Mesh(std::vector<vertexf> _v, std::vector<unsigned int> _in/*, std::vector<Texture> _tex*/)
     : VAO{}
@@ -85,9 +90,9 @@ void ProcessVertex(std::vector<vertexf>& vertexBin,
                     std::vector<vec3f>& vn)
 {
     vertexf temp;
-    size_t vertItr = stoull(vertexMarker[0]) - 1;
-    size_t texItr = stoull(vertexMarker[1]) - 1;
-    size_t normItr = stoull(vertexMarker[2]) - 1;
+    std::size_t vertItr = stoull(vertexMarker[0]) - 1;
+    std::size_t texItr = stoull(vertexMarker[1]) - 1;
+    std::size_t normItr = stoull(vertexMarker[2]) - 1;
 
     temp.v = v[vertItr];
     temp.vn = vn[normItr];
@@ -100,7 +105,7 @@ void LoadObject(fs::path filename, std::vector<vertexf>& vertexBin)
     std::vector<vec3f> v, vn;
     std::vector<vec2f> vt;
 
-    size_t v_count, vt_count, vn_count, f_count;
+    std::size_t v_count, vt_count, vn_count, f_count;
     v_count = vt_count = vn_count = f_count = 0;
 
     std::ifstream file(filename);

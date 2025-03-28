@@ -1,10 +1,12 @@
+// vendors
 // project headers
+#include "../Core/windowClass.hpp"
+#include "../Core/globalSettings.hpp"    // Contains our settings singleton
+// std library
 #include <string>
 #include <stdexcept>
-#include "../../include/hardware_input.hpp"
-#include "../../include/globalSettings.hpp"    // Contains our settings singleton
 
-bool GLFWContext::Initialize()
+bool WindowContext::Initialize()
 {
     // Initialize GLFW
     if (!glfwInit()) {
@@ -22,14 +24,16 @@ bool GLFWContext::Initialize()
     return m_bInitialized;
 }
 
-Window::Window(const std::unique_ptr<GLFWContext>& context, int width, int height, const char* title) 
+Window::Window(WindowProps props)
+    : m_windowProps{props}
 {
-    if (!context->Initialize()) {
+    m_pContext = std::make_unique<WindowContext>();
+    if (!m_pContext->Initialize()) {
         throw std::runtime_error("Failed to initialize GLFW context.");
     }
 
     // Create window
-    m_pWindow = glfwCreateWindow(width, height, title, NULL, NULL);
+    m_pWindow = glfwCreateWindow(m_windowProps.width, m_windowProps.height, m_windowProps.title, NULL, NULL);
     if (!m_pWindow) {
         std::cout << "Window creation failure" << std::endl;
         throw std::runtime_error("Failed to create GLFW window.");
@@ -45,7 +49,7 @@ Window::Window(const std::unique_ptr<GLFWContext>& context, int width, int heigh
     }
 
     // OpenGL settings
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, m_windowProps.width, m_windowProps.height);
     glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
     glClearStencil(0);
     glEnable(GL_DEPTH_TEST);

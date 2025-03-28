@@ -1,11 +1,12 @@
 #pragma once
 
-// SIMD
-#include <mmintrin.h>
-// std library
-#include <iostream>
+// vendors
 // project headers
 #include "../types.hpp"
+// std library
+#include <iostream>
+// SIMD
+#include <mmintrin.h>
 
 template <typename UNIT>
 void vec3_scale(vec3<UNIT>& out, UNIT scalar, vec3<UNIT> in)
@@ -86,8 +87,8 @@ UNIT vec3_angle(vec3<UNIT> in1, vec3<UNIT> in2)
 template <typename UNIT>
 void mat4x4_id(mat4x4<UNIT>& out)
 { // calculate unit matrix
-	for(size_t i=0; i<4; ++i) {
-		for(size_t j=0; j<4; ++j) {
+	for(std::size_t i=0; i<4; ++i) {
+		for(std::size_t j=0; j<4; ++j) {
 			out.data[i].data[j] = i==j ? 1.0 : 0.0;
         }
     }
@@ -105,8 +106,8 @@ void mat4x4_copy(mat4x4<UNIT>& out, const mat4x4<UNIT> in)
 template <typename UNIT>
 void mat4x4_add(mat4x4<UNIT>& out, const mat4x4<UNIT> in1, const mat4x4<UNIT> in2)
 {
-    for(size_t i=0; i<4; ++i) {
-        for(size_t j=0; j<4; ++j) {
+    for(std::size_t i=0; i<4; ++i) {
+        for(std::size_t j=0; j<4; ++j) {
             out.data[i].data[j] = in1.data[i].data[j] + in2.data[i].data[j];
         }
     }
@@ -116,10 +117,10 @@ template <typename UNIT>
 void mat4x4_mul(mat4x4<UNIT>& out, const mat4x4<UNIT> in1, const mat4x4<UNIT> in2)
 {
 	mat4x4<UNIT> temp;
-	for(size_t i=0; i<4; ++i) {
-        for(size_t j=0; j<4; ++j) {
+	for(std::size_t i=0; i<4; ++i) {
+        for(std::size_t j=0; j<4; ++j) {
 		    temp.data[i].data[j] = 0.0;
-		    for(size_t k=0; k<4; ++k) {
+		    for(std::size_t k=0; k<4; ++k) {
 			    temp.data[i].data[j] += in1.data[k].data[j] * in2.data[i].data[k];
             }
         }
@@ -131,9 +132,9 @@ template <typename UNIT>
 /* CHECK MAJORNESS */
 void mat3x3_mul_vec3(vec3<UNIT>& out, const vec3<UNIT> vec_in, const mat3x3<UNIT> mat_in)
 {   
-    for(size_t j=0; j<4; ++j) {
+    for(std::size_t j=0; j<4; ++j) {
 		out.data[j] = 0.0;
-		for(size_t i=0; i<4; ++i) {
+		for(std::size_t i=0; i<4; ++i) {
 			out.data[j] += mat_in.data[j].data[i] * vec_in.data[i];
         }
 	}
@@ -203,7 +204,7 @@ template <typename UNIT>
 void mat4x4_translation(mat4x4<UNIT>& out, const mat4x4<UNIT> mat_in, const vec3<UNIT> vec_in)
 {
     /* could cause problems if out is not fully initialized */
-	for(size_t i=0; i<4; ++i) {
+	for(std::size_t i=0; i<4; ++i) {
 		if (i!=3) { out.data[3].data[i] = mat_in.data[3].data[i] + vec_in.data[i]; }
 		else { out.data[3].data[i] = mat_in.data[3].data[i]; }
 	}
@@ -213,7 +214,7 @@ template <typename UNIT>
 void mat4x4_translation(mat4x4<UNIT>& out, const mat4x4<UNIT> mat_in, const vec4<UNIT> vec_in)
 {
     /* could cause problems if out is not fully initialized */
-	for(size_t i=0; i<4; ++i) {
+	for(std::size_t i=0; i<4; ++i) {
 		out.data[3].data[i] = mat_in.data[3].data[i] + vec_in.data[i];
 	}
 }
@@ -221,8 +222,8 @@ void mat4x4_translation(mat4x4<UNIT>& out, const mat4x4<UNIT> mat_in, const vec4
 template <typename UNIT>
 void mat4x4_buildScaler(mat4x4<UNIT>& out, const mat4x4<UNIT> mat_in, const vec3<UNIT> vec_in)
 {
-	for(size_t i=0; i<4; ++i) {
-		for(size_t j=0; j<4; ++j) {
+	for(std::size_t i=0; i<4; ++i) {
+		for(std::size_t j=0; j<4; ++j) {
 			out.data[i].data[j] = (i==j && j!=3) ? vec_in.data[j] : mat_in.data[i].data[j];
         }
     }
@@ -231,8 +232,8 @@ void mat4x4_buildScaler(mat4x4<UNIT>& out, const mat4x4<UNIT> mat_in, const vec3
 template <typename UNIT>
 void mat4x4_buildScaler(mat4x4<UNIT>& out, const mat4x4<UNIT> mat_in, const vec4<UNIT> vec_in)
 {
-	for(size_t i=0; i<4; ++i) {
-		for(size_t j=0; j<4; ++j) {
+	for(std::size_t i=0; i<4; ++i) {
+		for(std::size_t j=0; j<4; ++j) {
 			out.data[i].data[j] = (i==j) ? vec_in.data[j] : mat_in.data[i].data[j];
         }
     }
@@ -285,15 +286,15 @@ void mat4x4_lookAt(mat4x4<UNIT>& out, vec3<UNIT> position, vec3<UNIT> center, ve
     T.data[3].data[1] = -position.data[1];
     T.data[3].data[2] = -position.data[2];
     mat4x4<UNIT> R; mat4x4_id(R);
-    for (size_t i=0; i<3; ++i) {
+    for (std::size_t i=0; i<3; ++i) {
         R.data[i].data[0] = right.data[i];
         R.data[i].data[1] = up.data[i];
         R.data[i].data[2] = back.data[i];
     }
     mat4x4_mul(out, T, R);
 
-	// for (size_t itr = 0; itr < 4; ++itr) {
-    //     for (size_t j = 0; j < 4; ++j) {
+	// for (std::size_t itr = 0; itr < 4; ++itr) {
+    //     for (std::size_t j = 0; j < 4; ++j) {
     //         std::cout << out.data[j].data[itr] << ", ";
     //     } std::cout << std::endl;
     // }

@@ -1,5 +1,7 @@
+// vendors
 // project headers
-#include "../../include/modelClass.hpp"
+#include "../Scene/modelClass.hpp"
+// std library
 
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader)
 {
@@ -192,7 +194,7 @@ void Light::Update()
 void Light::AddMesh(std::shared_ptr<Shader> shader, std::string uniformName)
 {
     // TODO: rework map update to be more robust
-    m_shaderUpdateMap[shader].push_back(uniformName); 
+    if (shader) { m_shaderUpdateMap[shader].push_back(uniformName); }
 }
 
 void Light::UpdatePosition() 
@@ -214,9 +216,9 @@ void Light::UpdatePosition()
     } 
 }
 
-void Light::UpdateUniform(const unsigned int& shaderID, const std::string& uniform) 
+void Light::UpdateUniform(const unsigned int shaderID, const std::string uniformName) 
 {
-    if (uniform == "lightColor") {
+    if (uniformName == "lightColor") {
         glUniform4f(glGetUniformLocation(shaderID, "lightColor"),
                     m_color.data[0], 
                     m_color.data[1], 
@@ -224,7 +226,7 @@ void Light::UpdateUniform(const unsigned int& shaderID, const std::string& unifo
                     m_color.data[3]);
     }
     
-    if (uniform == "lightPos") {
+    if (uniformName == "lightPos") {
         glUniform3f(glGetUniformLocation(shaderID, "lightPos"), 
                     m_position.data[0], 
                     m_position.data[1], 

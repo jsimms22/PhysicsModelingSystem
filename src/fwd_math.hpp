@@ -1,6 +1,9 @@
 #pragma once
 
-#include "math/math.hpp"
+// vendors
+// project headers
+#include "Math/math.hpp"
+// std library
 
 const double M_PI = std::acos(-1);
 

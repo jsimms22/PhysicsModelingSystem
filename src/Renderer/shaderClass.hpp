@@ -1,17 +1,12 @@
 #pragma once
 
-// std library
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <filesystem>
-#include <vector>
-#include <memory>
-#include <cerrno>
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../vendor/GL/include/glew.h"
-#include "../vendor/GLFW/include/glfw3.h"
+#include "../../vendor/GL/include/glew.h"
+#include "../../vendor/GLFW/include/glfw3.h"
+// std library
+#include <filesystem>
+#include <string>
 
 namespace fs = std::filesystem;
 

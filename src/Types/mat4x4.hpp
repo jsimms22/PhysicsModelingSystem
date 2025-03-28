@@ -2,6 +2,8 @@
 
 // type headers
 #include "vec4.hpp"
+// std library
+#include <cstdlib>
 
 template <typename UNIT>
 class mat4x4 
@@ -17,7 +19,7 @@ using mat4x4d = mat4x4<double>;
 template <typename UNIT>
 void mat4x4<UNIT>::set_all(UNIT value)
 {
-    for (size_t i=0; i<4; ++i)
-        for (size_t j=0; j<4; ++j)
+    for (std::size_t i=0; i<4; ++i)
+        for (std::size_t j=0; j<4; ++j)
             this->data[i].data[j] = value;
 }

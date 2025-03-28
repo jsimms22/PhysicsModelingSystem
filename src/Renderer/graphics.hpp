@@ -1,19 +1,20 @@
 #pragma once
 
+// vendors
+#define GLFW_INCLUDE_NONE
+#include "../../vendor/GL/include/glew.h"
+#include "../../vendor/GLFW/include/glfw3.h"
+// project headers
+#include "../fwd_math.hpp"
+#include "../Scene/modelClass.hpp"
 // std library
 #include <iostream>
 #include <array>
 #include <vector>
 #include <string>
 #include <cmath>
-// vendors
-#define GLFW_INCLUDE_NONE
-#include "../vendor/GL/include/glew.h"
-#include "../vendor/GLFW/include/glfw3.h"
-// project headers
-#include "fwd_math.hpp"
-#include "meshClass.hpp"
-#include "modelClass.hpp"
+
+class IModel;
 
 std::vector<vertexf> FloorVertex(unsigned int vertexCount, float length, float width);
 

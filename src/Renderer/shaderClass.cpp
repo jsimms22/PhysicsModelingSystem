@@ -1,11 +1,18 @@
 // project headers
-#include "../../include/shaderClass.hpp"
+#include "../Renderer/shaderClass.hpp"
+#include <cerrno>
+#include <iostream>
+#include <cstdlib>
+#include <fstream>
+#include <sstream>
 
 std::string ReadFileContents(fs::path filename)
 {
+    std::cout << filename << std::endl;
     std::ifstream file(filename);
     std::stringstream buffer;
     buffer << file.rdbuf();
+    std::cout << buffer.str() << std::endl;
     return buffer.str();
 }
 
@@ -21,6 +28,7 @@ unsigned int CompileShader(unsigned int type, const std::string& fileText)
     // Error Handling
     int result = 0; int length = 0;
     glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+    std::cout << "result: " << result << std::endl;
     if (result == GL_FALSE) {
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
         char* msgLog = (char*) alloca(static_cast<std::size_t>(length) * sizeof(char));

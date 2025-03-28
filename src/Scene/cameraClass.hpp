@@ -1,13 +1,13 @@
 #pragma once
 
-// std library
-#include <cmath>
-// project headers
-#include "fwd_math.hpp"
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../vendor/GL/include/glew.h"
-#include "../vendor/GLFW/include/glfw3.h"
+#include "../../vendor/GL/include/glew.h"
+#include "../../vendor/GLFW/include/glfw3.h"
+// project headers
+#include "../fwd_math.hpp"
+// std library
+#include <cmath>
 
 class Camera
 {
