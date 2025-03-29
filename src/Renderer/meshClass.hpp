@@ -23,13 +23,19 @@ void LoadObject(fs::path filename, std::vector<vertexf>& vertexBin);
 class VBObj
 {
 public:
-    // VBObj() { }
-    // Generates a VBO and links it to a list of vertices 
-    VBObj(std::vector<vertexf> vertices)
+    VBObj() = delete;
+    // Generates a VBO and links it to a list of vertices
+    VBObj(std::vector<vertexf>& vertices)
     {
         glGenBuffers(1, &(m_ID));
 	    glBindBuffer(GL_ARRAY_BUFFER, m_ID);
 	    glBufferData(GL_ARRAY_BUFFER, static_cast<long long int>(vertices.size() * sizeof(vertexf)), vertices.data(), GL_STATIC_DRAW);
+    }
+    VBObj(std::vector<mat4x4f>& matrices)
+    {
+        glGenBuffers(1, &(m_ID));
+	    glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+	    glBufferData(GL_ARRAY_BUFFER, static_cast<long long int>(matrices.size() * sizeof(mat4x4f)), matrices.data(), GL_STATIC_DRAW);
     }
     void Bind() { glBindBuffer(GL_ARRAY_BUFFER, m_ID); }
     void Unbind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
@@ -65,6 +71,7 @@ private:
 class EBObj
 {
 public:
+    EBObj() = delete; 
     EBObj(std::vector<unsigned int> indices) 
     { 
         glGenBuffers(1, &(m_ID));
@@ -85,19 +92,17 @@ private:
 class Mesh
 {
 public:
-    std::vector<vertexf> vertices;
-    std::vector<unsigned int> indices;
-    // std::vector<Texture> textures;
-    // unsigned int VAO;
-    // unsigned int VBO;
-    VAObj VAO;
-    // VBObj VBO;
-    // unsigned int positionVBO;
-    // unsigned int velocityVBO;
+    std::vector<vertexf> m_vertices;
+    std::vector<unsigned int> m_indices;
+    // std::vector<Texture> m_textures;
+    unsigned int m_instanceCount = 1;
+    std::vector<mat4x4f> m_instanceMatrices;
+    VAObj m_VA0;
 
-    Mesh(std::vector<vertexf> _v) : vertices{_v} { }
-    Mesh(fs::path filename, bool instanced);
-    Mesh(std::vector<vertexf> _v, std::vector<unsigned int> _in/*, std::vector<Texture> _tex*/);
+    Mesh(std::vector<vertexf> vertices, unsigned int instances = 1U, std::vector<mat4x4f> matrices = {}) 
+        : m_vertices{vertices}, m_instanceCount{instances}, m_instanceMatrices{matrices} {}
+    Mesh(fs::path filename, unsigned int instances = 1U, std::vector<mat4x4f> matrices = {});
+    Mesh(std::vector<vertexf> vertices, std::vector<unsigned int> indices/*, std::vector<Texture> _tex*/, unsigned int instances = 1, std::vector<mat4x4f> matrices = {});
 
     //void draw(Shader& shader, Camera& camera);
 };

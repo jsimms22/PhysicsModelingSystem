@@ -47,7 +47,7 @@ std::vector<unsigned int> FloorIndex(unsigned int vertexCount)
     return index;
 }
 
-void DrawModelMesh(std::shared_ptr<IModel> pModel, bool bInstanced)
+void DrawModelMesh(std::shared_ptr<IModel> pModel)
 {
     if (!pModel) { return; }
 
@@ -86,31 +86,20 @@ void DrawModelMesh(std::shared_ptr<IModel> pModel, bool bInstanced)
     
     shader->Attach();
 
-    if (!bInstanced) {
-        glUniformMatrix4fv(glGetUniformLocation(shader->GetID(), "model"), 1, GL_FALSE, matrices.model.data->data);
+    glUniformMatrix4fv(glGetUniformLocation(shader->GetID(), "model"), 1, GL_FALSE, matrices.model.data->data);
 
-        mesh->VAO.Bind();
+    mesh->m_VA0.Bind();
 
-        if (mesh->indices.size() == 0) { 
-            glDrawArrays(mode, 0, mesh->vertices.size()); 
+    if (1 == mesh->m_instanceCount) {
+        if (mesh->m_indices.size() == 0) { 
+            glDrawArrays(mode, 0, mesh->m_vertices.size()); 
         } else { 
-            glDrawElements(mode, mesh->indices.size(), GL_UNSIGNED_INT, 0); 
+            glDrawElements(mode, mesh->m_indices.size(), GL_UNSIGNED_INT, 0); 
         }
     } else {
-
+        glDrawElementsInstanced(mode, mesh->m_indices.size(), GL_UNSIGNED_INT, 0, mesh->m_instanceCount); 
     }
 
     shader->Detach();
-    mesh->VAO.Unbind();
+    mesh->m_VA0.Unbind();
 }
-
-// void drawInstanced(Mesh& mesh, unsigned int shaderID, unsigned int mode, int num, float scale)
-// {
-//     glUseProgram(shaderID);
-//     glUniform1f(glGetUniformLocation(shaderID, "scale"), scale);
-
-//     glBindVertexArray(mesh.VAO.ID);
-//     glDrawArraysInstanced(mode, 0, mesh.vertices.size(), num);
-//     glUseProgram(0);
-//     glBindVertexArray(0);
-// }

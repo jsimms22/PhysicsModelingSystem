@@ -20,6 +20,6 @@ std::vector<vertexf> FloorVertex(unsigned int vertexCount, float length, float w
 
 std::vector<unsigned int> FloorIndex(unsigned int vertexCount);
 
-void DrawModelMesh(std::shared_ptr<IModel> pModel, bool bInstanced);
+void DrawModelMesh(std::shared_ptr<IModel> pModel);
 
 // void DrawInstancedMesh(std::shared_ptr<IModel> pModel);

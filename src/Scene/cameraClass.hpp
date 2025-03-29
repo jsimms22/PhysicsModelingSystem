@@ -35,12 +35,14 @@ public:
     // Various matrices for interacting with shaders
     mat4x4f m_viewMatrix;
     mat4x4f m_projectionMatrix;
+    mat4x4f m_cameraMatrix;
 
-    Camera( vec3f _pos, unsigned int _width, unsigned int _height)
+    Camera(vec3f _pos, unsigned int _width, unsigned int _height)
         : m_position{_pos}, m_width{_width}, m_height{_height} 
     { 
-        m_viewMatrix.set_all(0.0); 
-        m_projectionMatrix.set_all(0.0);
+        m_viewMatrix.set_all(0.0f); 
+        m_projectionMatrix.set_all(0.0f);
+        m_cameraMatrix.set_all(0.0f);
         m_resetLoc = _pos;
     }
     

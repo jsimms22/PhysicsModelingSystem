@@ -7,8 +7,7 @@ layout (location = 3) in vec3 instancePosition;
 layout (location = 4) in float instanceVelocity;
 
 uniform float scale;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 cameraMatrix;
 
 out vec3 fragmentPos;
 out vec3 fragmentVertexNormal;
@@ -30,5 +29,5 @@ void main()
     fragmentVertexNormal = mat3(transpose(inverse(model))) * vertexNormal;
     fragmentVelocity = instanceVelocity;
 
-    gl_Position = projection * view * vec4(fragmentPos, 1.0);
+    gl_Position = cameraMatrix * vec4(fragmentPos, 1.0);
 }

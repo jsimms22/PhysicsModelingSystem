@@ -18,7 +18,7 @@ public:
 
     virtual void Update() = 0;
 
-    const void SetPosition(const vec3f& position) { m_position = position; }
+    void SetPosition(const vec3f& position) { m_position = position; }
     vec3f GetPosition() const { return m_position; };
 
 private:

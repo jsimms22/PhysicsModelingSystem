@@ -9,20 +9,20 @@ void Camera::UpdateMatrix(float FOVdeg, float nearPlane, float farPlane)
     mat4x4_lookAt(m_viewMatrix, m_position, m_direction, m_up);
     mat4x4_projection(m_projectionMatrix, static_cast<float>(FOVdeg*(M_PI / 180.0f)), 
                       static_cast<float>(m_width / m_height), nearPlane, farPlane);
+    
+    mat4x4_mul(m_cameraMatrix, m_projectionMatrix, m_viewMatrix);
 }
 
 void Camera::UpdateUniform(unsigned int shaderID, std::string uniform)
 {
     // Export the view and projection matrix to the shader
-    if (uniform == "projection") {
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "projection"), 1, GL_FALSE, m_projectionMatrix.data->data);
-    }
-    if (uniform == "view") {
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "view"), 1, GL_FALSE, m_viewMatrix.data->data);
+    if (uniform == "cameraMatrix") {
+        glUniformMatrix4fv(glGetUniformLocation(shaderID, "cameraMatrix"), 1, GL_FALSE, m_cameraMatrix.data->data);
     }
     if (uniform == "camPos") {
         glUniform3f(glGetUniformLocation(shaderID, "camPos"), 
-                                         m_position.data[0], m_position.data[1], 
+                                         m_position.data[0], 
+                                         m_position.data[1], 
                                          m_position.data[2]);
     }
 }

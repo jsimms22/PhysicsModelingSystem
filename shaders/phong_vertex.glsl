@@ -5,8 +5,7 @@ layout (location = 1) in vec3 vertexNormal;
 layout (location = 2) in vec2 vertexTexCoord;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 cameraMatrix
 
 out vec3 fragmentPos;
 out vec3 fragmentVertexNormal;
@@ -18,5 +17,5 @@ void main()
     fragmentVertexNormal = mat3(transpose(inverse(model))) * vertexNormal;
     fragmentTexCoord = vertexTexCoord;
 
-    gl_Position = projection * view * vec4(fragmentPos, 1.0);
+    gl_Position = cameraMatrix * vec4(fragmentPos, 1.0);
 }

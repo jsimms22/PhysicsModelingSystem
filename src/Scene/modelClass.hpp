@@ -89,7 +89,7 @@ public:
     ~BaseModel() { DestroyMesh(); }
 
     // Overrides from interface
-    virtual void DestroyMesh() override { m_modelMesh->VAO.Destroy(); }
+    virtual void DestroyMesh() override { m_modelMesh->m_VA0.Destroy(); }
     virtual bool SupportsType(const ModelType type) const override = 0;
     virtual void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override = 0;
     virtual void Update() override { std::cout << "I am a BaseModel.\n"; }

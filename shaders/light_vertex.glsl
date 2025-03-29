@@ -5,15 +5,14 @@ layout (location = 1) in vec3 vertexNormal;
 layout (location = 2) in vec2 vertexTexCoord;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 cameraMatrix;
 
 out vec3 fragmentVertexNormal;
 out vec2 fragmentTexCoord;
 
 void main()
 {
-    gl_Position = projection * view * model * vec4(vertexPos, 1.0);
+    gl_Position = cameraMatrix * model * vec4(vertexPos, 1.0);
     fragmentVertexNormal = vertexNormal;
     fragmentTexCoord = vertexTexCoord;
 }

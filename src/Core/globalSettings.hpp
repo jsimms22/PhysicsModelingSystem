@@ -35,7 +35,7 @@ public:
 
     // Game Loop Settings
     unsigned int TARGET_FPS {30};
-    std::size_t MAX_INSTANCES {20};
+    std::size_t MAX_INSTANCES {300};
     unsigned int ADDITION_SPEED {1};
     //int VERTEX_LIMIT {2000};
 

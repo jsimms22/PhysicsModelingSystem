@@ -1,4 +1,4 @@
 // vendors
 // project headers
-#include "../Scene/Entity,hpp"
+#include "../Scene/Entity.hpp"
 // std library
