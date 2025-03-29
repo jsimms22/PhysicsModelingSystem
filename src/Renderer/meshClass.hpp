@@ -34,7 +34,28 @@ public:
     void Bind() { glBindBuffer(GL_ARRAY_BUFFER, m_ID); }
     void Unbind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
     void Destroy() { glDeleteBuffers(1, &(m_ID));}
-    unsigned int GetID() const { return m_ID; }
+    unsigned int GetID() { return m_ID; }
+    
+private:
+    unsigned int m_ID;
+};
+
+class VBObjInstanced
+{
+public:
+    // VBObj() { }
+    // Generates a VBO and links it to a list of vertices 
+    VBObjInstanced(std::vector<vertexf> vertices, std::vector<vec3f> translations)
+    {
+        glGenBuffers(1, &(m_ID));
+	    glBindBuffer(GL_ARRAY_BUFFER, m_ID);
+	    glBufferData(GL_ARRAY_BUFFER, static_cast<long long int>(vertices.size() * sizeof(vertexf) * translations.size()) , translations.data(), GL_STATIC_DRAW);
+        Unbind();
+    }
+    void Bind() { glBindBuffer(GL_ARRAY_BUFFER, m_ID); }
+    void Unbind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+    void Destroy() { glDeleteBuffers(1, &(m_ID));}
+    unsigned int GetID() { return m_ID; }
     
 private:
     unsigned int m_ID;
@@ -52,6 +73,17 @@ public:
         glVertexAttribPointer(order, layout, type, GL_FALSE, stride, offset);
         glEnableVertexAttribArray(order);
         VBO.Unbind();
+    }
+    // Links a VBO attribute 
+    void LinkAttribute(VBObjInstanced& VBO, unsigned int order, int layout, 
+                    unsigned int type, int stride, void* offset)
+    {
+
+        VBO.Bind();
+        glVertexAttribPointer(order, layout, type, GL_FALSE, stride, offset);
+        glEnableVertexAttribArray(order);
+        VBO.Unbind();
+        glVertexAttribDivisor(stride,order);
     }
     void Bind() { glBindVertexArray(m_ID); }
     void Unbind() { glBindVertexArray(0); }
@@ -92,7 +124,7 @@ public:
     // unsigned int VBO;
     VAObj VAO;
     // VBObj VBO;
-    // unsigned int positionVBO;
+    unsigned int positionVBO;
     // unsigned int velocityVBO;
 
     Mesh(std::vector<vertexf> _v) : vertices{_v} { }

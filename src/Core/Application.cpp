@@ -38,10 +38,12 @@ void Application::Run()
     // Shaders
     std::shared_ptr<Shader> baseShader = std::make_shared<Shader>("shaders/base_vertex.glsl", "shaders/base_fragment.glsl");
     std::shared_ptr<Shader> lightShader = std::make_shared<Shader>("shaders/light_vertex.glsl", "shaders/light_fragment.glsl");
+    std::shared_ptr<Shader> instanceShader = std::make_shared<Shader>("shaders/instance_vertex.glsl","shaders/instance_fragment.glsl");
         
     // Meshes
     std::shared_ptr<Mesh> cubeMesh = std::make_shared<Mesh>("models/cube.obj", false);
     std::shared_ptr<Mesh> sphereMesh = std::make_shared<Mesh>("models/sphere.obj", false);
+    std::shared_ptr<Mesh> sphereMeshInstance = std::make_shared<Mesh>("models/sphere.obj", true);
     std::shared_ptr<Mesh> floorMesh = std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100));
     
     std::vector<std::shared_ptr<IModel>> modelContainer;
@@ -60,8 +62,8 @@ void Application::Run()
                                                 GL_POINTS));
     // Init sphere
     modelContainer.push_back(CreateModelFactory(ModelType::Shape, 
-                                                sphereMesh, 
-                                                baseShader, 
+                                                sphereMeshInstance, 
+                                                instanceShader, 
                                                 {0.0f, 0.0f, 0.0f}, 
                                                 settings.CONTAINER_RADIUS,
                                                 GL_TRIANGLES,
@@ -115,6 +117,12 @@ void Application::Run()
         camera.UpdateUniform(baseShader->GetID(), "camPos");
         baseShader->Detach();
 
+        instanceShader->Attach();
+        camera.UpdateUniform(instanceShader->GetID(),"view");
+        camera.UpdateUniform(instanceShader->GetID(), "projection");
+        camera.UpdateUniform(instanceShader->GetID(), "camPos");
+        instanceShader->Detach();
+        
         lightShader->Attach();
         // Updates and exports uniforms for camera
         camera.UpdateMatrix(45.0f, 0.1f, 1000.0f);

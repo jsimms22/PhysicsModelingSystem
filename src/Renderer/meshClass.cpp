@@ -5,6 +5,7 @@
 // std library
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 Mesh::Mesh(std::vector<vertexf> _v, std::vector<unsigned int> _in/*, std::vector<Texture> _tex*/)
     : VAO{}
@@ -46,38 +47,43 @@ Mesh::Mesh(fs::path filename, bool instanced)
 
     // Bind the Vertex Array Object first,
     this->VAO.Bind();
-    // Then bind and set vertex buffer(s)
-    VBObj VBO(this->vertices);
-    // Generates Element Buffer Object and links it to indices
-	EBObj EBO(this->indices);
-
-    // Position
-    VAO.LinkAttribute(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(0));
-    // Normal
-    VAO.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(3*sizeof(float)));
-    // Texture
-    VAO.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(6*sizeof(float)));
-
     if (instanced) {
-    //     // instanced Position
-    //     glGenBuffers(1, &(this->positionVBO));
-    //     glBindBuffer(GL_ARRAY_BUFFER, this->positionVBO);
-    //     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * INSTANCE_STRIDE * MAX_INSTANCES, NULL, GL_STREAM_DRAW);
-    //     glEnableVertexAttribArray(3);
-    //     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, INSTANCE_STRIDE * sizeof(float), (void*)0);
-    //     glVertexAttribDivisor(3, 1);
+        std::vector<vec3f> translations;
+        for (float t = 0; t < 50.f; ++t) {
+            translations.push_back(vec3f{t,t,t});
+        }
+        // Then bind and set vertex buffer(s)
+        VBObjInstanced VBO(this->vertices, translations);
+        // Generates Element Buffer Object and links it to indices
+        EBObj EBO(this->indices);
 
-    //     // instanced Velocity
-    //     glGenBuffers(1, &(this->velocityVBO));
-    //     glBindBuffer(GL_ARRAY_BUFFER, this->velocityVBO);
-    //     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * MAX_INSTANCES, NULL, GL_STREAM_DRAW);
-    //     glEnableVertexAttribArray(4);
-    //     glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
-    //     glVertexAttribDivisor(4, 1);
+        // Position
+        VAO.LinkAttribute(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(0));
+        // Normal
+        VAO.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(3*sizeof(float)));
+        // Texture
+        VAO.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(6*sizeof(float)));
+
+        this->VAO.Unbind();
+        VBO.Unbind();
+        EBO.Unbind();
+    } else {
+        // Then bind and set vertex buffer(s)
+        VBObj VBO(this->vertices);
+        // Generates Element Buffer Object and links it to indices
+        EBObj EBO(this->indices);
+
+        // Position
+        VAO.LinkAttribute(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(0));
+        // Normal
+        VAO.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(3*sizeof(float)));
+        // Texture
+        VAO.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(6*sizeof(float)));
+
+        this->VAO.Unbind();
+        VBO.Unbind();
+        EBO.Unbind();
     }
-    this->VAO.Unbind();
-    VBO.Unbind();
-    EBO.Unbind();
    
     // uncomment this call to draw in wireframe polygons.
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

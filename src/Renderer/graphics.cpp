@@ -40,10 +40,7 @@ std::vector<unsigned int> FloorIndex(unsigned int vertexCount)
             index.push_back(tr); index.push_back(bl); index.push_back(br);
         }
     }
-    // std::cout << index.size() << std::endl;
-    // for (int i=0; i<(index.size()-2); i+=3) {
-    //     std::cout << index[i] << "/" << index[i+1] << "/" << index[i+2] << std::endl;
-    // }
+
     return index;
 }
 
@@ -97,7 +94,7 @@ void DrawModelMesh(std::shared_ptr<IModel> pModel, bool bInstanced)
             glDrawElements(mode, mesh->indices.size(), GL_UNSIGNED_INT, 0); 
         }
     } else {
-
+        
     }
 
     shader->Detach();
