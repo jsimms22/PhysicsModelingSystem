@@ -28,7 +28,7 @@ Texture::Texture(const std::string& file,
         int32_t height;
         int32_t channels; // color channels count
     }image;
-    image = {1, 1, 1};
+    
     // orient the image up
     stbi_set_flip_vertically_on_load(true);
 
@@ -63,7 +63,9 @@ Texture::Texture(const std::string& file,
     Unbind();
 }
 
-void Texture::Assign(Shader& shader, const std::string& uniform, uint32_t unit)
+void Texture::UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, uint32_t unit)
 {
-
+    uint32_t textureLocation = glGetUniformLocation(shader->GetID(), uniform.c_str());
+    shader->Attach();
+    glUniform1i(textureLocation,unit);
 }

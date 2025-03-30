@@ -22,7 +22,7 @@ public:
     
     ~Texture() { Destroy(); }
     
-    void Assign(Shader& shader, const std::string& uniform, uint32_t unit);
+    void UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, uint32_t unit);
 
     void Bind() { glBindTexture(m_textureType, m_ID); }
     void Unbind() { glBindTexture(m_textureType, 0); }
