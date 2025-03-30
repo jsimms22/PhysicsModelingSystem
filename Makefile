@@ -7,10 +7,12 @@ LDFLAGS = -lglfw3 -lglew32 -lopengl32
 # Path to the vendor libs
 GLFW_LIB_DIR = vendor/GLFW/libs
 GL_LIB_DIR = vendor/GL/libs
+STB_LIB_DIR = vendor/STB/libs
 
 # Path to the vendor include dirs
 GLFW_INCLUDE_DIR = vendor/GLFW/include
 GL_INCLUDE_DIR = vendor/GL/include
+STB_INCLUDE_DIR = vendor/STB/include
 
 # Name of the output executable
 OUTPUT_DIR = bin/build
@@ -37,10 +39,10 @@ release: $(OUTPUT)
 # Ensure the respective object directories exist
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)  # Create the directory for the object file
-	$(CC) $(CFLAGS) -c -o $@ $< -I $(GLFW_INCLUDE_DIR) -I $(GL_INCLUDE_DIR)
+	$(CC) $(CFLAGS) -c -o $@ $< -I $(GLFW_INCLUDE_DIR) -I $(GL_INCLUDE_DIR) -I $(STB_INCLUDE_DIR)
 
 $(OUTPUT): $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ -L $(GLFW_LIB_DIR) -L $(GL_LIB_DIR) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $^ -L $(GLFW_LIB_DIR) -L $(GL_LIB_DIR) -L $(STB_LIB_DIR) $(LDFLAGS) 
 
 # Useful for seeing what parameters are being unused
 unoptimized: CFLAGS += -O0 -Wextra
@@ -53,10 +55,10 @@ debug: $(DEBUG)
 # Ensure the respective object directories exist
 $(DEBUG_OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)  # Create the directory for the object file
-	$(CC) $(CFLAGS) -c -o $@ $< -I $(GLFW_INCLUDE_DIR) -I $(GL_INCLUDE_DIR)
+	$(CC) $(CFLAGS) -c -o $@ $< -I $(GLFW_INCLUDE_DIR) -I $(GL_INCLUDE_DIR) -I $(STB_INCLUDE_DIR)
 
 $(DEBUG): $(DEBUG_OBJ)
-	$(CC) $(CFLAGS) -o $@ $^ -L $(GLFW_LIB_DIR) -L $(GL_LIB_DIR) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $^ -L $(GLFW_LIB_DIR) -L $(GL_LIB_DIR) -L $(STB_LIB_DIR) $(LDFLAGS)
 
 clean:
 	if [ -d "$(OUTPUT_DIR)" ]; then \

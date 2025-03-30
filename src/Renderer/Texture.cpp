@@ -1,4 +1,16 @@
 // vendors
+#ifdef DEBUG
+    #define STB_IMAGE_IMPLEMENTATION
+    #include "../../vendor/STB/include/stb_image.h"
+#else
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wunused-but-set-variable" 
+    #pragma GCC diagnostic ignored "-Wsign-compare"
+    #pragma GCC diagnostic ignored "-Wstringop-overflow="
+    #define STB_IMAGE_IMPLEMENTATION
+    #include "../../vendor/STB/include/stb_image.h"
+    #pragma GCC diagnostic pop
+#endif
 // project headers
 #include "../Renderer/Texture.hpp"
 // std library
@@ -18,10 +30,10 @@ Texture::Texture(const std::string& file,
     }image;
     image = {1, 1, 1};
     // orient the image up
-    //stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(true);
 
     // read in the image from a file
-    //unsigned char* byteBuffer = stbi_load(file.c_str(), &image.width, &image.height, &image.channels, 0);
+    unsigned char* byteBuffer = stbi_load(file.c_str(), &image.width, &image.height, &image.channels, 0);
 
     glGenTextures(1,&m_ID);
     glActiveTexture(slot);
@@ -40,12 +52,12 @@ Texture::Texture(const std::string& file,
 	// glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, flatColor);
 
     // Assigns the image to the OpenGL Texture object
-	//glTexImage2D(m_textureType, 0, GL_RGBA, image.width, image.height, 0, m_formatType, m_pixelType, byteBuffer);
+	glTexImage2D(m_textureType, 0, GL_RGBA, image.width, image.height, 0, m_formatType, m_pixelType, byteBuffer);
 	// Generates MipMaps
 	glGenerateMipmap(m_textureType);
 
     // free byte buffer here
-    //stbi_image_free(byteBuffer);
+    stbi_image_free(byteBuffer);
 
     // Unbind the OpenGL Texture object
     Unbind();

@@ -4,8 +4,6 @@
 #define GLFW_INCLUDE_NONE
 #include "../../vendor/GL/include/glew.h"
 #include "../../vendor/GLFW/include/glfw3.h"
-//#define STB_IMAGE_IMPLEMENTATION
-//#include "../../vendor/STB/stb_image.h"
 // project headers
 #include "../types.hpp"
 #include "../Renderer/Shader.hpp"

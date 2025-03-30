@@ -2,6 +2,23 @@
 
 Included dependencies are build for Windows only. If you plan to use this on a different architecture then mine, you will have to compile and include the binaries for the vendors yourself. Eventually I will add submodules, but not today.
 
+Note about STB 3rd party library use in Texture.cpp:
+- create a .cpp with only the following, where the include is pointing to your stb_image.h header file:
+```
+#define STB_IMAGE_IMPLEMENTATION
+#include "../../../vendor/stb/stb_image.h"
+```
+- compile the obj file with:
+```
+g++ -c stb.cpp -o stb.o
+```
+- then
+```
+ar rcs stbdll.a stb.o
+```
+- Now move the static lib file to where the header file lives and add the paths to the makefile commands for the compiler to link to
+- Append the include header preprocessor command where it is needed in the project
+
 Documentation:
 https://docs.gl
 
