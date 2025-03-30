@@ -1,5 +1,7 @@
 ## Physics Modeling / Visualizer
 
+Included dependencies are build for Windows only. If you plan to use this on a different architecture then mine, you will have to compile and include the binaries for the vendors yourself. Eventually I will add submodules, but not today.
+
 Documentation:
 https://docs.gl
 
