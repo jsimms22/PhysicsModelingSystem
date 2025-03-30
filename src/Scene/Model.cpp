@@ -1,6 +1,6 @@
 // vendors
 // project headers
-#include "../Scene/modelClass.hpp"
+#include "../Scene/Model.hpp"
 // std library
 
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader)
@@ -98,7 +98,7 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
     }
 }
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, unsigned int renderMode)
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, uint32_t renderMode)
 {
     switch (type)
     {   
@@ -136,7 +136,7 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
     }
 }
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, unsigned int renderMode, bool isPhysicalized)
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, uint32_t renderMode, bool isPhysicalized)
 {
     switch (type)
     {   
@@ -179,7 +179,7 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
 
 void Light::Update()
 { 
-    std::cout << "I am a Light.\n"; 
+    //std::cout << "I am a Light.\n"; 
 
     UpdatePosition();
 
@@ -216,7 +216,7 @@ void Light::UpdatePosition()
     } 
 }
 
-void Light::UpdateUniform(const unsigned int shaderID, const std::string uniformName) 
+void Light::UpdateUniform(const uint32_t shaderID, const std::string uniformName) 
 {
     if (uniformName == "lightColor") {
         glUniform4f(glGetUniformLocation(shaderID, "lightColor"),
@@ -226,8 +226,8 @@ void Light::UpdateUniform(const unsigned int shaderID, const std::string uniform
                     m_color.data[3]);
     }
     
-    if (uniformName == "lightPos") {
-        glUniform3f(glGetUniformLocation(shaderID, "lightPos"), 
+    if (uniformName == "lightPosition") {
+        glUniform3f(glGetUniformLocation(shaderID, "lightPosition"), 
                     m_position.data[0], 
                     m_position.data[1], 
                     m_position.data[2]);

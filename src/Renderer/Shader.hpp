@@ -12,19 +12,25 @@ namespace fs = std::filesystem;
 
 std::string ReadFileContents(fs::path filename);
 
-unsigned int CompileShader(unsigned int type, const std::string& fileText);
+uint32_t CompileShader(uint32_t type, const std::string& fileText);
 
 class Shader
 {
 public:
+    // Constructors
     Shader(fs::path vertexFile, fs::path fragmentFile);
+    // Destructors
     ~Shader() { Destroy(); }
 
     void Attach() { glUseProgram(m_ID); }
     void Detach() { glUseProgram(0); }
+
     void Destroy() { glDeleteProgram(m_ID); }
-    unsigned int GetID() const { return m_ID; }
+
+    void AddUniformTypeName(const std::string& name) {}
+
+    uint32_t GetID() const { return m_ID; }
 
 private:
-    unsigned int m_ID;
+    uint32_t m_ID;
 };

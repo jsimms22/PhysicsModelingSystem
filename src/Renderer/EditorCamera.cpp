@@ -1,9 +1,9 @@
 // vendors
 // project headers
-#include "../Scene/cameraClass.hpp"
+#include "../Renderer/EditorCamera.hpp"
 // std library
 
-void Camera::UpdateMatrix(float FOVdeg, float nearPlane, float farPlane)
+void EditorCamera::UpdateMatrix(float FOVdeg, float nearPlane, float farPlane)
 {
     vec3_add(m_direction, m_position, m_orientation);
     mat4x4_lookAt(m_viewMatrix, m_position, m_direction, m_up);
@@ -13,21 +13,21 @@ void Camera::UpdateMatrix(float FOVdeg, float nearPlane, float farPlane)
     mat4x4_mul(m_cameraMatrix, m_projectionMatrix, m_viewMatrix);
 }
 
-void Camera::UpdateUniform(unsigned int shaderID, std::string uniform)
+void EditorCamera::UpdateUniform(uint32_t shaderID, std::string uniform)
 {
     // Export the view and projection matrix to the shader
     if (uniform == "cameraMatrix") {
         glUniformMatrix4fv(glGetUniformLocation(shaderID, "cameraMatrix"), 1, GL_FALSE, m_cameraMatrix.data->data);
     }
-    if (uniform == "camPos") {
-        glUniform3f(glGetUniformLocation(shaderID, "camPos"), 
+    if (uniform == "cameraPosition") {
+        glUniform3f(glGetUniformLocation(shaderID, "cameraPosition"), 
                                          m_position.data[0], 
                                          m_position.data[1], 
                                          m_position.data[2]);
     }
 }
 
-void Camera::UpdatePosition(GLFWwindow* window)
+void EditorCamera::UpdatePosition(GLFWwindow* window)
 {
     // Handles key inputs
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -61,9 +61,9 @@ void Camera::UpdatePosition(GLFWwindow* window)
         vec3_add(m_position, m_position, temp);
     } 
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) { 
-        m_speed = 0.8f; 
+        m_speed = 2.0f; 
     } else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE) {
-        m_speed = 0.1f;
+        m_speed = 1.0f;
     }
 
     // Handles mouse inputs
@@ -114,7 +114,7 @@ void Camera::UpdatePosition(GLFWwindow* window)
     //                              << position.data[2] << std::endl;
 }
 
-void Camera::ResetCamera(GLFWwindow* window)
+void EditorCamera::ResetCamera(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_F1) == GLFW_PRESS) {
         m_position = m_resetLoc;

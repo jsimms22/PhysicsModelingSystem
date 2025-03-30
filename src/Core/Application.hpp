@@ -3,7 +3,7 @@
 #include "../../vendor/GL/include/glew.h"
 #include "../../vendor/GLFW/include/glfw3.h"
 // project headers
-#include "../Core/windowClass.hpp"
+#include "../Core/Window.hpp"
 // std library
 #include <memory>
 #include <cstdlib>

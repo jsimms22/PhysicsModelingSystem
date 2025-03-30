@@ -6,7 +6,7 @@
 #include "../../vendor/GLFW/include/glfw3.h"
 // project headers
 #include "../fwd_math.hpp"
-#include "../Scene/modelClass.hpp"
+#include "../Scene/Model.hpp"
 // std library
 #include <iostream>
 #include <array>
@@ -16,9 +16,9 @@
 
 class IModel;
 
-std::vector<vertexf> FloorVertex(unsigned int vertexCount, float length, float width);
+std::vector<vertexf> FloorVertex(uint32_t vertexCount, float length, float width);
 
-std::vector<unsigned int> FloorIndex(unsigned int vertexCount);
+std::vector<uint32_t> FloorIndex(uint32_t vertexCount);
 
 void DrawModelMesh(std::shared_ptr<IModel> pModel);
 

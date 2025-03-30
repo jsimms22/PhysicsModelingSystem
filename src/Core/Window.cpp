@@ -1,6 +1,6 @@
 // vendors
 // project headers
-#include "../Core/windowClass.hpp"
+#include "../Core/Window.hpp"
 #include "../Core/globalSettings.hpp"    // Contains our settings singleton
 // std library
 #include <string>

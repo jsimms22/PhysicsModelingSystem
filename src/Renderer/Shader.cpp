@@ -1,5 +1,5 @@
 // project headers
-#include "../Renderer/shaderClass.hpp"
+#include "../Renderer/Shader.hpp"
 #include <cerrno>
 #include <iostream>
 #include <cstdlib>
@@ -8,18 +8,24 @@
 
 std::string ReadFileContents(fs::path filename)
 {
-    std::cout << filename << std::endl;
-    std::ifstream file(filename);
     std::stringstream buffer;
-    buffer << file.rdbuf();
-    std::cout << buffer.str() << std::endl;
+    try 
+    {
+        std::ifstream file(filename);
+        buffer << file.rdbuf();
+    } 
+    catch (std::ifstream::failure& e)
+    {
+        std::cout << "Failed to read: " << filename << std::endl;
+    }
     return buffer.str();
 }
 
-unsigned int CompileShader(unsigned int type, const std::string& fileText)
+uint32_t CompileShader(uint32_t type, const std::string& fileText)
 {
     // Create a shader object and compile
-    unsigned int id = glCreateShader(type);
+    uint32_t id = glCreateShader(type);
+
     // OpenGL requires an lvalue convertable to GLchar**
     const char* src = fileText.c_str();
     glShaderSource(id, 1, &src, NULL);
@@ -28,14 +34,19 @@ unsigned int CompileShader(unsigned int type, const std::string& fileText)
     // Error Handling
     int result = 0; int length = 0;
     glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-    std::cout << "result: " << result << std::endl;
-    if (result == GL_FALSE) {
+
+    if (result == GL_FALSE) 
+    {
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
         char* msgLog = (char*) alloca(static_cast<std::size_t>(length) * sizeof(char));
         glGetShaderInfoLog(id, length, &length, msgLog);
+
         std::cout << "Failed to compile " 
             << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") 
             << " shader." << std::endl;
+        
+        std::cout << msgLog << std::endl;
+
         glDeleteShader(id);
         //free(msgLog);
         return 0;
@@ -48,12 +59,12 @@ Shader::Shader(fs::path vertexFile, fs::path fragmentFile)
 {
     // Create a shader object and compile it during runtime
     std::string vertexSource = ReadFileContents(vertexFile);
-    unsigned int vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSource);
+    uint32_t vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSource);
     if (vertexShader == 0) { throw "shader compilation failure"; } 
 
     // Perform the same steps for the fragment shader
     std::string fragmentSource = ReadFileContents(fragmentFile);
-    unsigned int fragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
+    uint32_t fragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
     if (fragmentShader == 0) { throw "shader compilation failure"; }
 
     // Create a shader program and link the two shader steps together

@@ -2,13 +2,13 @@
 
 out vec4 color;
 
-in vec3 currentPos;
+in vec3 fragPosition;
 in vec3 fragNormal;
 in vec2 fragTexCoord;
 
 uniform vec4 lightColor;
-uniform vec3 lightPos;
-uniform vec3 camPos;
+uniform vec3 lightPosition;
+uniform vec3 cameraPosition;
 
 float near = 0.1;
 float far = 100.0;
@@ -34,7 +34,7 @@ float LinearizeDepth(float depth)
 
 vec4 pointLight()
 {
-    vec3 lightVec = lightPos - currentPos;
+    vec3 lightVec = lightPosition - fragPosition;
 
     // LIGHT INTENSITY CALC
     float dist = length(lightVec);
@@ -52,7 +52,7 @@ vec4 pointLight()
     float diffuse = max(dot(normal,lightDir), 0.0f);
 
     // float specularLight = 0.50f;
-    // vec3 viewDir = normalize(camPos - currentPos);
+    // vec3 viewDir = normalize(cameraPosition - fragPosition);
     // vec3 reflectDir = reflect(-lightDir, normal);
     // float specularAmt = pow(max(dot(viewDir, reflectDir), 0.0f), 16);
     // float specular = specularLight * specularAmt;

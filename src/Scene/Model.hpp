@@ -6,8 +6,8 @@
 #include "../../vendor/GLFW/include/glfw3.h"
 // project headers
 #include "../fwd_math.hpp"
-#include "../Renderer/meshClass.hpp"
-#include "../Renderer/shaderClass.hpp"
+#include "../Renderer/Mesh.hpp"
+#include "../Renderer/Shader.hpp"
 // std library
 #include <iostream>
 #include <memory>
@@ -27,17 +27,17 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position);
 
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale);
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, unsigned int renderMode);
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, unsigned int renderMode, bool isPhysicalized);
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, uint32_t renderMode);
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, uint32_t renderMode, bool isPhysicalized);
 
 // TODO: Think about how much upkeep I really want to do later on
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, unsigned int renderMode);
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, unsigned int renderMode, bool isPhysicalized);
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, unsigned int renderMode, bool isPhysicalized, float scale);
+//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, uint32_t renderMode);
+//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, uint32_t renderMode, bool isPhysicalized);
+//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, uint32_t renderMode, bool isPhysicalized, float scale);
 
 //std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, bool isPhysicalized);
 //std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, bool isPhysicalized, float scale);
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, bool isPhysicalized, float scale, unsigned int renderMode);
+//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, bool isPhysicalized, float scale, uint32_t renderMode);
 
 class IModel
 {
@@ -66,8 +66,8 @@ public:
     virtual float GetScale() const = 0;
     virtual void SetScale(float scalarVec) = 0;
 
-    virtual unsigned int GetRenderMethod() const = 0;
-    virtual void SetRenderMethod(unsigned int rendMethod) = 0;
+    virtual uint32_t GetRenderMethod() const = 0;
+    virtual void SetRenderMethod(uint32_t rendMethod) = 0;
     
     virtual bool IsPhysicalized() const = 0;
     virtual void SetIsPhysicalized(bool enablePhysics) = 0;
@@ -80,9 +80,9 @@ public:
     BaseModel() = default;
     BaseModel(std::shared_ptr<Mesh> mesh)
         : m_modelMesh{mesh} {}
-    BaseModel(std::shared_ptr<Mesh> mesh, float scalar, unsigned int renderMethod)
+    BaseModel(std::shared_ptr<Mesh> mesh, float scalar, uint32_t renderMethod)
         : m_modelMesh{mesh}, m_scale{scalar}, m_renderMethod{renderMethod} {}
-    BaseModel(std::shared_ptr<Mesh> mesh, float scalar, unsigned int renderMethod, bool isPhysicalized)
+    BaseModel(std::shared_ptr<Mesh> mesh, float scalar, uint32_t renderMethod, bool isPhysicalized)
         : m_modelMesh{mesh}, m_scale{scalar}, m_renderMethod{renderMethod}, m_isPhysicalized(isPhysicalized) {}
 
     // Destructor
@@ -92,7 +92,7 @@ public:
     virtual void DestroyMesh() override { m_modelMesh->m_VA0.Destroy(); }
     virtual bool SupportsType(const ModelType type) const override = 0;
     virtual void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override = 0;
-    virtual void Update() override { std::cout << "I am a BaseModel.\n"; }
+    virtual void Update() override { /*std::cout << "I am a BaseModel.\n";*/ }
 
     // Data Member Methods
     std::shared_ptr<Mesh> GetMesh() const override { return m_modelMesh; }
@@ -118,8 +118,8 @@ public:
     float GetScale() const override { return m_scale; }
     void SetScale(float scalar) override { m_scale = scalar; }
 
-    unsigned int GetRenderMethod() const override { return m_renderMethod; }
-    void SetRenderMethod(unsigned int renderMethod) override { m_renderMethod = renderMethod; }
+    uint32_t GetRenderMethod() const override { return m_renderMethod; }
+    void SetRenderMethod(uint32_t renderMethod) override { m_renderMethod = renderMethod; }
 
     bool IsPhysicalized() const override { return m_isPhysicalized; }
     void SetIsPhysicalized(bool isPhysicalized) override { m_isPhysicalized = isPhysicalized; }
@@ -130,7 +130,7 @@ protected:
     vec3f m_position = {0.0f, 0.0f, 0.0f};
     vec3f m_rotation = {0.0f, 0.0f, 0.0f};
     float m_scale = 1.f;
-    unsigned int m_renderMethod = GL_TRIANGLES;
+    uint32_t m_renderMethod = GL_TRIANGLES;
     bool m_isPhysicalized = false;
 };
 
@@ -141,7 +141,7 @@ public:
     Shape() = default;
     Shape(std::shared_ptr<Mesh> mesh, bool isPhysicalized = true)
         : BaseModel(mesh) { m_isPhysicalized = isPhysicalized; }
-    Shape(std::shared_ptr<Mesh> mesh, float scalar, unsigned int renderMethod, bool isPhysicalized = true)
+    Shape(std::shared_ptr<Mesh> mesh, float scalar, uint32_t renderMethod, bool isPhysicalized = true)
         : BaseModel(mesh, scalar, renderMethod, isPhysicalized) {}
     // Destructor
     ~Shape() = default;
@@ -149,7 +149,7 @@ public:
     // Overrides
     bool SupportsType(const ModelType type) const override { return type == ModelType::Shape; };
     void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override { if (shader) { } };
-    void Update() override { std::cout << "I am a Shape.\n"; };
+    void Update() override { /*std::cout << "I am a Shape.\n";*/ };
 
     // Methods
 };
@@ -161,7 +161,7 @@ public:
     Terrain() = default;
     Terrain(std::shared_ptr<Mesh> mesh)
         : BaseModel(mesh) {}
-    Terrain(std::shared_ptr<Mesh> mesh, float scalar, unsigned int renderMethod)
+    Terrain(std::shared_ptr<Mesh> mesh, float scalar, uint32_t renderMethod)
         : BaseModel(mesh, scalar, renderMethod) {}
 
     // Destructor
@@ -170,7 +170,7 @@ public:
     // Overrides
     bool SupportsType(const ModelType type) const override { return type == ModelType::Terrain; };
     void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override { if (shader) { } };
-    void Update() override { std::cout << "I am a Terrain.\n"; };
+    void Update() override { /*std::cout << "I am a Terrain.\n";*/ };
 
     // Methods
 };
@@ -182,7 +182,7 @@ public:
     Light() = default;
     Light(std::shared_ptr<Mesh> mesh)
         : BaseModel(mesh) {}
-    Light(std::shared_ptr<Mesh> mesh, float scalar, unsigned int renderMethod)
+    Light(std::shared_ptr<Mesh> mesh, float scalar, uint32_t renderMethod)
         : BaseModel(mesh, scalar, renderMethod) {}
 
     // Destructors
@@ -195,7 +195,7 @@ public:
 
     // Methods
     void UpdatePosition(); // Updates positon using arrow keys
-    void UpdateUniform(const unsigned int shaderID, const std::string uniformName); // Updates named shader uniform
+    void UpdateUniform(const uint32_t shaderID, const std::string uniformName); // Updates named shader uniform
 
     // Data Member Methods
     vec4f GetColor() const { return m_color; }

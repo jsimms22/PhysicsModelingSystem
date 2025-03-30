@@ -2,7 +2,7 @@
 // project headers
 #include "../Core/globalSettings.hpp"
 #include "../Physics/force.hpp"
-#include "../Scene/modelClass.hpp"
+#include "../Scene/Model.hpp"
 // std library
 
 bool IsColliding(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel>& model2)

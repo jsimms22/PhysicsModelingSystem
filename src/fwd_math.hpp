@@ -2,7 +2,7 @@
 
 // vendors
 // project headers
-#include "Math/math.hpp"
+#include "Math/Math.hpp"
 // std library
 
 const double M_PI = std::acos(-1);

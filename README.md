@@ -16,6 +16,7 @@ https://open.gl/transformations
 
 TODO:
 
+- move uniform types list into the shader constructor
 - add instanced rendering for models
 - update floor/terrain to be "infinite" by default
 - add simple gravity forces 

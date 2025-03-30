@@ -132,9 +132,9 @@ template <typename UNIT>
 /* CHECK MAJORNESS */
 void mat3x3_mul_vec3(vec3<UNIT>& out, const vec3<UNIT> vec_in, const mat3x3<UNIT> mat_in)
 {   
-    for(std::size_t j=0; j<4; ++j) {
+    for(std::size_t j=0; j<3; ++j) {
 		out.data[j] = 0.0;
-		for(std::size_t i=0; i<4; ++i) {
+		for(std::size_t i=0; i<3; ++i) {
 			out.data[j] += mat_in.data[j].data[i] * vec_in.data[i];
         }
 	}
