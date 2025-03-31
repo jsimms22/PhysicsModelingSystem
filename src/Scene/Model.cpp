@@ -185,9 +185,9 @@ void Light::Update()
 
     for (std::pair<std::shared_ptr<Shader>, std::vector<std::string>> shaderPair : m_shaderUpdateMap)
     {
-        shaderPair.first->Attach();
+        shaderPair.first->Bind();
         for (std::string& name : shaderPair.second) { UpdateUniform(shaderPair.first->GetID(), name); }
-        shaderPair.first->Detach();
+        shaderPair.first->Unbind();
     }
 }
 

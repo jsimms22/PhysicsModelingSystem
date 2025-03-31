@@ -4,6 +4,7 @@
 #include "../Utils/utility.hpp"
 // std library
 #include <fstream>
+#include <sstream>
 #include <iostream>
 
 Mesh::Mesh(std::vector<vertexf> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures /* = {}*/, int32_t instances /* = 1*/, std::vector<mat4x4f> matrices /* = {}*/)
@@ -52,7 +53,7 @@ Mesh::Mesh(std::vector<vertexf> vertices, std::vector<uint32_t> indices, std::ve
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-Mesh::Mesh(fs::path filename, int32_t instances /* = 1*/, std::vector<mat4x4f> matrices /* = {}*/)
+Mesh::Mesh(const std::string& filename, int32_t instances /* = 1*/, std::vector<mat4x4f> matrices /* = {}*/)
     : m_instanceCount{instances}, m_instanceMatrices{matrices}
 {
     // Load vertex data from file
@@ -120,7 +121,7 @@ void ProcessVertex(std::vector<vertexf>& vertexBin,
     vertexBin.push_back(temp);
 }
 
-void LoadObject(fs::path filename, std::vector<vertexf>& vertexBin)
+void LoadObject(const std::string& filename, std::vector<vertexf>& vertexBin)
 {
     std::vector<vec3f> v, vn;
     std::vector<vec2f> vt;

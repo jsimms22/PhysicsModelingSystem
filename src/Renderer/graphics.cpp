@@ -85,13 +85,13 @@ void DrawModelMesh(std::shared_ptr<IModel> pModel)
     /* Model matrix */
     mat4x4_mul(matrices.model, matrices.rotation, matrices.scaling);
     mat4x4_mul(matrices.model, matrices.position, matrices.model);
-    
-    shader->Attach();
 
-    glUniformMatrix4fv(glGetUniformLocation(shader->GetID(), "model"), 1, GL_FALSE, matrices.model.data->data);
+    // TODO: offload normal scaling to here from the vertex shaders
 
+    shader->SetUniform4fm("model", matrices.model);
+
+    shader->Bind();
     mesh->m_VA0.Bind();
-
     if (1 == mesh->m_instanceCount) {
         if (mesh->m_indices.size() == 0) { 
             glDrawArrays(mode, 0, mesh->m_vertices.size()); 
@@ -101,7 +101,6 @@ void DrawModelMesh(std::shared_ptr<IModel> pModel)
     } else {
         glDrawElementsInstanced(mode, mesh->m_indices.size(), GL_UNSIGNED_INT, 0, mesh->m_instanceCount); 
     }
-
-    shader->Detach();
     mesh->m_VA0.Unbind();
+    shader->Unbind();
 }

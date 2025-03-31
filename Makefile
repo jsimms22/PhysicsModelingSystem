@@ -78,15 +78,15 @@ clean/all:
 
 run: 
 	$(MAKE) release
-	@./$(OUTPUT);
+	@$(OUTPUT);
 
 run/unoptimized: 
 	$(MAKE) unoptimized
-	@./$(OUTPUT);
+	@$(OUTPUT);
 
 run/debug:
 	$(MAKE) debug
-	@./$(DEBUG);
+	@$(DEBUG);
 
 rebuild:
 	$(MAKE) clean

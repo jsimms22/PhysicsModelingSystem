@@ -19,13 +19,15 @@ public:
     EditorCamera(const vec3f& _pos, const uint32_t& _width, const uint32_t& _height, const mat4x4f& matrix = {})
         : Camera(matrix), m_position{_pos}, m_resetLoc{_pos}, m_width{_width}, m_height{_height} {}
     
-    void UpdateMatrix(float FOVdeg, float nearPlane, float farPlane);
+    void Update();
+    void UpdatePosition(GLFWwindow* window);
+    void ResetCamera(GLFWwindow* window);
+
+    void UpdateMatrix();
     
     void UpdateUniform(uint32_t shaderID, std::string uniform);
 
-    void UpdatePosition(GLFWwindow* window);
-
-    void ResetCamera(GLFWwindow* window);
+    const vec3f& GetPosition() const { return m_position; }
 
     // EditorCamera "eye" location
     vec3f m_position;
@@ -50,4 +52,8 @@ public:
     // Various matrices for interacting with shaders
     mat4x4f m_viewMatrix;
     mat4x4f m_projectionMatrix;
+    // Information needed to input to the camera view and projection matrices
+    float m_FOV = 25.0f;
+    float m_nearPlane = 0.1f;
+    float m_farPlane = 1000.0f;
 };

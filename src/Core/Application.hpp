@@ -17,10 +17,23 @@ public:
     ~Application() = default;
 
     Window* GetWindow() { return m_pWindow.get(); }
+    GLFWwindow* GetGLFWwindow() { return m_pWindow->GetWindowPtr(); }
 
     void Close();
 
-    std::shared_ptr<Application> Get() { return m_pInstance.lock(); }
+    static std::shared_ptr<Application> GetApplication() 
+    {
+        if (auto instance = s_instance.lock())
+        {
+            return instance;
+        }
+        else
+        {
+            auto newInstance = std::make_shared<Application>();
+            s_instance = newInstance;  // Ensure instance is set only once
+            return newInstance;
+        }
+    }
 
 private: // Methods
     void Run();
@@ -35,8 +48,9 @@ private: // Members
     // TODO: Need a better way to track stats
     std::size_t m_totalModels = 0;
     std::size_t m_totalFrames = 0;
+    
     // Allows Application to participate in its own lifetime
-    std::weak_ptr<Application> m_pInstance;
+    static std::weak_ptr<Application> s_instance;
 
 private: // Friends
     friend int ::main(int argc, char** argv);

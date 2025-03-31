@@ -1,30 +1,27 @@
 // vendors
 // project headers
+#include "../Core/Application.hpp"
 #include "../Renderer/EditorCamera.hpp"
 // std library
 
-void EditorCamera::UpdateMatrix(float FOVdeg, float nearPlane, float farPlane)
+void EditorCamera::Update()
+{
+    auto app = Application::GetApplication();
+    if (app) {
+        ResetCamera(app->GetGLFWwindow()); // checks if user wants to reset camera to initial position
+        UpdatePosition(app->GetGLFWwindow());  // use wasd + shift + ctrl
+    }
+    UpdateMatrix();
+}
+
+void EditorCamera::UpdateMatrix()
 {
     vec3_add(m_direction, m_position, m_orientation);
     mat4x4_lookAt(m_viewMatrix, m_position, m_direction, m_up);
-    mat4x4_projection(m_projectionMatrix, static_cast<float>(FOVdeg*(M_PI / 180.0f)), 
-                      static_cast<float>(m_width / m_height), nearPlane, farPlane);
+    mat4x4_projection(m_projectionMatrix, static_cast<float>(m_FOV*(M_PI / 180.0f)), 
+                      static_cast<float>(m_width / m_height), m_nearPlane, m_farPlane);
     
     mat4x4_mul(m_cameraMatrix, m_projectionMatrix, m_viewMatrix);
-}
-
-void EditorCamera::UpdateUniform(uint32_t shaderID, std::string uniform)
-{
-    // Export the view and projection matrix to the shader
-    if (uniform == "cameraMatrix") {
-        glUniformMatrix4fv(glGetUniformLocation(shaderID, "cameraMatrix"), 1, GL_FALSE, m_cameraMatrix.data->data);
-    }
-    if (uniform == "cameraPosition") {
-        glUniform3f(glGetUniformLocation(shaderID, "cameraPosition"), 
-                                         m_position.data[0], 
-                                         m_position.data[1], 
-                                         m_position.data[2]);
-    }
 }
 
 void EditorCamera::UpdatePosition(GLFWwindow* window)

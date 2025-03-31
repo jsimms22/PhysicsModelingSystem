@@ -11,10 +11,7 @@
 #include "../Renderer/ElementBuffer.hpp"
 #include "../Renderer/Texture.hpp"
 // std library
-#include <filesystem>
 #include <vector>
-
-namespace fs = std::filesystem;
 
 void ProcessVertex(std::vector<vertexf>& vertexBin, 
                     std::vector<std::string>& vertexMarker, 
@@ -22,7 +19,7 @@ void ProcessVertex(std::vector<vertexf>& vertexBin,
                     std::vector<vec2f>& vt, 
                     std::vector<vec3f>& vn);
 
-void LoadObject(fs::path filename, std::vector<vertexf>& vertexBin);
+void LoadObject(const std::string& filename, std::vector<vertexf>& vertexBin);
 
 // Vertex layout: span of 11 if fully packed
 // { x y z }{ n1 n2 n3 }{ tx1 tx2 }{ r g b }
@@ -35,7 +32,7 @@ public:
          std::vector<mat4x4f> matrices = {}) 
         : m_vertices{vertices}, m_instanceCount{instances}, m_instanceMatrices{matrices} {}
 
-    Mesh(fs::path filename, 
+    Mesh(const std::string& filename, 
          int32_t instances = 1, 
          std::vector<mat4x4f> matrices = {});
 
