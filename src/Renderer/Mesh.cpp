@@ -1,7 +1,6 @@
 // vendors
 // project headers
 #include "../Renderer/Mesh.hpp"
-#include "../Utils/utility.hpp"
 // std library
 #include <fstream>
 #include <sstream>
@@ -104,7 +103,27 @@ Mesh::Mesh(const std::string& filename, int32_t instances /* = 1*/, std::vector<
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-void ProcessVertex(std::vector<vertexf>& vertexBin, 
+// Hash function for mapping specific strings to integers
+int Mesh::HashString(const std::string& str) {
+    if (str == "v") return 1;
+    if (str == "vt") return 2;
+    if (str == "vn") return 3;
+    if (str == "f") return 4;
+    return 0;
+}
+
+// Function to split a string based on a delimiter
+std::vector<std::string> Mesh::SplitString(const std::string& str, char delimiter) {
+    std::vector<std::string> tokens;
+    std::stringstream ss(str);
+    std::string token;
+
+    while (std::getline(ss, token, delimiter)) { tokens.push_back(token); }
+
+    return tokens;
+}
+
+void Mesh::ProcessVertex(std::vector<vertexf>& vertexBin, 
                     std::vector<std::string>& vertexMarker, 
                     std::vector<vec3f>& v, 
                     std::vector<vec2f>& vt, 
@@ -121,7 +140,7 @@ void ProcessVertex(std::vector<vertexf>& vertexBin,
     vertexBin.push_back(temp);
 }
 
-void LoadObject(const std::string& filename, std::vector<vertexf>& vertexBin)
+void Mesh::LoadObject(const std::string& filename, std::vector<vertexf>& vertexBin)
 {
     std::vector<vec3f> v, vn;
     std::vector<vec2f> vt;

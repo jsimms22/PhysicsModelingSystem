@@ -11,14 +11,7 @@
 #include "../Renderer/Texture.hpp"
 // std library
 #include <vector>
-
-void ProcessVertex(std::vector<vertexf>& vertexBin, 
-                    std::vector<std::string>& vertexMarker, 
-                    std::vector<vec3f>& v, 
-                    std::vector<vec2f>& vt, 
-                    std::vector<vec3f>& vn);
-
-void LoadObject(const std::string& filename, std::vector<vertexf>& vertexBin);
+#include <string>
 
 // Vertex layout: span of 11 if fully packed
 // { x y z }{ n1 n2 n3 }{ tx1 tx2 }{ r g b }
@@ -51,4 +44,19 @@ public:
     std::vector<mat4x4f> m_instanceMatrices;
 
     VertexArray m_VA0;
+
+private:
+     // Hash function for mapping specific strings to integers
+     int HashString(const std::string& str);
+
+     // Function to split a string based on a delimiter
+     std::vector<std::string> SplitString(const std::string& str, char delimiter);
+
+     void ProcessVertex(std::vector<vertexf>& vertexBin, 
+                         std::vector<std::string>& vertexMarker, 
+                         std::vector<vec3f>& v, 
+                         std::vector<vec2f>& vt, 
+                         std::vector<vec3f>& vn);
+
+     void LoadObject(const std::string& filename, std::vector<vertexf>& vertexBin);
 };

@@ -76,16 +76,7 @@
         {
             "name": "debug",
             "buildLog": "",
-            "makeArgs": ["debug"],
-            "makeDirectory": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\",
-            "makefilePath": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\makefile",
-            "makePath": "C:\\msys64\\usr\\bin\\",
-            "problemMatchers": []
-        },
-        {
-            "name": "release",
-            "buildLog": "",
-            "makeArgs": ["run"],
+            "makeArgs": ["rebuild/debug","copy/debug"],
             "makeDirectory": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\",
             "makefilePath": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\makefile",
             "makePath": "C:\\msys64\\usr\\bin\\",

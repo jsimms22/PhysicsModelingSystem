@@ -38,8 +38,9 @@ TODO:
 - move uniform types list into the shader constructor
 - add instanced rendering for models
 - update floor/terrain to be "infinite" by default
-- add simple gravity forces 
-- add simple non-elastic collision forces
 - refactor model update part of the game loop
+- add a logging library (probably spdlog)
+- (delayed) add simple gravity forces 
+- (delayed) add simple non-elastic collision forces
 
 ![alt text](image.png)

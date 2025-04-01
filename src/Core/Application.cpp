@@ -44,6 +44,7 @@ void Application::Run()
         
     // Meshes
     std::shared_ptr<Mesh> cubeMesh = std::make_shared<Mesh>("models/cube.obj");
+    //std::shared_ptr<Mesh> carMesh = std::make_shared<Mesh>("models/sportsCar.obj");
     std::shared_ptr<Mesh> sphereMesh = std::make_shared<Mesh>("models/sphere.obj");
     
     std::vector<std::shared_ptr<IModel>> models;

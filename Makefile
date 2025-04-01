@@ -115,3 +115,12 @@ help:
 	@echo "    make rebuild";
 	@echo "    make rebuild/unoptimized";
 	@echo "    make rebuild/debug";
+
+# for running the makefile commands through vscode's interface
+copy:
+	@Xcopy "C:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\models\\" "C:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\bin\\build\\models\\"
+	@Xcopy "C:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\shaders\\" "C:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\bin\\build\\shaders\\"
+
+copy/debug:
+	@Xcopy "C:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\models\\" "C:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\bin\\debug\\models\\"
+	@Xcopy "C:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\shaders\\" "C:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\bin\\debug\\shaders\\"
