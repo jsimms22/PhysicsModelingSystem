@@ -14,6 +14,7 @@
 #include "../Renderer/Graphics.hpp"
 #include "../Renderer/Shader.hpp"
 #include "../Renderer/EditorCamera.hpp"
+#include "../Renderer/Renderer.hpp"
 #include "../Scene/Model.hpp"
 #include "../Utils/utility.hpp"
 // std library
@@ -22,18 +23,14 @@
 #include <vector>
 #include <stdexcept>
 #include <cmath>
+#include <string>
 
-float randf()
+// Define the static member variable outside the class
+std::weak_ptr<Application> Application::s_instance;
+
+Application::Application(Private p)
 {
-	return -1.0f + (rand() / (RAND_MAX / 2.0f));
-}
-
-Application::Application()
-{
-    m_pInstance = Application::Get();
-
     WindowProps props{};
-
     m_pWindow = std::make_unique<Window>(props);
 }
 
@@ -42,111 +39,168 @@ void Application::Run()
     GlobalSettings& settings = GlobalSettings::Instance();
 
     // Shaders
-    std::shared_ptr<Shader> baseShader = std::make_shared<Shader>("shaders/base_vertex.glsl", "shaders/base_fragment.glsl");
+    std::shared_ptr<Shader> multiLights = std::make_shared<Shader>("shaders/multiple_vertex.glsl", "shaders/multiple_fragment.glsl");
     std::shared_ptr<Shader> lightShader = std::make_shared<Shader>("shaders/light_vertex.glsl", "shaders/light_fragment.glsl");
-    //std::shared_ptr<Shader> instanceShader = std::make_shared<Shader>("shaders/instance_vertex.glsl", "shaders/base_fragment.glsl");
         
     // Meshes
     std::shared_ptr<Mesh> cubeMesh = std::make_shared<Mesh>("models/cube.obj");
+    //std::shared_ptr<Mesh> carMesh = std::make_shared<Mesh>("models/sportsCar.obj");
     std::shared_ptr<Mesh> sphereMesh = std::make_shared<Mesh>("models/sphere.obj");
-    std::shared_ptr<Mesh> floorMesh = std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100));
     
-    std::vector<std::shared_ptr<IModel>> modelContainer;
+    std::vector<std::shared_ptr<IModel>> models;
+    std::vector<std::shared_ptr<IModel>> lights;
     // Init floor terrain
-    modelContainer.push_back(CreateModelFactory(ModelType::Terrain, 
-                                                floorMesh, 
-                                                baseShader, 
-                                                {0.0f, -(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f), 0.0f}, 
-                                                settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f));
+    models.push_back(CreateModelFactory(ModelType::Terrain, 
+                                        std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100)), 
+                                        multiLights, 
+                                        {0.0f, -(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f), 0.0f}, 
+                                        100.0f,
+                                        GL_LINES,
+                                        false));
     // Init container
-    modelContainer.push_back(CreateModelFactory(ModelType::Shape, 
-                                                cubeMesh, 
-                                                lightShader, 
-                                                {0.0f, 0.0f, 0.0f}, 
-                                                settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f,
-                                                GL_POINTS));
+    models.push_back(CreateModelFactory(ModelType::Shape, 
+                                        cubeMesh, 
+                                        multiLights, 
+                                        {0.0f, 0.0f, 0.0f}, 
+                                        settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f));
     // Init sphere
-    modelContainer.push_back(CreateModelFactory(ModelType::Shape, 
-                                                sphereMesh, 
-                                                baseShader, 
-                                                {0.0f, 0.0f, 0.0f}, 
-                                                settings.CONTAINER_RADIUS,
-                                                GL_TRIANGLES,
-                                                false));
+    models.push_back(CreateModelFactory(ModelType::Shape, 
+                                        sphereMesh,
+                                        multiLights,
+                                        {25.0f, 0.0f, 25.0f},
+                                        settings.CONTAINER_RADIUS));
     // Init light cube
-    modelContainer.push_back(CreateModelFactory(ModelType::Light, 
-                                                sphereMesh, 
-                                                lightShader, 
-                                                {15.0f, 15.0f, 10.0f}, 
-                                                settings.CONTAINER_RADIUS*0.3f));
-    modelContainer.back()->AddMesh(baseShader, "lightColor");
-    modelContainer.back()->AddMesh(baseShader, "lightPosition");
-    modelContainer.back()->AddMesh(lightShader, "lightColor");
+    lights.push_back(CreateModelFactory(ModelType::Light, 
+                                        cubeMesh, 
+                                        lightShader, 
+                                        {5 + rand()%30, 5.0f, 5 + rand()%30}, 
+                                        settings.CONTAINER_RADIUS*0.3f,
+                                        {.1f,.5f,.9f,.8f}));
+    // Init light cube
+    lights.push_back(CreateModelFactory(ModelType::Light, 
+                                        cubeMesh, 
+                                        lightShader, 
+                                        {5 + -rand()%30, 25.0f, 5 + rand()%30}, 
+                                        settings.CONTAINER_RADIUS*0.3f,
+                                        {.2f,.6f,1.0f,.7f}));
+    // Init light cube
+    lights.push_back(CreateModelFactory(ModelType::Light, 
+                                        cubeMesh, 
+                                        lightShader, 
+                                        {5 + -rand()%30, -5.0f, 5 + -rand()%30}, 
+                                        settings.CONTAINER_RADIUS*0.3f,
+                                        {.3f,.7f,.9f,.6f}));
+    // Init light cube
+    lights.push_back(CreateModelFactory(ModelType::Light, 
+                                        cubeMesh, 
+                                        lightShader, 
+                                        {5 + rand()%30, 12.0f, 5 + -rand()%30}, 
+                                        settings.CONTAINER_RADIUS*0.3f,
+                                        {.4f,.8f,.7f,.5f}));
 
-    // Init camera
     EditorCamera camera = EditorCamera(vec3f({0.0f, 0.0f, 125.0f}), settings.WIDTH, settings.HEIGHT);
-    
-    // Init mouse
     Mouse mouse = Mouse();
+    std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();
 
-    // Simulation stats
     m_fLastFrameTime = static_cast<float>(glfwGetTime());
-
-    // Display all active errors and clear buffer
-    GetWindow()->ClearErrors();
-
-    while (!GetWindow()->ShouldClose()) {
-        /*-------*/
-        /* Input */
-        /*-------*/
-        GetWindow()->ProcessInput();
-        mouse.UpdateMouse(GetWindow()->GetWindowPtr(), mouse.GetX(), mouse.GetY());
-    
+    float theta = 0.0f;
+    while (!Application::GetWindow()->ShouldClose()) 
+    {
         /* Clears back buffer before new buffer is drawn */
-        glClearColor(0.07f, 0.13f, 0.17f, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        renderer->Clear();
 
-        // Update camera position, view, projection matrices
-        camera.ResetCamera(GetWindow()->GetWindowPtr()); // checks if user wants to reset camera to initial position
-        camera.UpdatePosition(GetWindow()->GetWindowPtr());  // use wasd + shift + ctrl
-        camera.UpdateMatrix(45.0f, 0.1f, 1000.0f);
+        Application::GetWindow()->ProcessInput(mouse);
 
-        /*-----------------*/
-        /* Shader Uniforms */
-        /*-----------------*/
-        baseShader->Attach();
-        // Updates and exports uniforms for camera
-        camera.UpdateUniform(baseShader->GetID(), "cameraMatrix");
-        camera.UpdateUniform(baseShader->GetID(), "cameraPosition");
-        baseShader->Detach();
-
-        lightShader->Attach();
-        // Updates and exports uniforms for camera
-        camera.UpdateUniform(lightShader->GetID(), "cameraMatrix");
-        lightShader->Detach();
-        
-        for (std::shared_ptr<IModel> model : modelContainer) { model->Update(); }
+        camera.Update();
 
         // Determine if we can add more entities for stress testing physics calculations
         // TODO: Move to a command system that does not rely on the game loop frame time
         if (1.0f / (static_cast<float>(glfwGetTime()) - m_fLastFrameTime) >= settings.TARGET_FPS - 5 
-            && glfwGetKey(GetWindow()->GetWindowPtr(), GLFW_KEY_V) == GLFW_PRESS 
-            && m_totalModels < settings.MAX_INSTANCES) 
+            && glfwGetKey(Application::GetGLFWwindow(), GLFW_KEY_V) == GLFW_PRESS 
+            && m_totalModels < settings.MAX_INSTANCES) { }
+        
+        /* Shader Uniforms */
+        // Multiple Lights Shader Lighting
+        // directional light:
+        multiLights->SetUniform4fm("cameraMatrix", camera.GetCameraMatrix());
+        multiLights->SetUniform3fv("cameraPosition", camera.GetPosition());
+        multiLights->SetUniform3fv("dirLight.position", {0.0f, -10.0f, 0.0f});
+        multiLights->SetUniform3fv("dirLight.ambient", {0.05f, 0.05f, 0.05f});
+        multiLights->SetUniform3fv("dirLight.diffuse", {0.4f, 0.4f, 0.4f});
+        multiLights->SetUniform3fv("dirLight.specular", {0.5f, 0.5f, 0.5f});
+        // spotlight
+        std::size_t lightIndex {};
+        for (std::shared_ptr<IModel> light : lights) 
         {
+            switch (lightIndex)
+            {
+                case 0:
+                {
+                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], 30.f*sin(theta * (M_PI/180.f))});
+                    break;
+                }
+                case 1:
+                {
+                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), -30.f*sin(theta * (M_PI/180.f)), light->GetPosition()[1]});
+                    break;
+                }
+                case 2:
+                {
+                    light->SetPosition({30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], -30.f*sin(theta * (M_PI/180.f))});
+                    break;
+                }
+                case 3:
+                {
+                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], -30.f*sin(theta * (M_PI/180.f))});
+                    break;
+                }
+            }
+            multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].position", light->GetPosition());
+            multiLights->SetUniform4fv("pointLights[" + std::to_string(lightIndex) + "].color", light->GetColor());
+            multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].ambient", {0.05f, 0.05f, 0.05f});
+            multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].diffuse", {0.8f, 0.8f, 0.8f});
+            multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].specular", {1.0f, 1.0f, 1.0f});
+            multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].constant", 1.0f);
+            multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].linear", 0.04f);
+            multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].quadratic", 0.0075f);
+            ++lightIndex;
         }
-
-        /*----------------*/
-        /* Render objects */
-        /*----------------*/
-        // TODO: implement proper virtual model class and concrete classes
-        for (std::shared_ptr<IModel> model : modelContainer) { DrawModelMesh(model); }
+         
+        // Light Shader Lighting - all lights are the same so use the last one
+        lightShader->SetUniform4fm("cameraMatrix", camera.GetCameraMatrix());
+        for (std::shared_ptr<IModel> light : lights) 
+        {
+            lightShader->SetUniform4fv("lightColor", light->GetColor());
+            renderer->DrawModelMesh(light); 
+        }
+        for (std::shared_ptr<IModel> model : models) 
+        { 
+            renderer->DrawModelMesh(model); 
+        }
                  
-        /*----------------------*/
         /* Clean Up and Measure */
-        /*----------------------*/
-        GetWindow()->SwapBuffers();
-        GetWindow()->PollEvents();
-        GetWindow()->ClearErrors();
-        GetWindow()->DisplayStats(m_totalFrames, m_fLastFrameTime, m_totalModels);
+        Application::GetWindow()->SwapBuffers();
+        Application::GetWindow()->PollEvents();
+        Application::GetWindow()->ClearErrors();
+        DisplayStats();
+        if (theta < 360 || theta >= 0) { 
+            theta = theta + (60 * m_deltaTime); 
+        }
+        else { 
+            theta = theta - (60 * m_deltaTime); 
+        }
     }
+}
+
+void Application::DisplayStats() 
+{
+    GlobalSettings& settings = GlobalSettings::Instance();
+
+    m_deltaTime = static_cast<float>(glfwGetTime()) - m_fLastFrameTime;
+    while (m_deltaTime < 1.0f / settings.TARGET_FPS) {
+        m_deltaTime = static_cast<float>(glfwGetTime()) - m_fLastFrameTime;
+    }
+    m_fLastFrameTime = static_cast<float>(glfwGetTime());
+    m_totalFrames++;
+    if (m_totalFrames % settings.TARGET_FPS == 0) { m_pWindow->UpdateWindowTitle(m_deltaTime, m_totalModels); }
 }

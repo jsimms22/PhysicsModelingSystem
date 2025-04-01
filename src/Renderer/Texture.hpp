@@ -9,6 +9,7 @@
 #include "../Renderer/Shader.hpp"
 // std library
 #include <string>
+#include <memory>
 
 // Placeholder
 class Texture

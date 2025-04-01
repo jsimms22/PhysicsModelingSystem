@@ -30,14 +30,7 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, uint32_t renderMode);
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, uint32_t renderMode, bool isPhysicalized);
 
-// TODO: Think about how much upkeep I really want to do later on
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, uint32_t renderMode);
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, uint32_t renderMode, bool isPhysicalized);
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, uint32_t renderMode, bool isPhysicalized, float scale);
-
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, bool isPhysicalized);
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, bool isPhysicalized, float scale);
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, bool isPhysicalized, float scale, uint32_t renderMode);
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, vec4f color);
 
 class IModel
 {
@@ -71,6 +64,9 @@ public:
     
     virtual bool IsPhysicalized() const = 0;
     virtual void SetIsPhysicalized(bool enablePhysics) = 0;
+
+    virtual vec4f GetColor() const = 0;
+    virtual void SetColor(const vec4f& color) = 0;
 };
 
 class BaseModel : public IModel
@@ -124,6 +120,9 @@ public:
     bool IsPhysicalized() const override { return m_isPhysicalized; }
     void SetIsPhysicalized(bool isPhysicalized) override { m_isPhysicalized = isPhysicalized; }
 
+    virtual vec4f GetColor() const override = 0;
+    virtual void SetColor(const vec4f& color) override = 0;
+
 protected:
     std::shared_ptr<Mesh> m_modelMesh;
     std::shared_ptr<Shader> m_modelShader;
@@ -151,6 +150,9 @@ public:
     void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override { if (shader) { } };
     void Update() override { /*std::cout << "I am a Shape.\n";*/ };
 
+    vec4f GetColor() const override { return {}; };
+    void SetColor(const vec4f& color) override {};
+
     // Methods
 };
 
@@ -171,6 +173,9 @@ public:
     bool SupportsType(const ModelType type) const override { return type == ModelType::Terrain; };
     void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override { if (shader) { } };
     void Update() override { /*std::cout << "I am a Terrain.\n";*/ };
+
+    vec4f GetColor() const override { return {}; };
+    void SetColor(const vec4f& color) override {};
 
     // Methods
 };
@@ -198,10 +203,10 @@ public:
     void UpdateUniform(const uint32_t shaderID, const std::string uniformName); // Updates named shader uniform
 
     // Data Member Methods
-    vec4f GetColor() const { return m_color; }
-    void SetColor(const vec4f& color) { m_color = color; }
+    vec4f GetColor() const override { return m_color; }
+    void SetColor(const vec4f& color) override { m_color = color; }
 
 private:
     std::unordered_map<std::shared_ptr<Shader>, std::vector<std::string>> m_shaderUpdateMap;
-    vec4f m_color = {0.9f, 0.9f, 0.8f, 1.0f};
+    vec4f m_color = {0.4f, 0.9f, 0.8f, 0.9f};
 };

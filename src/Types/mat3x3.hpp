@@ -24,6 +24,10 @@ public:
     ~mat3x3() = default;
     
     void set_all(const UNIT& value);
+
+    vec4<UNIT>& operator[](size_t index) { return data[index]; }
+    vec4<UNIT>* operator->() { return data; }
+    const vec4<UNIT>* operator->() const { return data; }
 };
 // Type aliases
 using mat3x3f = mat3x3<float>;

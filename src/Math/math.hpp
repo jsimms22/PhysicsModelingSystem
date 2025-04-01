@@ -59,15 +59,6 @@ UNIT vec3_dot(vec3<UNIT> in1, vec3<UNIT> in2)
 }
 
 template <typename UNIT>
-void vec4_copy(vec4<UNIT>& out, const vec4<UNIT> in) 
-{ 
-    out.data[0] = in.data[0];
-    out.data[1] = in.data[1];
-    out.data[2] = in.data[2];
-    out.data[3] = in.data[3];
-}
-
-template <typename UNIT>
 UNIT vec3_angle(vec3<UNIT> in1, vec3<UNIT> in2)
 {
     UNIT angle;
@@ -77,6 +68,24 @@ UNIT vec3_angle(vec3<UNIT> in1, vec3<UNIT> in2)
     angle = acos(comp1 / (comp2 * comp3));
     // std::cout << angle << std::endl;
     return static_cast<UNIT>((acos(-1.0)/180.0))*angle;
+}
+
+template <typename UNIT>
+void vec4_copy(vec4<UNIT>& out, const vec4<UNIT> in) 
+{ 
+    out.data[0] = in.data[0];
+    out.data[1] = in.data[1];
+    out.data[2] = in.data[2];
+    out.data[3] = in.data[3];
+}
+
+template <typename UNIT>
+void vec4_add(vec4<UNIT>& out, vec4<UNIT> in1, vec4<UNIT> in2)
+{
+    out.data[0] = in1.data[0] + in2.data[0];
+    out.data[1] = in1.data[1] + in2.data[1];
+    out.data[2] = in1.data[2] + in2.data[2];
+    out.data[3] = in1.data[3] + in2.data[3];
 }
 
 // Unit/Identity Matrix

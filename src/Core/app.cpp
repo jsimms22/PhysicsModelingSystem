@@ -6,7 +6,9 @@
 
 int main(int argc, char** argv)
 {
-    std::unique_ptr<Application> app = std::make_unique<Application>();
+    auto app = Application::Create();
+
+    std::cout << "Current App reference count: " << app.use_count() << std::endl;
     
     app->Run();
 

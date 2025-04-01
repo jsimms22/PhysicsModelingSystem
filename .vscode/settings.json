@@ -71,5 +71,23 @@
         "xlocmon": "cpp",
         "xloctime": "cpp",
         "xtree": "cpp"
-    }
+    },
+    "makefile.configurations": [
+        {
+            "name": "debug",
+            "buildLog": "",
+            "makeArgs": ["rebuild/debug","copy/debug"],
+            "makeDirectory": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\",
+            "makefilePath": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\makefile",
+            "makePath": "C:\\msys64\\usr\\bin\\",
+            "problemMatchers": []
+        },
+    ],
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\bin\\debug",
+            "binaryPath": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\bin\\debug\\app",
+            "binaryArgs": []
+        }
+    ]
 }

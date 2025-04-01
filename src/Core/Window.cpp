@@ -2,6 +2,7 @@
 // project headers
 #include "../Core/Window.hpp"
 #include "../Core/globalSettings.hpp"    // Contains our settings singleton
+#include "../Core/Application.hpp"
 // std library
 #include <string>
 #include <stdexcept>
@@ -72,11 +73,16 @@ void Window::PollEvents() { glfwPollEvents(); }
 
 bool Window::ShouldClose() const { return glfwWindowShouldClose(m_pWindow); }
 
-void Window::ProcessInput()
+void Window::ProcessInput(Mouse& mouse)
 {
+    // Display all active errors and clear buffer
+    ClearErrors();
+
     if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS) { 
         glfwSetWindowShouldClose(m_pWindow, true);
     }
+    
+    mouse.UpdateMouse(m_pWindow, mouse.GetX(), mouse.GetY());
 }
 
 void Window::ClearErrors() const
@@ -84,19 +90,6 @@ void Window::ClearErrors() const
     while (glGetError() != GL_NO_ERROR) {
         std::cout << glGetError() << std::endl;
     }
-}
-
-void Window::DisplayStats(std::size_t& totalFrames, float& lastFrameTime, std::size_t numActive)
-{
-    GlobalSettings& settings = GlobalSettings::Instance();
-
-    float dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
-    while (dt < 1.0f / settings.TARGET_FPS) {
-        dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
-    }
-    lastFrameTime = static_cast<float>(glfwGetTime());
-    totalFrames++;
-    if (totalFrames % 60 == 0) { UpdateWindowTitle(dt, numActive); }
 }
 
 void Window::UpdateWindowTitle(float dt, int numActive)

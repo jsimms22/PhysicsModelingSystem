@@ -66,6 +66,6 @@ Texture::Texture(const std::string& file,
 void Texture::UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, uint32_t unit)
 {
     uint32_t textureLocation = glGetUniformLocation(shader->GetID(), uniform.c_str());
-    shader->Attach();
+    shader->Bind();
     glUniform1i(textureLocation,unit);
 }
