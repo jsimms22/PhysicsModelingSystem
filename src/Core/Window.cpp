@@ -92,21 +92,6 @@ void Window::ClearErrors() const
     }
 }
 
-void Window::DisplayStats()
-{
-    GlobalSettings& settings = GlobalSettings::Instance();
-    auto app = Application::GetApplication();
-    if (!app) { return; }
-
-    app->m_deltaTime = static_cast<float>(glfwGetTime()) - app->m_fLastFrameTime;
-    while (app->m_deltaTime < 1.0f / settings.TARGET_FPS) {
-        app->m_deltaTime = static_cast<float>(glfwGetTime()) - app->m_fLastFrameTime;
-    }
-    app->m_fLastFrameTime = static_cast<float>(glfwGetTime());
-    app->m_totalFrames++;
-    if (app->m_totalFrames % settings.TARGET_FPS == 0) { UpdateWindowTitle(app->m_deltaTime, app->m_totalModels); }
-}
-
 void Window::UpdateWindowTitle(float dt, int numActive)
 {
     // sprintf(title, "FPS : %-4.0f | Balls : %-10d", 1.0 / dt, numActive);

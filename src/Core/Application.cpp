@@ -25,15 +25,10 @@
 #include <cmath>
 #include <string>
 
-float randf()
-{
-	return -1.0f + (rand() / (RAND_MAX / 2.0f));
-}
-
 // Define the static member variable outside the class
 std::weak_ptr<Application> Application::s_instance;
 
-Application::Application()
+Application::Application(Private p)
 {
     WindowProps props{};
     m_pWindow = std::make_unique<Window>(props);
@@ -186,8 +181,25 @@ void Application::Run()
         Application::GetWindow()->SwapBuffers();
         Application::GetWindow()->PollEvents();
         Application::GetWindow()->ClearErrors();
-        Application::GetWindow()->DisplayStats();
-        if (theta < 360 || theta >= 0) { theta = theta + (60 * m_deltaTime); }
-        else { theta = theta - (60 * m_deltaTime); }
+        DisplayStats();
+        if (theta < 360 || theta >= 0) { 
+            theta = theta + (60 * m_deltaTime); 
+        }
+        else { 
+            theta = theta - (60 * m_deltaTime); 
+        }
     }
+}
+
+void Application::DisplayStats() 
+{
+    GlobalSettings& settings = GlobalSettings::Instance();
+
+    m_deltaTime = static_cast<float>(glfwGetTime()) - m_fLastFrameTime;
+    while (m_deltaTime < 1.0f / settings.TARGET_FPS) {
+        m_deltaTime = static_cast<float>(glfwGetTime()) - m_fLastFrameTime;
+    }
+    m_fLastFrameTime = static_cast<float>(glfwGetTime());
+    m_totalFrames++;
+    if (m_totalFrames % settings.TARGET_FPS == 0) { m_pWindow->UpdateWindowTitle(m_deltaTime, m_totalModels); }
 }

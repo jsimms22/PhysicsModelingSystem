@@ -46,8 +46,6 @@ public:
     void ProcessInput(Mouse& mouse);
     // Clear openGL error buffer
     void ClearErrors() const;
-    // Calculate average FPS
-    void DisplayStats();
     // Update title bar
     void UpdateWindowTitle(float dt, int numActive);
 
