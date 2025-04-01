@@ -5,6 +5,7 @@
 #include "../../vendor/GL/include/glew.h"
 #include "../../vendor/GLFW/include/glfw3.h"
 // project headers
+#include "../Core/Mouse.hpp"
 // std library
 #include <iostream>
 #include <memory>
@@ -42,7 +43,7 @@ public:
     void PollEvents();
     bool ShouldClose() const;
     // determine if user is attempting to close window
-    void ProcessInput();
+    void ProcessInput(Mouse& mouse);
     // Clear openGL error buffer
     void ClearErrors() const;
     // Calculate average FPS

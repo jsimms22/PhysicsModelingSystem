@@ -72,11 +72,16 @@ void Window::PollEvents() { glfwPollEvents(); }
 
 bool Window::ShouldClose() const { return glfwWindowShouldClose(m_pWindow); }
 
-void Window::ProcessInput()
+void Window::ProcessInput(Mouse& mouse)
 {
+    // Display all active errors and clear buffer
+    ClearErrors();
+
     if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS) { 
         glfwSetWindowShouldClose(m_pWindow, true);
     }
+    
+    mouse.UpdateMouse(m_pWindow, mouse.GetX(), mouse.GetY());
 }
 
 void Window::ClearErrors() const

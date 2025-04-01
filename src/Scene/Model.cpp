@@ -177,6 +177,44 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
     }
 }
 
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, vec4f color)
+{
+    switch (type)
+    {   
+        case ModelType::Shape:
+        {
+            std::shared_ptr<Shape> model = std::make_shared<Shape>(mesh);
+            model->SetShader(std::move(shader));
+            model->SetPosition(position);
+            model->SetScale(scale);
+            model->SetColor(color);
+            return model;
+        }
+        case ModelType::Terrain:
+        {
+            std::shared_ptr<Terrain> model = std::make_shared<Terrain>(mesh);
+            model->SetShader(std::move(shader));
+            model->SetPosition(position);
+            model->SetScale(scale);
+            model->SetColor(color);
+            return model;
+        }
+        case ModelType::Light:
+        {
+            std::shared_ptr<Light> model = std::make_shared<Light>(mesh);
+            model->SetShader(std::move(shader));
+            model->SetPosition(position);
+            model->SetScale(scale);
+            model->SetColor(color);
+            return model;
+        }
+        default:
+        {
+            throw std::invalid_argument("Unknown ModelType");
+        }
+    }
+}
+
 void Light::Update()
 { 
     //std::cout << "I am a Light.\n"; 

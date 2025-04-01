@@ -11,7 +11,7 @@ uniform mat4 cameraMatrix;
 out vec3 fragPosition;
 out vec3 fragNormal;  
 out vec2 fragTexCoord;
-out vec4 fragColor;
+//out vec4 fragColor;
 
 void main()
 {
@@ -19,7 +19,7 @@ void main()
     fragPosition = vec3(model * vec4(vertexPosition, 1.0));
     fragNormal = mat3(transpose(inverse(model))) * vertexNormal;
     fragTexCoord = vertexTexCoord;
-    fragColor = vertexColor;
+    //fragColor = vertexColor;
 
     gl_Position = cameraMatrix * vec4(fragPosition, 1.0);
 }

@@ -13,6 +13,11 @@ Scene::~Scene()
 
 }
 /*
+const std::vector<std::shared_ptr<IModel>>& Load()
+{
+    
+}
+
 const std::shared_ptr<IModel>& Scene::CreateModel(const std::string& model_desc) 
 {
     return 

@@ -7,7 +7,6 @@
 // project headers
 #include "../types.hpp"
 #include "../Renderer/VertexArray.hpp"
-#include "../Renderer/VertexBuffer.hpp"
 #include "../Renderer/ElementBuffer.hpp"
 #include "../Renderer/Texture.hpp"
 // std library
