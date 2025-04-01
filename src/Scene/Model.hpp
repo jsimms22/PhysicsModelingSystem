@@ -31,14 +31,6 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, uint32_t renderMode, bool isPhysicalized);
 
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, vec4f color);
-// TODO: Think about how much upkeep I really want to do later on
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, uint32_t renderMode);
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, uint32_t renderMode, bool isPhysicalized);
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, uint32_t renderMode, bool isPhysicalized, float scale);
-
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, bool isPhysicalized);
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, bool isPhysicalized, float scale);
-//std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, bool isPhysicalized, float scale, uint32_t renderMode);
 
 class IModel
 {

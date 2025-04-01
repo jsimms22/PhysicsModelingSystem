@@ -50,8 +50,9 @@ void main()
     vec3 norm = normalize(fragNormal);
     vec3 viewDir = normalize(cameraPosition - fragPosition);
 
+    vec4 result;
     // phase 1: Directional lighting
-    vec4 result = CalcDirLight(dirLight, norm, viewDir);
+    result = CalcDirLight(dirLight, norm, viewDir);
     // phase 2: Point lights
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, fragPosition, viewDir);    
@@ -59,8 +60,8 @@ void main()
     //result += CalcSpotLight(spotLight, norm, fragPosition, viewDir);
 
     // Calc visibility based on distance in the relative z-axis
-    result.w = LinearizeDepth(gl_FragCoord.z) / far;
-    
+    //result.w = LinearizeDepth(gl_FragCoord.z) / far;
+    result.w = 1.0f;
     color = result; // + vec4(ambient, 0.0f);
 }
 

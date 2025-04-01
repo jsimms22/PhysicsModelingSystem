@@ -58,7 +58,9 @@ void Application::Run()
                                         std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100)), 
                                         multiLights, 
                                         {0.0f, -(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f), 0.0f}, 
-                                        100.0f));
+                                        100.0f,
+                                        GL_LINES,
+                                        false));
     // Init container
     models.push_back(CreateModelFactory(ModelType::Shape, 
                                         cubeMesh, 
@@ -105,6 +107,7 @@ void Application::Run()
     std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();
 
     m_fLastFrameTime = static_cast<float>(glfwGetTime());
+    float theta = 0.0f;
     while (!Application::GetWindow()->ShouldClose()) 
     {
         /* Clears back buffer before new buffer is drawn */
@@ -125,15 +128,35 @@ void Application::Run()
         // directional light:
         multiLights->SetUniform4fm("cameraMatrix", camera.GetCameraMatrix());
         multiLights->SetUniform3fv("cameraPosition", camera.GetPosition());
-        multiLights->SetUniform3fv("dirLight.position", {-50.0f, 0.0f, -10.0f});
+        multiLights->SetUniform3fv("dirLight.position", {0.0f, -10.0f, 0.0f});
         multiLights->SetUniform3fv("dirLight.ambient", {0.05f, 0.05f, 0.05f});
         multiLights->SetUniform3fv("dirLight.diffuse", {0.4f, 0.4f, 0.4f});
         multiLights->SetUniform3fv("dirLight.specular", {0.5f, 0.5f, 0.5f});
         // spotlight
         std::size_t lightIndex {};
         for (std::shared_ptr<IModel> light : lights) 
-        {   
-            // Multiple Lights Shader Lighting
+        {
+            switch (lightIndex)
+            {
+                case 0:
+                {
+                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], 25.f*sin(theta * (M_PI/180.f))});
+                    break;
+                }
+                case 1:
+                {
+                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), -25.f*sin(theta * (M_PI/180.f)), light->GetPosition()[1]});
+                    break;
+                }case 2:
+                {
+                    light->SetPosition({30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], -25.f*sin(theta * (M_PI/180.f))});
+                    break;
+                }case 3:
+                {
+                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], -25.f*sin(theta * (M_PI/180.f))});
+                    break;
+                }
+            }
             multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].position", light->GetPosition());
             multiLights->SetUniform4fv("pointLights[" + std::to_string(lightIndex) + "].color", light->GetColor());
             multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].ambient", {0.05f, 0.05f, 0.05f});
@@ -144,20 +167,25 @@ void Application::Run()
             multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].quadratic", 0.0075f);
             ++lightIndex;
         }
-        
+         
+        // Light Shader Lighting - all lights are the same so use the last one
+        lightShader->SetUniform4fm("cameraMatrix", camera.GetCameraMatrix());
         for (std::shared_ptr<IModel> light : lights) 
-        { 
-            // Light Shader Lighting - all lights are the same so use the last one
-            lightShader->SetUniform4fm("cameraMatrix", camera.GetCameraMatrix());
+        {
             lightShader->SetUniform4fv("lightColor", light->GetColor());
             renderer->DrawModelMesh(light); 
         }
-        for (std::shared_ptr<IModel> model : models) { renderer->DrawModelMesh(model); }
+        for (std::shared_ptr<IModel> model : models) 
+        { 
+            renderer->DrawModelMesh(model); 
+        }
                  
         /* Clean Up and Measure */
         Application::GetWindow()->SwapBuffers();
         Application::GetWindow()->PollEvents();
         Application::GetWindow()->ClearErrors();
         Application::GetWindow()->DisplayStats(m_totalFrames, m_fLastFrameTime, m_totalModels);
+        if (theta < 360 || theta >= 0) { ++theta * 2.0f * (m_fLastFrameTime / settings.TARGET_FPS); }
+        else { --theta * 2.0f * (m_fLastFrameTime / settings.TARGET_FPS); }
     }
 }

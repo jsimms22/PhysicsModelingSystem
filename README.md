@@ -41,3 +41,5 @@ TODO:
 - add simple gravity forces 
 - add simple non-elastic collision forces
 - refactor model update part of the game loop
+
+![alt text](image.png)
