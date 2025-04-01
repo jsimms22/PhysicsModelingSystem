@@ -47,7 +47,7 @@ public:
     // Clear openGL error buffer
     void ClearErrors() const;
     // Calculate average FPS
-    void DisplayStats(std::size_t& totalFrames, float& lastFrameTime, std::size_t numActive);
+    void DisplayStats();
     // Update title bar
     void UpdateWindowTitle(float dt, int numActive);
 

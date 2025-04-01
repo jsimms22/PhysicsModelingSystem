@@ -112,7 +112,9 @@ uint32_t Shader::GetUniformLocation(const std::string& uniformName)
 
 std::string Shader::ReadFileContents(const std::string& filename)
 {
+#ifdef DEBUG
     std::cout << "Compiling: " << filename << std::endl;
+#endif
     std::stringstream buffer;
     try 
     {

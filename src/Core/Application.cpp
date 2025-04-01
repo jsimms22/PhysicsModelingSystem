@@ -140,20 +140,22 @@ void Application::Run()
             {
                 case 0:
                 {
-                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], 25.f*sin(theta * (M_PI/180.f))});
+                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], 30.f*sin(theta * (M_PI/180.f))});
                     break;
                 }
                 case 1:
                 {
-                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), -25.f*sin(theta * (M_PI/180.f)), light->GetPosition()[1]});
+                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), -30.f*sin(theta * (M_PI/180.f)), light->GetPosition()[1]});
                     break;
-                }case 2:
+                }
+                case 2:
                 {
-                    light->SetPosition({30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], -25.f*sin(theta * (M_PI/180.f))});
+                    light->SetPosition({30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], -30.f*sin(theta * (M_PI/180.f))});
                     break;
-                }case 3:
+                }
+                case 3:
                 {
-                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], -25.f*sin(theta * (M_PI/180.f))});
+                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], -30.f*sin(theta * (M_PI/180.f))});
                     break;
                 }
             }
@@ -184,8 +186,8 @@ void Application::Run()
         Application::GetWindow()->SwapBuffers();
         Application::GetWindow()->PollEvents();
         Application::GetWindow()->ClearErrors();
-        Application::GetWindow()->DisplayStats(m_totalFrames, m_fLastFrameTime, m_totalModels);
-        if (theta < 360 || theta >= 0) { ++theta * 2.0f * (m_fLastFrameTime / settings.TARGET_FPS); }
-        else { --theta * 2.0f * (m_fLastFrameTime / settings.TARGET_FPS); }
+        Application::GetWindow()->DisplayStats();
+        if (theta < 360 || theta >= 0) { theta = theta + (60 * m_deltaTime); }
+        else { theta = theta - (60 * m_deltaTime); }
     }
 }

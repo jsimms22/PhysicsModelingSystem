@@ -35,7 +35,7 @@ public:
     vec3f TERRAIN_FLOOR {0.0f, -(CONTAINER_RADIUS * 2.0f + VERLET_RADIUS * 3.0f), 0.0f};
 
     // Game Loop Settings
-    uint32_t TARGET_FPS {60};
+    uint32_t TARGET_FPS {144};
     std::size_t MAX_INSTANCES {300};
     uint32_t ADDITION_SPEED {1};
     //int VERTEX_LIMIT {2000};

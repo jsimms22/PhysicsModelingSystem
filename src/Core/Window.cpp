@@ -2,6 +2,7 @@
 // project headers
 #include "../Core/Window.hpp"
 #include "../Core/globalSettings.hpp"    // Contains our settings singleton
+#include "../Core/Application.hpp"
 // std library
 #include <string>
 #include <stdexcept>
@@ -91,17 +92,19 @@ void Window::ClearErrors() const
     }
 }
 
-void Window::DisplayStats(std::size_t& totalFrames, float& lastFrameTime, std::size_t numActive)
+void Window::DisplayStats()
 {
     GlobalSettings& settings = GlobalSettings::Instance();
+    auto app = Application::GetApplication();
+    if (!app) { return; }
 
-    float dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
-    while (dt < 1.0f / settings.TARGET_FPS) {
-        dt = static_cast<float>(glfwGetTime()) - lastFrameTime;
+    app->m_deltaTime = static_cast<float>(glfwGetTime()) - app->m_fLastFrameTime;
+    while (app->m_deltaTime < 1.0f / settings.TARGET_FPS) {
+        app->m_deltaTime = static_cast<float>(glfwGetTime()) - app->m_fLastFrameTime;
     }
-    lastFrameTime = static_cast<float>(glfwGetTime());
-    totalFrames++;
-    if (totalFrames % 60 == 0) { UpdateWindowTitle(dt, numActive); }
+    app->m_fLastFrameTime = static_cast<float>(glfwGetTime());
+    app->m_totalFrames++;
+    if (app->m_totalFrames % settings.TARGET_FPS == 0) { UpdateWindowTitle(app->m_deltaTime, app->m_totalModels); }
 }
 
 void Window::UpdateWindowTitle(float dt, int numActive)

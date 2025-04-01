@@ -45,6 +45,7 @@ private: // Members
     bool m_bRunning = false;
     bool m_bMinimized = false;
     float m_fLastFrameTime = 0.0f;
+    float m_deltaTime = 0.0f;
     // TODO: Need a better way to track stats
     std::size_t m_totalModels = 0;
     std::size_t m_totalFrames = 0;
@@ -54,4 +55,5 @@ private: // Members
 
 private: // Friends
     friend int ::main(int argc, char** argv);
+    friend Window;
 };
