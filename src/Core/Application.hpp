@@ -1,9 +1,12 @@
+#pragma once
+
 // vendors
 #define GLFW_INCLUDE_NONE
 #include "../../vendor/GL/include/glew.h"
 #include "../../vendor/GLFW/include/glfw3.h"
 // project headers
-#include "../Core/Window.hpp"
+#include "../Platform/Windows/WindowsWindow.hpp"
+#include "../Events/Event.hpp"
 // std library
 #include <memory>
 #include <cstdlib>
@@ -16,7 +19,7 @@ class Application : public std::enable_shared_from_this<Application>
 public:
     Application(Private p);
 
-    Window* GetWindow() { return m_pWindow.get(); }
+    std::shared_ptr<IWindow> GetWindow() { return m_pWindow; }
     GLFWwindow* GetGLFWwindow() { return m_pWindow->GetWindowPtr(); }
 
     void Close();
@@ -45,8 +48,12 @@ private: // Methods
     bool OnWindowResize();
     void DisplayStats();
 
+    void ProcessInput(Mouse& mouse);
+
+    void ClearErrors() const;
+
 private: // Members
-    std::unique_ptr<Window> m_pWindow;
+    std::shared_ptr<IWindow> m_pWindow;
     bool m_bRunning = false;
     bool m_bMinimized = false;
     float m_fLastFrameTime = 0.0f;

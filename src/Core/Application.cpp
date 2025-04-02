@@ -10,7 +10,6 @@
 #include "../Core/Application.hpp"
 #include "../Core/globalSettings.hpp"    // Contains our settings singleton 
 #include "../Core/Mouse.hpp"
-#include "../Core/Window.hpp"
 #include "../Core/sys_callbacks.hpp"
 
 #include "../Physics/force.hpp"
@@ -34,8 +33,7 @@ std::weak_ptr<Application> Application::s_instance;
 
 Application::Application(Private p)
 {
-    WindowProps props{};
-    m_pWindow = std::make_unique<Window>(props);
+    m_pWindow = IWindow::Create();
     WindowResizeEvent e(1400,1400);
 }
 
@@ -114,7 +112,7 @@ void Application::Run()
         /* Clears back buffer before new buffer is drawn */
         renderer->Clear();
 
-        Application::GetWindow()->ProcessInput(mouse);
+        ProcessInput(mouse);
 
         camera.Update();
 
@@ -186,7 +184,7 @@ void Application::Run()
         /* Clean Up and Measure */
         Application::GetWindow()->SwapBuffers();
         Application::GetWindow()->PollEvents();
-        Application::GetWindow()->ClearErrors();
+        ClearErrors();
         DisplayStats();
         if (theta < 360 || theta >= 0) { 
             theta = theta + (60 * m_deltaTime); 
@@ -208,4 +206,23 @@ void Application::DisplayStats()
     m_fLastFrameTime = static_cast<float>(glfwGetTime());
     m_totalFrames++;
     if (m_totalFrames % settings.TARGET_FPS == 0) { m_pWindow->UpdateWindowTitle(m_deltaTime, m_totalModels); }
+}
+
+void Application::ProcessInput(Mouse& mouse)
+{
+    // Display all active errors and clear buffer
+    ClearErrors();
+
+    if (glfwGetKey(m_pWindow->GetWindowPtr(), GLFW_KEY_ESCAPE) == GLFW_PRESS) { 
+        glfwSetWindowShouldClose(m_pWindow->GetWindowPtr(), true);
+    }
+    
+    mouse.UpdateMouse(m_pWindow->GetWindowPtr(), mouse.GetX(), mouse.GetY());
+}
+
+void Application::ClearErrors() const
+{
+    while (glGetError() != GL_NO_ERROR) {
+        std::cout << glGetError() << std::endl;
+    }
 }
