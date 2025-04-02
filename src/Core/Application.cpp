@@ -4,24 +4,28 @@
 #include "../../vendor/GLFW/include/glfw3.h"
 // project headers
 #include "../fwd_math.hpp"
+
 #include "../types.hpp"
+
 #include "../Core/Application.hpp"
 #include "../Core/globalSettings.hpp"    // Contains our settings singleton 
 #include "../Core/Mouse.hpp"
 #include "../Core/Window.hpp"
 #include "../Core/sys_callbacks.hpp"
+
 #include "../Physics/force.hpp"
+
 #include "../Renderer/Graphics.hpp"
 #include "../Renderer/Shader.hpp"
 #include "../Renderer/EditorCamera.hpp"
 #include "../Renderer/Renderer.hpp"
+
 #include "../Scene/Model.hpp"
-#include "../Utils/utility.hpp"
+
+#include "../Events/WindowEvents.hpp"
+#include "../Events/ApplicationEvents.hpp"
 // std library
-#include <iostream>
-#include <array>
 #include <vector>
-#include <stdexcept>
 #include <cmath>
 #include <string>
 
@@ -32,6 +36,7 @@ Application::Application(Private p)
 {
     WindowProps props{};
     m_pWindow = std::make_unique<Window>(props);
+    WindowResizeEvent e(1400,1400);
 }
 
 void Application::Run()
