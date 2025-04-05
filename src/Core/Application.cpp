@@ -43,8 +43,8 @@ void Application::OnEvent(Event& e)
 {
     std::cout << e << std::endl;
     EventNotifier notifier(e);
-    notifier.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) -> bool { this->OnWindowClose(e); });
-    notifier.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) -> bool { this->OnWindowResize(e); });
+    notifier.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) -> bool { return this->OnWindowClose(e); });
+    notifier.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) -> bool { return this->OnWindowResize(e); });
 }
 
 bool Application::OnWindowResize(WindowResizeEvent& e)
@@ -154,7 +154,7 @@ void Application::Run()
         Renderer::Clear();
 
         if (Input::IsKeyPressed(KeyCode::Escape)) { Application::Close(); }
-
+        camera.UpdateViewport(m_spWindow->GetWidth(),m_spWindow->GetHeight());
         camera.OnUpdate();
 
         /* Shader Uniforms */
@@ -220,6 +220,7 @@ void Application::Run()
         m_spWindow->OnUpdate();
         ClearErrors();
         DisplayStats();
+
         if (theta < 360 || theta >= 0) { 
             theta = theta + (60 * m_stats.deltaTime); 
         }

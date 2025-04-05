@@ -78,7 +78,7 @@
         {
             "name": "debug",
             "buildLog": "",
-            "makeArgs": ["rebuild/debug","copy/debug"],
+            "makeArgs": ["debug"],
             "makeDirectory": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\",
             "makefilePath": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\makefile",
             "makePath": "C:\\msys64\\usr\\bin\\",

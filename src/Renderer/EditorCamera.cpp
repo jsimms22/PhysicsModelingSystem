@@ -35,6 +35,7 @@ void EditorCamera::UpdateViewport(float width, float height)
 {
     m_width = width;
     m_height = height;
+    m_aspectRatio = m_width / m_height;
 }
 
 void EditorCamera::UpdatePosition()

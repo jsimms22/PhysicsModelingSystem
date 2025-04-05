@@ -28,6 +28,9 @@ https://open.gl/drawing
 GLFW Windows Guide:
 https://www.glfw.org/docs/3.3/window_guide.html
 
+GLFW Events Guide:
+https://www.glfw.org/docs/3.3/input_guide.html#events
+
 Math Overview:
 https://morning-flow.com/2023/02/06/the-math-behind-the-lookat-transform/
 https://www.songho.ca/opengl/gl_projectionmatrix.html
