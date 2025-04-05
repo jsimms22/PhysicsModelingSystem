@@ -71,7 +71,8 @@
         "xlocmon": "cpp",
         "xloctime": "cpp",
         "xtree": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "string_view": "cpp"
     },
     "makefile.configurations": [
         {

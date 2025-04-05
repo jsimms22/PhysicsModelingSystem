@@ -2,7 +2,6 @@
 
 // vendors
 // project headers
-#include "../../Events/EventTypes.hpp"
 // std library
 
 class AsyncEvent

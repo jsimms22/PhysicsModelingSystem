@@ -3,17 +3,10 @@
 // vendors
 // project headers
 #include "../Events/Event.hpp"
-#include "../Events/EventTypes.hpp"
 // std library
 #include <string_view>
 #include <sstream>
-
-// WindowClose,
-// WindowOpen,
-// WindowResize,
-// WindowFocus,
-// WindowLostFocus,
-// WindowMove,
+#include <cstdint>
 
 /* WINDOWS CLOSE EVENT */
 class WindowCloseEvent : public Event
@@ -22,7 +15,7 @@ public:
     WindowCloseEvent() {}
 
     static std::bitset<EventCategoryFlag::BitLength> GetStaticCategory() { return m_category; };
-    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() { return GetStaticCategory(); };
+    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const { return GetStaticCategory(); };
     static EventType GetStaticType() { return EventType::WindowClose; }
     virtual EventType GetType() const { return GetStaticType(); }
     virtual const char* GetName() const { return "WindowCloseEvent"; };
@@ -30,10 +23,6 @@ public:
 private:
     static const std::bitset<EventCategoryFlag::BitLength> m_category;
 };
-
-const std::bitset<EventCategoryFlag::BitLength> WindowCloseEvent::m_category = {EventCategoryFlag::Input | 
-                                                                                EventCategoryFlag::Application | 
-                                                                                EventCategoryFlag::Window};
 
 /* WINDOWS OPEN EVENT */
 class WindowOpenEvent : public Event
@@ -65,10 +54,6 @@ private:
     static const std::bitset<EventCategoryFlag::BitLength> m_category;
 };
 
-const std::bitset<EventCategoryFlag::BitLength> WindowOpenEvent::m_category = {EventCategoryFlag::Input | 
-                                                                               EventCategoryFlag::Application | 
-                                                                               EventCategoryFlag::Window};
-
 /* WINDOWS RESIZE EVENT */
 class WindowResizeEvent : public Event
 {
@@ -98,7 +83,3 @@ private:
 
     static const std::bitset<EventCategoryFlag::BitLength> m_category;
 };
-
-const std::bitset<EventCategoryFlag::BitLength> WindowResizeEvent::m_category = {EventCategoryFlag::Input | 
-                                                                                 EventCategoryFlag::Application | 
-                                                                                 EventCategoryFlag::Window};

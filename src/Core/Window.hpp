@@ -10,39 +10,40 @@
 #include <functional>
 #include <string>
 #include <memory>
+#include <cstdint>
 
 struct WindowProps
 {
-    uint32_t m_width;
-    uint32_t m_height;
-    std::string m_title;
+    uint32_t width;
+    uint32_t height;
+    std::string title;
 
-    WindowProps(const std::string& title = "My Application",
-                uint32_t width = 1200,
-                uint32_t height = 1200)
-        : m_width{width}, m_height{height}, m_title{title} {}
+    WindowProps(uint32_t _width = 1200,
+                uint32_t _height = 1200,
+                const std::string& _title = "My Application")
+        : width{_width}, height{_height}, title{_title} {}
 };
 
 class IWindow
 {
 public:
-    using EventCallbackFn = std::function<void>(Event&);
+    using EventCallbackFn = std::function<void(Event&)>;
 
     virtual ~IWindow() = default;
-
-    virtual void SwapBuffers() = 0;
-    virtual void PollEvents() = 0;
-    virtual bool ShouldClose() const = 0;
+    
     virtual void UpdateWindowTitle(float dt, int numActive) = 0;
-    // BAD
-    virtual GLFWwindow* GetWindowPtr() = 0;
+
+    virtual void OnUpdate() = 0;
 
     virtual uint32_t GetWidth() const = 0;
 	virtual uint32_t GetHeight() const = 0;
+
     // Window attributes
     virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
     virtual void SetVSync(bool enabled) = 0;
     virtual bool IsVSync() const = 0;
 
-    static std::shared_ptr<IWindow> Create(const WindowProps& props = WindowProps());
+    virtual void* GetPlatformWindow() const = 0;
+
+    static std::unique_ptr<IWindow> Create(const WindowProps& props = WindowProps());
 };

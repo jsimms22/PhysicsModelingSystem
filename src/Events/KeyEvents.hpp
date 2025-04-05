@@ -3,7 +3,6 @@
 // vendors
 // project headers
 #include "../Events/Event.hpp"
-#include "../Events/EventTypes.hpp"
 // std library
 #include <sstream>
 #include <bitset>
@@ -25,9 +24,6 @@ protected:
 
     static const std::bitset<EventCategoryFlag::BitLength> m_category;
 };
-
-const std::bitset<EventCategoryFlag::BitLength> KeyEvent::m_category {EventCategoryFlag::Input | EventCategoryFlag::Keyboard};
-
 
 /* KEY PRESS EVENT */
 class KeyPressEvent : public KeyEvent
@@ -57,7 +53,7 @@ private:
 class KeyReleaseEvent : public KeyEvent
 {
 public:
-    KeyReleaseEvent(int code, int repeatCount)
+    KeyReleaseEvent(int code)
         : KeyEvent(code) {}
 
     std::string_view ToString() const override

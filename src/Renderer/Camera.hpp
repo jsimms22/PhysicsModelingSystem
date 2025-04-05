@@ -3,6 +3,7 @@
 #include "../fwd_math.hpp"
 #include "../types.hpp"
 #include "../Renderer/Shader.hpp"
+#include "../Events/Event.hpp"
 // std library
 #include <cmath>
 
@@ -14,6 +15,9 @@ public:
         : m_cameraMatrix(matrix) {}
 
     virtual ~Camera() = default;
+
+    virtual void OnUpdate() = 0;
+    virtual void OnEvent(Event& e) = 0;
 
     const mat4x4f& GetCameraMatrix() const { return m_cameraMatrix; }
 

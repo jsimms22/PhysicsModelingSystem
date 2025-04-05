@@ -1,9 +1,10 @@
 // vendors
 // project headers
-#include "../Core/globalSettings.hpp"
 #include "../Physics/force.hpp"
 #include "../Scene/Model.hpp"
 // std library
+
+vec3f GRAVITY = {0.0f,-9.8f,0.0f};
 
 bool IsColliding(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel>& model2)
 {
@@ -19,24 +20,21 @@ void ApplyCollisionForce(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel
 
 void ApplyForces(std::vector<std::shared_ptr<IModel>>& container)
 {
-    // TODO: Rework settings
-    GlobalSettings& settings = GlobalSettings::Instance();
-
     for (std::shared_ptr<IModel>& i_model : container) {
         if (!i_model->IsPhysicalized()) { continue; }
     
         // Apply simple gravity to the balls
         vec3f result;
         //vec3_scale(settings.GRAVITY, static_cast<float>(glfwGetTime()) - lastFrameTime ,settings.GRAVITY);
-        vec3_add(result, settings.GRAVITY, i_model->GetPosition());
+        vec3_add(result, GRAVITY, i_model->GetPosition());
         
         // Only apply normal gravity vector if the model would not clip into the or be below the floor
-        if (((i_model->GetPosition().data[1] - i_model->GetScale()) > settings.TERRAIN_FLOOR.data[1]) && (result.data[1] - i_model->GetScale()) >= settings.TERRAIN_FLOOR.data[1])
+        if (((i_model->GetPosition().data[1] - i_model->GetScale()) > -12.f) && (result.data[1] - i_model->GetScale()) >= -12.f)
         {
             i_model->SetPosition(result);
         } else {
             // If model's bounds has fallen below the floor reset position to floor.y + .5*model height
-            result.data[1] = settings.TERRAIN_FLOOR.data[1] + i_model->GetScale();
+            result.data[1] = -12.f + i_model->GetScale();
             i_model->SetPosition(result);
         }
         

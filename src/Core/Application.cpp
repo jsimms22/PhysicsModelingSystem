@@ -8,9 +8,8 @@
 #include "../types.hpp"
 
 #include "../Core/Application.hpp"
-#include "../Core/globalSettings.hpp"    // Contains our settings singleton 
-#include "../Core/Mouse.hpp"
-#include "../Core/sys_callbacks.hpp"
+//#include "../Core/Mouse.hpp"
+#include "../Core/Input.hpp"
 
 #include "../Physics/force.hpp"
 
@@ -21,26 +20,69 @@
 
 #include "../Scene/Model.hpp"
 
-#include "../Events/WindowEvents.hpp"
-#include "../Events/ApplicationEvents.hpp"
+#include "../Events/EventNotifier.hpp"
 // std library
 #include <vector>
 #include <cmath>
 #include <string>
+#include <functional>
+#include <utility>
 
 // Define the static member variable outside the class
-std::weak_ptr<Application> Application::s_instance;
+std::weak_ptr<Application> Application::s_applicationInstance;
 
 Application::Application(Private p)
 {
-    m_pWindow = IWindow::Create();
-    WindowResizeEvent e(1400,1400);
+    m_spWindow = IWindow::Create();
+    m_spWindow->SetEventCallback([this](Event& e) -> void { this->OnEvent(e); });
+
+    Renderer::Init();
+}
+
+void Application::OnEvent(Event& e)
+{
+    std::cout << e << std::endl;
+    EventNotifier notifier(e);
+    notifier.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) -> bool { this->OnWindowClose(e); });
+    notifier.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) -> bool { this->OnWindowResize(e); });
+}
+
+bool Application::OnWindowResize(WindowResizeEvent& e)
+{
+    std::cout << "Window resizing\n";
+    if (e.GetWidth() == 0 || e.GetHeight() == 0)
+    {
+        m_bMinimized = true;
+        return false;
+    }
+
+    m_bMinimized = false;
+    
+    Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+
+    return false;
+}
+
+bool Application::OnWindowClose(WindowCloseEvent& e)
+{
+    std::cout << "Window closing\n";
+    m_bRunning = false;
+    return true;
+}
+
+std::shared_ptr<Application> Application::Create()
+{
+    if (auto instance = s_applicationInstance.lock()) {
+        return instance;
+    } else {
+        instance = std::make_shared<Application>(Application::Private());
+        s_applicationInstance = instance;
+        return instance;
+    }
 }
 
 void Application::Run()
 {
-    GlobalSettings& settings = GlobalSettings::Instance();
-
     // Shaders
     std::shared_ptr<Shader> multiLights = std::make_shared<Shader>("shaders/multiple_vertex.glsl", "shaders/multiple_fragment.glsl");
     std::shared_ptr<Shader> lightShader = std::make_shared<Shader>("shaders/light_vertex.glsl", "shaders/light_fragment.glsl");
@@ -56,7 +98,7 @@ void Application::Run()
     models.push_back(CreateModelFactory(ModelType::Terrain, 
                                         std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100)), 
                                         multiLights, 
-                                        {0.0f, -(settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f), 0.0f}, 
+                                        {0.0f, -12.f, 0.0f}, 
                                         100.0f,
                                         GL_LINES,
                                         false));
@@ -65,63 +107,56 @@ void Application::Run()
                                         cubeMesh, 
                                         multiLights, 
                                         {0.0f, 0.0f, 0.0f}, 
-                                        settings.CONTAINER_RADIUS * 2.0f + settings.VERLET_RADIUS * 3.0f));
+                                        12.f));
     // Init sphere
     models.push_back(CreateModelFactory(ModelType::Shape, 
                                         sphereMesh,
                                         multiLights,
                                         {25.0f, 0.0f, 25.0f},
-                                        settings.CONTAINER_RADIUS));
+                                        5.f));
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, 
                                         cubeMesh, 
                                         lightShader, 
                                         {5 + rand()%30, 5.0f, 5 + rand()%30}, 
-                                        settings.CONTAINER_RADIUS*0.3f,
+                                        1.f,
                                         {.1f,.5f,.9f,.8f}));
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, 
                                         cubeMesh, 
                                         lightShader, 
                                         {5 + -rand()%30, 25.0f, 5 + rand()%30}, 
-                                        settings.CONTAINER_RADIUS*0.3f,
+                                        1.f,
                                         {.2f,.6f,1.0f,.7f}));
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, 
                                         cubeMesh, 
                                         lightShader, 
                                         {5 + -rand()%30, -5.0f, 5 + -rand()%30}, 
-                                        settings.CONTAINER_RADIUS*0.3f,
+                                        1.f,
                                         {.3f,.7f,.9f,.6f}));
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, 
                                         cubeMesh, 
                                         lightShader, 
                                         {5 + rand()%30, 12.0f, 5 + -rand()%30}, 
-                                        settings.CONTAINER_RADIUS*0.3f,
+                                        1.f,
                                         {.4f,.8f,.7f,.5f}));
 
-    EditorCamera camera = EditorCamera(vec3f({0.0f, 0.0f, 125.0f}), settings.WIDTH, settings.HEIGHT);
-    Mouse mouse = Mouse();
+    EditorCamera camera = EditorCamera(vec3f({0.0f, 0.0f, 125.0f}), m_spWindow->GetWidth(), m_spWindow->GetHeight());
     std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();
 
-    m_fLastFrameTime = static_cast<float>(glfwGetTime());
+    m_stats.lastFrameTime = static_cast<float>(glfwGetTime());
     float theta = 0.0f;
-    while (!Application::GetWindow()->ShouldClose()) 
+    while (m_bRunning) 
     {
         /* Clears back buffer before new buffer is drawn */
-        renderer->Clear();
+        Renderer::Clear();
 
-        ProcessInput(mouse);
+        if (Input::IsKeyPressed(KeyCode::Escape)) { Application::Close(); }
 
-        camera.Update();
+        camera.OnUpdate();
 
-        // Determine if we can add more entities for stress testing physics calculations
-        // TODO: Move to a command system that does not rely on the game loop frame time
-        if (1.0f / (static_cast<float>(glfwGetTime()) - m_fLastFrameTime) >= settings.TARGET_FPS - 5 
-            && glfwGetKey(Application::GetGLFWwindow(), GLFW_KEY_V) == GLFW_PRESS 
-            && m_totalModels < settings.MAX_INSTANCES) { }
-        
         /* Shader Uniforms */
         // Multiple Lights Shader Lighting
         // directional light:
@@ -182,42 +217,27 @@ void Application::Run()
         }
                  
         /* Clean Up and Measure */
-        Application::GetWindow()->SwapBuffers();
-        Application::GetWindow()->PollEvents();
+        GetWindow()->OnUpdate();
         ClearErrors();
         DisplayStats();
         if (theta < 360 || theta >= 0) { 
-            theta = theta + (60 * m_deltaTime); 
+            theta = theta + (60 * m_stats.deltaTime); 
         }
         else { 
-            theta = theta - (60 * m_deltaTime); 
+            theta = theta - (60 * m_stats.deltaTime); 
         }
     }
 }
 
 void Application::DisplayStats() 
 {
-    GlobalSettings& settings = GlobalSettings::Instance();
-
-    m_deltaTime = static_cast<float>(glfwGetTime()) - m_fLastFrameTime;
-    while (m_deltaTime < 1.0f / settings.TARGET_FPS) {
-        m_deltaTime = static_cast<float>(glfwGetTime()) - m_fLastFrameTime;
+    m_stats.deltaTime = static_cast<float>(glfwGetTime()) - m_stats.lastFrameTime;
+    while (m_stats.deltaTime < (1.0f / m_stats.targetFPS)) {
+        m_stats.deltaTime = static_cast<float>(glfwGetTime()) - m_stats.lastFrameTime;
     }
-    m_fLastFrameTime = static_cast<float>(glfwGetTime());
-    m_totalFrames++;
-    if (m_totalFrames % settings.TARGET_FPS == 0) { m_pWindow->UpdateWindowTitle(m_deltaTime, m_totalModels); }
-}
-
-void Application::ProcessInput(Mouse& mouse)
-{
-    // Display all active errors and clear buffer
-    ClearErrors();
-
-    if (glfwGetKey(m_pWindow->GetWindowPtr(), GLFW_KEY_ESCAPE) == GLFW_PRESS) { 
-        glfwSetWindowShouldClose(m_pWindow->GetWindowPtr(), true);
-    }
-    
-    mouse.UpdateMouse(m_pWindow->GetWindowPtr(), mouse.GetX(), mouse.GetY());
+    m_stats.lastFrameTime = static_cast<float>(glfwGetTime());
+    m_stats.totalFrames++;
+    if (m_stats.totalFrames % m_stats.targetFPS == 0) { m_spWindow->UpdateWindowTitle(m_stats.deltaTime, m_stats.totalModels); }
 }
 
 void Application::ClearErrors() const

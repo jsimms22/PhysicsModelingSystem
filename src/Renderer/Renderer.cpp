@@ -1,19 +1,29 @@
 // vendor
 // project header
+#include "../Renderer/RenderCommand.hpp"
 #include "../Renderer/Renderer.hpp"
 #include "../Scene/Model.hpp"
 // std library
 
-void Renderer::Clear()
+void Renderer::Init()
 {
-    /* Clears back buffer before new buffer is drawn */
-    //glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    RenderCommand::Init();
 }
 
-void Renderer::Draw(const VertexArray& VAO, const ElementBuffer& EBO, const std::shared_ptr<Shader>& Shader) const
+void Renderer::Clear()
 {
+    RenderCommand::Clear();
+}
+
+void Renderer::OnWindowResize(uint32_t width, uint32_t height)
+{
+    
+    RenderCommand::SetViewport(0, 0, width, height);
+}
+
+RenderAPI::API Renderer::GetAPI() 
+{ 
+    return RenderAPI::GetAPI(); 
 }
 
 void Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)

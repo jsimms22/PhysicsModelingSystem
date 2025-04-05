@@ -3,7 +3,6 @@
 // vendors
 // project headers
 #include "../Events/Event.hpp"
-#include "../Events/EventTypes.hpp"
 // std library
 #include <bitset>
 #include <sstream>
@@ -13,14 +12,14 @@ class MousePressEvent : public Event
 {
 public:
     MousePressEvent(int code) 
-        : m_keyCode{code} {}
+        : m_buttonCode{code} {}
 
-    int GetKeyCode() const { return m_keyCode; }
+    int GetKeyCode() const { return m_buttonCode; }
 
     std::string_view ToString() const override
     {
         std::stringstream sstr;
-        sstr << "KeyPressedEvent: " << m_keyCode;
+        sstr << "MousePressEvent: " << m_buttonCode;
         return sstr.str();
     }
 
@@ -31,28 +30,24 @@ public:
     virtual const char* GetName() const { return "MousePressEvent"; };
 
 private:
-    int m_keyCode;
+    int m_buttonCode;
     
     static const std::bitset<EventCategoryFlag::BitLength> m_category;
 };
-
-const std::bitset<EventCategoryFlag::BitLength> MousePressEvent::m_category = {EventCategoryFlag::Input | 
-                                                                               EventCategoryFlag::Mouse |
-                                                                               EventCategoryFlag::MouseButton};
 
 /* MOUSE RELEASE EVENT */
 class MouseReleaseEvent : public Event
 {
 public:
     MouseReleaseEvent(int code) 
-        : m_keyCode{code} {}
+        : m_buttonCode{code} {}
 
-    int GetKeyCode() const { return m_keyCode; }
+    int GetKeyCode() const { return m_buttonCode; }
 
     std::string_view ToString() const override
     {
         std::stringstream sstr;
-        sstr << "KeyPressedEvent: " << m_keyCode;
+        sstr << "MouseReleaseEvent: " << m_buttonCode;
         return sstr.str();
     }
     
@@ -63,15 +58,10 @@ public:
     virtual const char* GetName() const { return "MouseReleaseEvent"; };
 
 private:
-    int m_keyCode;
+    int m_buttonCode;
 
     static const std::bitset<EventCategoryFlag::BitLength> m_category;
 };
-
-const std::bitset<EventCategoryFlag::BitLength> MouseReleaseEvent::m_category = {EventCategoryFlag::Input | 
-                                                                                 EventCategoryFlag::Mouse |
-                                                                                 EventCategoryFlag::MouseButton};
-
 
 /* MOUSE SCROLL EVENT */                                                                 
 class MouseScrollEvent : public Event
@@ -103,9 +93,6 @@ private:
     static const std::bitset<EventCategoryFlag::BitLength> m_category;
 };
 
-const std::bitset<EventCategoryFlag::BitLength> MouseScrollEvent::m_category = {EventCategoryFlag::Input | 
-                                                                                EventCategoryFlag::Mouse};
-
 /* MOUSE PRESS EVENT */
 class MouseMoveEvent : public Event
 {
@@ -135,6 +122,3 @@ private:
 
     static const std::bitset<EventCategoryFlag::BitLength> m_category;
 };
-
-const std::bitset<EventCategoryFlag::BitLength> MouseMoveEvent::m_category = {EventCategoryFlag::Input | 
-                                                                              EventCategoryFlag::Mouse};

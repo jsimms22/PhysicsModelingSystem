@@ -41,7 +41,7 @@ DEBUG_OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(DEBUG_DIR)/%.o)
 # Make will default to the first defined target command if given none
 # "$ make" will run "$ make release"
 release: CFLAGS += -O3
-release: $(MAKE) subdir_make $(OUTPUT)
+release: $(OUTPUT)
 
 # Ensure the respective object directories exist
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
@@ -56,14 +56,14 @@ subdir_make:
 
 # Useful for seeing what parameters are being unused
 unoptimized: CFLAGS += -O0 -Wextra
-unoptimized: $(MAKE) subdir_make/unoptimized $(OUTPUT)
+unoptimized: $(OUTPUT)
 
 subdir_make/unoptimized:
 	$(MAKE) -C src/Platform unoptimized
 
 # General purpose to show as many things as we can to see any possible issue
 debug: CFLAGS += -DDEBUG -O0 -g -Wextra -Wuninitialized -Wunreachable-code -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wsign-conversion -Wnull-dereference -Wformat=2 -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wuseless-cast
-debug: $(MAKE) subdir_make/debug $(OUTPUT)
+debug: $(DEBUG)
 
 # Ensure the respective object directories exist
 $(DEBUG_OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
@@ -74,7 +74,7 @@ $(DEBUG): $(DEBUG_OBJ) $(PLATFORM_DEBUG_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ -L $(GLFW_LIB_DIR) -L $(GL_LIB_DIR) -L $(STB_LIB_DIR) $(LDFLAGS)
 
 subdir_make/debug:
-	$(MAKE) -C src/Platform/debug
+	$(MAKE) -C src/Platform debug
 
 clean:
 	if [ -d "$(OUTPUT_DIR)" ]; then \

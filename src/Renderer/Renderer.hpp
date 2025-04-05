@@ -8,6 +8,7 @@
 #include "../Renderer/VertexArray.hpp"
 #include "../Renderer/ElementBuffer.hpp"
 #include "../Renderer/Shader.hpp"
+#include "../Renderer/RenderAPI.hpp"
 // std library
 #include <memory>
 
@@ -16,15 +17,14 @@ class IModel;
 class Renderer
 {
 public:
-    // Constructor
-    Renderer() = default;
+    static void Init();
 
-    // Destructor
-    ~Renderer() = default;
+    static void Clear();
 
-    void Clear();
+    static void OnWindowResize(uint32_t width, uint32_t height);
+
+    static RenderAPI::API GetAPI();
     
-    void Draw(const VertexArray& VAO, const ElementBuffer& EBO, const std::shared_ptr<Shader>& Shader) const;
-    
+    // LEGACY
     void DrawModelMesh(std::shared_ptr<IModel> pModel);
 };

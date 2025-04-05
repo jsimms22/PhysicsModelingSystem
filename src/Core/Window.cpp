@@ -4,7 +4,9 @@
 #include "../Platform/Windows/WindowsWindow.hpp"
 // std library
 
-std::shared_ptr<IWindow> IWindow::Create(const WindowProps& props)
+std::unique_ptr<IWindow> IWindow::Create(const WindowProps& props)
 {
-    return std::make_shared<WindowsWindow>(props);
+    // TODO: Add compiler macros later for different OS
+    // Currently always assume Windows
+    return std::make_unique<WindowsWindow>(props);
 }

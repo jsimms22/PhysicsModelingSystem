@@ -5,26 +5,12 @@
 #include "../../../vendor/GL/include/glew.h"
 #include "../../../vendor/GLFW/include/glfw3.h"
 // project headers
-#include "../../Core/Mouse.hpp"
 #include "../../Core/Window.hpp"
+
+#include "../../Renderer/GraphicsContext.hpp"
 // std library
 #include <iostream>
 #include <memory>
-
-class WindowContext
-{
-public:
-    // Constructor
-    WindowContext() = default;
-    
-    // Destructor
-    ~WindowContext() { if (m_bInitialized) { glfwTerminate(); } }
-
-    bool Initialize();
-
-private:
-    bool m_bInitialized = false;
-};
 
 class WindowsWindow : public IWindow
 {
@@ -33,23 +19,44 @@ public:
 
     ~WindowsWindow();
 
-    void SwapBuffers() override;
-    void PollEvents() override;
-    bool ShouldClose() const override;
     // Update title bar
     void UpdateWindowTitle(float dt, int numActive) override;
-    // BAD!
-    GLFWwindow* GetWindowPtr() override { return m_pWindow; }
 
-    uint32_t GetWidth() const override { return m_windowProps.m_width; };
-	uint32_t GetHeight() const override { return m_windowProps.m_height; };
+    void OnUpdate() override
+    {
+        glfwPollEvents();
+        m_spContext->SwapBuffers();
+    }
+
+    uint32_t GetWidth() const override { return m_data.width; };
+	uint32_t GetHeight() const override { return m_data.height; };
+
     // Window attributes
-    void SetEventCallback(const EventCallbackFn& callback) override {};
-    void SetVSync(bool enabled) override {}
-    bool IsVSync() const override {}
+    void SetEventCallback(const EventCallbackFn& callback) override { m_data.EventCallback = callback; };
+    void SetVSync(bool enabled) override 
+    { 
+        if (enabled) { glfwSwapInterval(1); }
+		else { glfwSwapInterval(0); }
+
+        m_data.vsync = enabled;
+    }
+    bool IsVSync() const override { return m_data.vsync; }
+
+    void* GetPlatformWindow() const override { return m_pWindow; }
     
 private:
-    std::unique_ptr<WindowContext> m_pContext;
+    std::unique_ptr<GraphicsContext> m_spContext;
     GLFWwindow* m_pWindow;
-    WindowProps m_windowProps;
+
+    struct WindowData
+    {
+        std::string title;
+        uint32_t width;
+        uint32_t height;
+        bool vsync;
+
+        EventCallbackFn EventCallback;
+    };
+
+    WindowData m_data;
 };

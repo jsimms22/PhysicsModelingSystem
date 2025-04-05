@@ -1,76 +1,130 @@
 // vendors
 // project headers
 #include "../Windows/WindowsWindow.hpp"
-#include "../../Core/globalSettings.hpp"    // Contains our settings singleton
+#include "../../Events/WindowEvents.hpp"
+#include "../../Events/KeyEvents.hpp"
+#include "../../Events/MouseEvents.hpp"
 // std library
 #include <string>
+#include <iostream>
 #include <stdexcept>
 
-bool WindowContext::Initialize()
+static void GLFWErrorCallback(int error, const char* desc)
 {
-    // Initialize GLFW
-    if (!glfwInit()) {
-        std::cout << "GLFW init failure" << std::endl;
-        return m_bInitialized;
-    }
-
-    // Tells GLFW what version of opengl we are using: 3.3.0 NVIDIA 552.44
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    // Tell GLFW we only want the modern functions via core profile
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    m_bInitialized = true;
-    return m_bInitialized;
+    throw std::runtime_error("GLFW Error Code(" + std::to_string(error) + "): " + desc);
 }
 
 WindowsWindow::WindowsWindow(const WindowProps& props)
-    : m_windowProps{props}
 {
-    m_pContext = std::make_unique<WindowContext>();
-    if (!m_pContext->Initialize()) {
-        throw std::runtime_error("Failed to initialize GLFW context.");
-    }
+    m_data.width = props.width;
+    m_data.height = props.height;
+    m_data.title = props.title;
+
+    // Initialize GLFW (ONLY DO ONCE)
+    int success = glfwInit();
+    if (!success) { std::cerr << "GLFW init failure" << std::endl; }
+    glfwSetErrorCallback(GLFWErrorCallback);
+
+#ifdef debug
+    //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
 
     // Create window
-    m_pWindow = glfwCreateWindow(m_windowProps.m_width, m_windowProps.m_height, m_windowProps.m_title.c_str(), NULL, NULL);
-    if (!m_pWindow) {
-        std::cout << "WindowsWindow creation failure" << std::endl;
-        throw std::runtime_error("Failed to create GLFW window.");
-    }
+    m_pWindow = glfwCreateWindow(m_data.width, m_data.height, m_data.title.c_str(), nullptr, nullptr);
+    if (!m_pWindow) { std::cerr << "WindowsWindow creation failure" << std::endl; }
+    
+    m_spContext = GraphicsContext::Create(m_pWindow);
+    m_spContext->Init();
 
-    // Make context current
-    glfwMakeContextCurrent(m_pWindow);
+    // Set our data struct as the pointer format
+    glfwSetWindowUserPointer(m_pWindow,&m_data);
 
-    // Initialize GLEW (or any other OpenGL function loader)
-    if (glewInit() != GLEW_OK) {
-        std::cout << "GLEW initialization failure" << std::endl;
-        throw std::runtime_error("Failed to initialize GLEW.");
-    }
+    glfwSetWindowSizeCallback(m_pWindow, [](GLFWwindow* window, int width, int height) -> void 
+        { 
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
-    // OpenGL settings
-    glViewport(0, 0, m_windowProps.m_width, m_windowProps.m_height);
-    glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-    glClearStencil(0);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glPointSize(3.0f);
-    // Vsync
-    glfwSwapInterval(1);
+            WindowResizeEvent event(width, height);
+            data.width = static_cast<uint32_t>(width);
+            data.height = static_cast<uint32_t>(height);
+            data.EventCallback(event);
+        });
+    glfwSetWindowCloseCallback(m_pWindow, [](GLFWwindow* window) -> void 
+        {
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+            WindowCloseEvent event;
+            data.EventCallback(event);
+        });
+
+    glfwSetKeyCallback(m_pWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods) -> void 
+        {
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+            
+            switch (action)
+            {
+                case GLFW_PRESS:
+                {
+                    KeyPressEvent event(key, 0);
+                    data.EventCallback(event);
+                    break;
+                }
+                case GLFW_RELEASE:
+                {
+                    KeyReleaseEvent event(key);
+                    data.EventCallback(event);
+                    break;
+                }
+                case GLFW_REPEAT:
+                {
+                    KeyPressEvent event(key, 1); // need to properly extract the repeat count at some point
+                    data.EventCallback(event);
+                    break;
+                }
+            }
+        });
+    
+    glfwSetMouseButtonCallback(m_pWindow, [](GLFWwindow* window, int button, int action, int mods) -> void
+        {
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+            
+            switch (action)
+            {
+                case GLFW_PRESS:
+                {
+                    MousePressEvent event(button);
+                    data.EventCallback(event);
+                    break;
+                }
+                case GLFW_RELEASE:
+                {
+                    MouseReleaseEvent event(button);
+                    data.EventCallback(event);
+                    break;
+                }
+            }
+        });
+
+    glfwSetScrollCallback(m_pWindow, [](GLFWwindow* window, double offsetX, double offsetY) -> void
+        {
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+            
+            MouseScrollEvent event(static_cast<float>(offsetX),static_cast<float>(offsetY));
+            data.EventCallback(event);
+        });
+
+    glfwSetCursorPosCallback(m_pWindow, [](GLFWwindow* window, double posX, double posY) -> void
+        {
+            WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+            
+            MouseMoveEvent event(static_cast<float>(posX),static_cast<float>(posY));
+            data.EventCallback(event);
+        });
+
+    
+    SetVSync(true);
 }
 
 WindowsWindow::~WindowsWindow() { if (m_pWindow) { glfwDestroyWindow(m_pWindow); } }
-
-void WindowsWindow::SwapBuffers() { glfwSwapBuffers(m_pWindow); }
-
-void WindowsWindow::PollEvents() { glfwPollEvents(); }
-
-bool WindowsWindow::ShouldClose() const { return glfwWindowShouldClose(m_pWindow); }
 
 void WindowsWindow::UpdateWindowTitle(float dt, int numActive)
 {
