@@ -217,7 +217,7 @@ void Application::Run()
         }
                  
         /* Clean Up and Measure */
-        GetWindow()->OnUpdate();
+        m_spWindow->OnUpdate();
         ClearErrors();
         DisplayStats();
         if (theta < 360 || theta >= 0) { 

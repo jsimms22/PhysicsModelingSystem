@@ -16,7 +16,7 @@
 
 int main(int argc, char** argv);
 
-class Application : public std::enable_shared_from_this<Application>
+class Application
 {
     struct Private{ explicit Private() = default; };
 public:
@@ -25,7 +25,6 @@ public:
         float lastFrameTime = 0.0f;
         float deltaTime = 0.0f;
         uint32_t targetFPS = 144;
-        // TODO: Need a better way to track stats
         std::size_t totalModels = 0;
         std::size_t totalFrames = 0;
     };
