@@ -5,55 +5,45 @@
 #include "../../vendor/GL/include/glew.h"
 #include "../../vendor/GLFW/include/glfw3.h"
 // project headers
-#include "../Core/Mouse.hpp"
+#include "../Events/Event.hpp"
 // std library
-#include <iostream>
+#include <functional>
+#include <string>
 #include <memory>
-
-class WindowContext
-{
-public:
-    // Constructor
-    WindowContext() = default;
-    
-    // Destructor
-    ~WindowContext() { if (m_bInitialized) { glfwTerminate(); } }
-
-    bool Initialize();
-
-private:
-    bool m_bInitialized = false;
-};
+#include <cstdint>
 
 struct WindowProps
 {
-    int width = 1200;
-    int height = 1200;
-    const char* title = "My Application";
+    uint32_t width;
+    uint32_t height;
+    std::string title;
+
+    WindowProps(uint32_t _width = 1200,
+                uint32_t _height = 1200,
+                const std::string& _title = "My Application")
+        : width{_width}, height{_height}, title{_title} {}
 };
 
-class Window
+class IWindow
 {
 public:
-    Window(WindowProps props);
+    using EventCallbackFn = std::function<void(Event&)>;
 
-    ~Window();
-
-    void SwapBuffers();
-    void PollEvents();
-    bool ShouldClose() const;
-    // determine if user is attempting to close window
-    void ProcessInput(Mouse& mouse);
-    // Clear openGL error buffer
-    void ClearErrors() const;
-    // Update title bar
-    void UpdateWindowTitle(float dt, int numActive);
-
-    // BAD!
-    GLFWwindow* GetWindowPtr() { return m_pWindow; }
+    virtual ~IWindow() = default;
     
-private:
-    std::unique_ptr<WindowContext> m_pContext;
-    GLFWwindow* m_pWindow;
-    WindowProps m_windowProps;
+    virtual void UpdateWindowTitle(float dt, int numActive) = 0;
+
+    virtual void OnUpdate() = 0;
+
+    virtual uint32_t GetWidth() const = 0;
+	virtual uint32_t GetHeight() const = 0;
+
+    // Window attributes
+    virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
+    virtual void SetVSync(bool enabled) = 0;
+    virtual bool IsVSync() const = 0;
+
+    virtual void* GetPlatformWindow() const = 0;
+
+    static std::unique_ptr<IWindow> Create(const WindowProps& props = WindowProps());
 };

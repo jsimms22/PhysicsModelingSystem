@@ -1,9 +1,15 @@
+#pragma once
+
 // vendors
 #define GLFW_INCLUDE_NONE
 #include "../../vendor/GL/include/glew.h"
 #include "../../vendor/GLFW/include/glfw3.h"
 // project headers
-#include "../Core/Window.hpp"
+#include "../Platform/Windows/WindowsWindow.hpp"
+
+#include "../Events/Event.hpp"
+#include "../Events/WindowEvents.hpp"
+#include "../Events/ApplicationEvents.hpp"
 // std library
 #include <memory>
 #include <cstdlib>
@@ -14,49 +20,54 @@ class Application : public std::enable_shared_from_this<Application>
 {
     struct Private{ explicit Private() = default; };
 public:
+    struct Statistics
+    {
+        float lastFrameTime = 0.0f;
+        float deltaTime = 0.0f;
+        uint32_t targetFPS = 144;
+        // TODO: Need a better way to track stats
+        std::size_t totalModels = 0;
+        std::size_t totalFrames = 0;
+    };
+
+    // Private Constructor
     Application(Private p);
-
-    Window* GetWindow() { return m_pWindow.get(); }
-    GLFWwindow* GetGLFWwindow() { return m_pWindow->GetWindowPtr(); }
-
-    void Close();
 
     static std::shared_ptr<Application> GetApplication()
     {
-        // If we cannot return a valid s_intance, then 
+        // If we cannot return a valid instance, then 
         // we should not create a new application
-        return s_instance.lock();
+        return s_applicationInstance.lock();
     }
+
+    Statistics& GetStats() { return m_stats; }
+
+    IWindow& GetWindow() { return *m_spWindow; }
+
+    void Close() { m_bRunning = false; }
+    void OnEvent(Event& e);
 
 private: // Methods
-    static std::shared_ptr<Application> Create()
-    {
-        if (auto instance = s_instance.lock()) {
-            return instance;
-        } else {
-            instance = std::make_shared<Application>(Private());
-            s_instance = instance;
-            return instance;
-        }
-    }
+    static std::shared_ptr<Application> Create();
 
     void Run();
-    bool OnWindowClose();
-    bool OnWindowResize();
+    bool OnWindowClose(WindowCloseEvent& e);
+    bool OnWindowResize(WindowResizeEvent& e);
+
     void DisplayStats();
+    void ClearErrors() const;
 
 private: // Members
-    std::unique_ptr<Window> m_pWindow;
-    bool m_bRunning = false;
-    bool m_bMinimized = false;
-    float m_fLastFrameTime = 0.0f;
-    float m_deltaTime = 0.0f;
-    // TODO: Need a better way to track stats
-    std::size_t m_totalModels = 0;
-    std::size_t m_totalFrames = 0;
-    
     // Allows Application to participate in its own lifetime
-    static std::weak_ptr<Application> s_instance;
+    static std::weak_ptr<Application> s_applicationInstance;
+
+    // Window(s)
+    std::unique_ptr<IWindow> m_spWindow;
+    bool m_bRunning = true;
+    bool m_bMinimized = false;
+
+    // Stats of App
+    Statistics m_stats;
 
 private: // Friends
     friend int ::main(int argc, char** argv);

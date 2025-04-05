@@ -21,6 +21,13 @@ OUTPUT = $(OUTPUT_DIR)/app
 DEBUG_DIR = bin/debug
 DEBUG = $(DEBUG_DIR)/app
 
+# Object files from the subdirectory makefile
+PLATFORM_OBJ_DIR = bin/build/platform
+PLATFORM_OBJ = $(wildcard $(PLATFORM_OBJ_DIR)/**/*.o)
+
+PLATFORM_DEBUG_OBJ_DIR = bin/debug/platform
+PLATFORM_DEBUG_OBJ = $(wildcard $(PLATFORM_DEBUG_OBJ_DIR)/**/*.o)
+
 # Source files and object files
 SRC_DIR = src
 SRC = $(wildcard $(SRC_DIR)/**/*.cpp)
@@ -41,12 +48,18 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)  # Create the directory for the object file
 	$(CC) $(CFLAGS) -c -o $@ $< -I $(GLFW_INCLUDE_DIR) -I $(GL_INCLUDE_DIR) -I $(STB_INCLUDE_DIR)
 
-$(OUTPUT): $(OBJ)
+$(OUTPUT): $(OBJ) $(PLATFORM_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ -L $(GLFW_LIB_DIR) -L $(GL_LIB_DIR) -L $(STB_LIB_DIR) $(LDFLAGS) 
+
+subdir_make:
+	$(MAKE) -C src/Platform
 
 # Useful for seeing what parameters are being unused
 unoptimized: CFLAGS += -O0 -Wextra
 unoptimized: $(OUTPUT)
+
+subdir_make/unoptimized:
+	$(MAKE) -C src/Platform unoptimized
 
 # General purpose to show as many things as we can to see any possible issue
 debug: CFLAGS += -DDEBUG -O0 -g -Wextra -Wuninitialized -Wunreachable-code -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wsign-conversion -Wnull-dereference -Wformat=2 -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wuseless-cast
@@ -57,8 +70,11 @@ $(DEBUG_OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)  # Create the directory for the object file
 	$(CC) $(CFLAGS) -c -o $@ $< -I $(GLFW_INCLUDE_DIR) -I $(GL_INCLUDE_DIR) -I $(STB_INCLUDE_DIR)
 
-$(DEBUG): $(DEBUG_OBJ)
+$(DEBUG): $(DEBUG_OBJ) $(PLATFORM_DEBUG_OBJ)
 	$(CC) $(CFLAGS) -o $@ $^ -L $(GLFW_LIB_DIR) -L $(GL_LIB_DIR) -L $(STB_LIB_DIR) $(LDFLAGS)
+
+subdir_make/debug:
+	$(MAKE) -C src/Platform debug
 
 clean:
 	if [ -d "$(OUTPUT_DIR)" ]; then \
@@ -115,6 +131,7 @@ help:
 	@echo "    make rebuild";
 	@echo "    make rebuild/unoptimized";
 	@echo "    make rebuild/debug";
+	@echo "    make subdir_make";
 
 # for running the makefile commands through vscode's interface
 copy:

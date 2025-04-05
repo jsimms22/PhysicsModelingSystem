@@ -16,22 +16,28 @@ public:
     EditorCamera() = default;
     EditorCamera(const mat4x4f& matrix)
         : Camera(matrix) {}
-    EditorCamera(const vec3f& _pos, const uint32_t& _width, const uint32_t& _height, const mat4x4f& matrix = {})
+    EditorCamera(const vec3f& _pos, const float _width, const float _height, const mat4x4f& matrix = {})
         : Camera(matrix), m_position{_pos}, m_resetLoc{_pos}, m_width{_width}, m_height{_height} {}
     
-    void Update();
-    void UpdatePosition(GLFWwindow* window);
-    void ResetCamera(GLFWwindow* window);
+    void OnUpdate() override;
+    void OnEvent(Event& e) override {};
 
-    void UpdateMatrix();
-    
-    void UpdateUniform(uint32_t shaderID, std::string uniform);
+    void UpdateViewport(float width, float height);
 
     const vec3f& GetPosition() const { return m_position; }
 
+private: // methods
+    void UpdatePosition();
+    void ResetCamera();
+
+    void UpdateProjection();
+    void UpdateView();
+    void UpdateMatrix();
+
+private: // members
     // EditorCamera "eye" location
-    vec3f m_position;
-    vec3f m_resetLoc;
+    vec3f m_position = {0.0f, 0.0f, 0.0f};
+    vec3f m_resetLoc = m_position;
     // World view orientation
     const vec3f m_up = {0.0f, 1.0f, 0.0f};
     const vec3f m_right = {1.0f, 0.0f, 0.0f};
@@ -44,8 +50,9 @@ public:
     // Protects from moving camera while clicking window into focus
     bool m_firstClick = true;
     // Screen information
-    uint32_t m_width;
-    uint32_t m_height;
+    float m_width = 1200.f;
+    float m_height = 1200.f;
+    float m_aspectRatio = m_width / m_height;
     // Parameters for modifying camera movement
     float m_speed = 0.1f;
     float m_sensitivity = 100.0f;

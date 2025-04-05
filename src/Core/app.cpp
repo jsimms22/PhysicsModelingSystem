@@ -6,11 +6,9 @@
 
 int main(int argc, char** argv)
 {
-    auto app = Application::Create();
-
-    std::cout << "Current App reference count: " << app.use_count() << std::endl;
+    std::shared_ptr<Application> spApp = Application::Create();
     
-    app->Run();
+    spApp->Run();
 
     return 0;
 }
