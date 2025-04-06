@@ -10,7 +10,7 @@ class Entity
 public:
     // Constructors
     Entity() = default;
-    Entity(const vec3f& position = {0.0f, 0.0f, 0.0f})
+    Entity(const vec3d& position = {0.0, 0.0, 0.0})
         : m_position{position} {}
 
     // Destructors
@@ -18,10 +18,10 @@ public:
 
     virtual void Update() = 0;
 
-    void SetPosition(const vec3f& position) { m_position = position; }
-    vec3f GetPosition() const { return m_position; };
+    void SetPosition(const vec3d& position) { m_position = position; }
+    vec3d GetPosition() const { return m_position; };
 
 private:
     GUID guid;
-    vec3f m_position = {0.0f, 0.0f, 0.0f};
+    vec3d m_position = {0.0, 0.0, 0.0};
 };

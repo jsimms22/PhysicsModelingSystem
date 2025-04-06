@@ -22,8 +22,8 @@ class Application
 public:
     struct Statistics
     {
-        float lastFrameTime = 0.0f;
-        float deltaTime = 0.0f;
+        double lastFrameTime = 0.0;
+        double deltaTime = 0.0;
         uint32_t targetFPS = 144;
         std::size_t totalModels = 0;
         std::size_t totalFrames = 0;

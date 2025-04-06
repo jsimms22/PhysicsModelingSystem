@@ -14,7 +14,15 @@ void VertexArray::LinkAttribute(VertexBuffer& VBO,
                                 void* offset)
 {
     VBO.Bind();
-    glVertexAttribPointer(order, layout, type, GL_FALSE, stride, offset);
+    if (type == GL_DOUBLE) {
+        // must be used for attributes defined to be double precision
+        glVertexAttribLPointer(order, layout, type, stride, offset);
+    } else {
+        // will implicitly convert to single precision float
+        // GL_FALSE: do not normalize
+        // GL_TRUE: normalize [-1,1] for integers, [0,1] for floats
+        glVertexAttribPointer(order, layout, type, GL_FALSE, stride, offset);
+    }
     glEnableVertexAttribArray(order);
     VBO.Unbind();
 }

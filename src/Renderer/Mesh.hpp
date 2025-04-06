@@ -19,29 +19,29 @@ class Mesh
 {
 public:
     // Constructors
-    Mesh(std::vector<vertexf> vertices, 
+    Mesh(std::vector<vertex> vertices, 
          int32_t instances = 1, 
-         std::vector<mat4x4f> matrices = {}) 
+         std::vector<mat4x4d> matrices = {}) 
         : m_vertices{vertices}, m_instanceCount{instances}, m_instanceMatrices{matrices} {}
 
     Mesh(const std::string& filename, 
          int32_t instances = 1, 
-         std::vector<mat4x4f> matrices = {});
+         std::vector<mat4x4d> matrices = {});
 
-    Mesh(std::vector<vertexf> vertices, 
+    Mesh(std::vector<vertex> vertices, 
          std::vector<uint32_t> indices, 
          std::vector<Texture> textures = {}, 
          int32_t instances = 1, 
-         std::vector<mat4x4f> matrices = {});
+         std::vector<mat4x4d> matrices = {});
     
     //void draw(Shader& shader, EditorCamera& camera);
 
-    std::vector<vertexf> m_vertices;
+    std::vector<vertex> m_vertices;
     std::vector<uint32_t> m_indices;
     std::vector<Texture> m_textures;
     
     int32_t m_instanceCount = 1;
-    std::vector<mat4x4f> m_instanceMatrices;
+    std::vector<mat4x4d> m_instanceMatrices;
 
     VertexArray m_VA0;
 
@@ -52,11 +52,11 @@ private:
      // Function to split a string based on a delimiter
      std::vector<std::string> SplitString(const std::string& str, char delimiter);
 
-     void ProcessVertex(std::vector<vertexf>& vertexBin, 
+     void ProcessVertex(std::vector<vertex>& vertexBin, 
                          std::vector<std::string>& vertexMarker, 
-                         std::vector<vec3f>& v, 
+                         std::vector<vec3d>& v, 
                          std::vector<vec2f>& vt, 
                          std::vector<vec3f>& vn);
 
-     void LoadObject(const std::string& filename, std::vector<vertexf>& vertexBin);
+     void LoadObject(const std::string& filename, std::vector<vertex>& vertexBin);
 };

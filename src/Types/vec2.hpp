@@ -11,6 +11,14 @@ struct vec2 {
         : data{x, y} {}
     vec2(UNIT value) 
         : data{value, value} {}
+    
+    // Constructor to convert between different types of vec2
+    template <typename OtherUNIT>
+    vec2(const vec2<OtherUNIT>& other) {
+        for (std::size_t i = 0; i < 2; ++i) {
+            data[i] = static_cast<UNIT>(other[i]);
+        }
+    }
 
     UNIT& operator[](std::size_t index) { return data[index]; }
     const UNIT& operator[](std::size_t index) const { return data[index]; }

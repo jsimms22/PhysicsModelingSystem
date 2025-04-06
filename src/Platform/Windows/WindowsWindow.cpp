@@ -33,8 +33,8 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
     m_pWindow = glfwCreateWindow(m_data.width, m_data.height, m_data.title.c_str(), nullptr, nullptr);
     if (!m_pWindow) { std::cerr << "WindowsWindow creation failure" << std::endl; }
     
-    m_spContext = GraphicsContext::Create(m_pWindow);
-    m_spContext->Init();
+    m_upContext = GraphicsContext::Create(m_pWindow);
+    m_upContext->Init();
 
     // Set our data struct as the pointer format
     glfwSetWindowUserPointer(m_pWindow,&m_data);
@@ -126,10 +126,8 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
 
 WindowsWindow::~WindowsWindow() { if (m_pWindow) { glfwDestroyWindow(m_pWindow); } }
 
-void WindowsWindow::UpdateWindowTitle(float dt, int numActive)
+void WindowsWindow::UpdateWindowTitle(double dt, int numActive)
 {
-    // sprintf(title, "FPS : %-4.0f | Balls : %-10d", 1.0 / dt, numActive);
-    std::string title = "FPS: " + std::to_string(static_cast<int>((1.0f/dt)-4.0f)) + 
-                        " | Balls: " + std::to_string(numActive);
+    std::string title = "FPS: " + std::to_string(static_cast<int>((1.0/dt)-4.0)) + " | Balls: " + std::to_string(numActive);
     glfwSetWindowTitle(m_pWindow, title.c_str());
 }

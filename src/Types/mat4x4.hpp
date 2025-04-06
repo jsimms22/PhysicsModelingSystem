@@ -28,6 +28,14 @@ public:
     vec4<UNIT>& operator[](size_t index) { return data[index]; }
     vec4<UNIT>* operator->() { return data; }
     const vec4<UNIT>* operator->() const { return data; }
+
+    // Conversion constructor to enable casting between mat4x4<OtherUNIT> to mat4x4<UNIT>
+    template <typename OtherUNIT>
+    mat4x4(const mat4x4<OtherUNIT>& other) {
+        for (std::size_t i = 0; i < 4; ++i) {
+            data[i] = vec4<UNIT>(other.data[i]);
+        }
+    }
 };
 // Type aliases
 using mat4x4f = mat4x4<float>;

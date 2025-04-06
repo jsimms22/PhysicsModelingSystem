@@ -31,7 +31,7 @@ public:
 
     virtual ~IWindow() = default;
     
-    virtual void UpdateWindowTitle(float dt, int numActive) = 0;
+    virtual void UpdateWindowTitle(double dt, int numActive) = 0;
 
     virtual void OnUpdate() = 0;
 
