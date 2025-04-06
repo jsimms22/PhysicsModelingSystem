@@ -4,7 +4,7 @@
 #include "../Scene/Model.hpp"
 // std library
 
-vec3f GRAVITY = {0.0f,-9.8f,0.0f};
+vec3d GRAVITY = { 0.0, -9.8, 0.0 };
 
 bool IsColliding(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel>& model2)
 {
@@ -24,7 +24,7 @@ void ApplyForces(std::vector<std::shared_ptr<IModel>>& container)
         if (!i_model->IsPhysicalized()) { continue; }
     
         // Apply simple gravity to the balls
-        vec3f result;
+        vec3d result;
         //vec3_scale(settings.GRAVITY, static_cast<float>(glfwGetTime()) - lastFrameTime ,settings.GRAVITY);
         vec3_add(result, GRAVITY, i_model->GetPosition());
         

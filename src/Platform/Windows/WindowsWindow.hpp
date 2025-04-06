@@ -20,12 +20,12 @@ public:
     ~WindowsWindow();
 
     // Update title bar
-    void UpdateWindowTitle(float dt, int numActive) override;
+    void UpdateWindowTitle(double dt, int numActive) override;
 
     void OnUpdate() override
     {
         glfwPollEvents();
-        m_spContext->SwapBuffers();
+        m_upContext->SwapBuffers();
     }
 
     uint32_t GetWidth() const override { return m_data.width; };
@@ -45,7 +45,7 @@ public:
     void* GetPlatformWindow() const override { return m_pWindow; }
     
 private:
-    std::unique_ptr<GraphicsContext> m_spContext;
+    std::unique_ptr<GraphicsContext> m_upContext;
     GLFWwindow* m_pWindow;
 
     struct WindowData

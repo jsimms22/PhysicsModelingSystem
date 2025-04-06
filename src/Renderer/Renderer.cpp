@@ -36,17 +36,17 @@ void Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
     std::shared_ptr<Mesh> mesh = pModel->GetMesh();
     std::shared_ptr<Shader> shader = pModel->GetShader();
     uint32_t mode = pModel->GetRenderMethod();
-    vec3f position = pModel->GetPosition();
-    vec3f rotation = pModel->GetRotation();
-    float scale = pModel->GetScale();
+    vec3d position = pModel->GetPosition();
+    vec3d rotation = pModel->GetRotation();
+    double scale = static_cast<double>(pModel->GetScale());
 
-    vec3f scaling{ scale, scale, scale };
+    vec3d scaling{ scale, scale, scale };
 
     struct {
-        mat4x4f position;
-        mat4x4f rotation;
-        mat4x4f scaling;
-        mat4x4f model;
+        mat4x4d position;
+        mat4x4d rotation;
+        mat4x4d scaling;
+        mat4x4d model;
     } matrices;
 
     /* Position */
@@ -67,7 +67,7 @@ void Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
 
     // TODO: offload normal scaling to here from the vertex shaders
 
-    shader->SetUniform4fm("model", matrices.model);
+    shader->SetUniform4dm("model", matrices.model);
 
     shader->Bind();
     mesh->m_VA0.Bind();

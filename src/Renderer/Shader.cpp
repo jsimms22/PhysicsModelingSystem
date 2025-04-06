@@ -7,7 +7,10 @@
 #include <sstream>
 
 Shader::Shader(const std::string& vertexFile, const std::string& fragmentFile)
-{
+{    
+#ifdef DEBUG
+    std::cout << "compiling: " << vertexFile << " and " << fragmentFile << std::endl;
+#endif
     // Create a shader object and compile it during runtime
     std::string vertexSource = ReadFileContents(vertexFile);
     uint32_t vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSource);
@@ -30,59 +33,100 @@ Shader::Shader(const std::string& vertexFile, const std::string& fragmentFile)
     glDeleteShader(fragmentShader);
 }
 
-void Shader::SetInteger(const std::string& uniformName, const int32_t& value)
+void Shader::SetInteger(const std::string& uniformName, const int32_t& value) // int
 {
     Bind();
     glUniform1i(GetUniformLocation(uniformName), value);
     Unbind();
 }
 
-void Shader::SetUnsigned(const std::string& uniformName, const uint32_t& value)
+void Shader::SetUnsigned(const std::string& uniformName, const uint32_t& value) // unsigned int
 {
     Bind();
     glUniform1ui(GetUniformLocation(uniformName), value);
     Unbind();
 }
 
-void Shader::SetFloat(const std::string& uniformName, const float& value)
+void Shader::SetFloat(const std::string& uniformName, const float& value) // float
 {
     Bind();
     glUniform1f(GetUniformLocation(uniformName), value);
     Unbind();
 }
 
-void Shader::SetUniform2fv(const std::string& uniformName, const vec2f& values)
+void Shader::SetDouble(const std::string& uniformName, const double& value) // double
+{
+    Bind();
+    glUniform1d(GetUniformLocation(uniformName), value);
+    Unbind();
+}
+
+void Shader::SetUniform2fv(const std::string& uniformName, const vec2f& values) // float
 {
     Bind();
     glUniform2fv(GetUniformLocation(uniformName), 1, values.data);
     Unbind();
 }
 
-void Shader::SetUniform3fv(const std::string& uniformName, const vec3f& values)
+void Shader::SetUniform3fv(const std::string& uniformName, const vec3f& values) // float
 {
     Bind();
     glUniform3fv(GetUniformLocation(uniformName), 1, values.data);
     Unbind();
 }
 
-void Shader::SetUniform4fv(const std::string& uniformName, const vec4f& values)
+void Shader::SetUniform4fv(const std::string& uniformName, const vec4f& values) // float
 {
     Bind();
     glUniform4fv(GetUniformLocation(uniformName), 1, values.data);
     Unbind();
 }
 
-void Shader::SetUniform3fm(const std::string& uniformName, const mat3x3f& values, bool transpose /* = false */)
+
+void Shader::SetUniform2dv(const std::string& uniformName, const vec2d& values) // double
+{
+    Bind();
+    glUniform2dv(GetUniformLocation(uniformName), 1, values.data);
+    Unbind();
+}
+void Shader::SetUniform3dv(const std::string& uniformName, const vec3d& values) // double
+{
+    Bind();
+    glUniform3dv(GetUniformLocation(uniformName), 1, values.data);
+    Unbind();
+}
+
+void Shader::SetUniform4dv(const std::string& uniformName, const vec4d& values) // double
+{
+    Bind();
+    glUniform4dv(GetUniformLocation(uniformName), 1, values.data);
+    Unbind();
+}
+
+void Shader::SetUniform3fm(const std::string& uniformName, const mat3x3f& values, bool transpose /* = false */) // float
 {
     Bind();
     glUniformMatrix3fv(GetUniformLocation(uniformName), 1, transpose, values.data->data);
     Unbind();
 }
 
-void Shader::SetUniform4fm(const std::string& uniformName, const mat4x4f& values, bool transpose /* = false */)
+void Shader::SetUniform4fm(const std::string& uniformName, const mat4x4f& values, bool transpose /* = false */) // float
 {
     Bind();
     glUniformMatrix4fv(GetUniformLocation(uniformName), 1, transpose, values.data->data);
+    Unbind();
+}
+
+void Shader::SetUniform3dm(const std::string& uniformName, const mat3x3d& values, bool transpose /* = false */) // double
+{
+    Bind();
+    glUniformMatrix3dv(GetUniformLocation(uniformName), 1, transpose, values.data->data);
+    Unbind();
+}
+void Shader::SetUniform4dm(const std::string& uniformName, const mat4x4d& values, bool transpose /* = false */) // double
+{
+    Bind();
+    glUniformMatrix4dv(GetUniformLocation(uniformName), 1, transpose, values.data->data);
     Unbind();
 }
 

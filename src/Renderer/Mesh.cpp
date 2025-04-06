@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iostream>
 
-Mesh::Mesh(std::vector<vertexf> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures /* = {}*/, int32_t instances /* = 1*/, std::vector<mat4x4f> matrices /* = {}*/)
+Mesh::Mesh(std::vector<vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures /* = {}*/, int32_t instances /* = 1*/, std::vector<mat4x4d> matrices /* = {}*/)
     : m_vertices{vertices}, m_indices{indices}, m_textures{textures}, m_instanceCount{instances}, m_instanceMatrices{matrices}
 {
     // Bind the Vertex Array Object first,
@@ -18,23 +18,23 @@ Mesh::Mesh(std::vector<vertexf> vertices, std::vector<uint32_t> indices, std::ve
     ElementBuffer EBO(m_indices);
 
     // Position
-    m_VA0.LinkAttribute(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(0));
+    m_VA0.LinkAttribute(VBO, 0, 3, GL_DOUBLE, sizeof(vertex), reinterpret_cast<void*>(0));
     // Normal
-    m_VA0.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(3*sizeof(float)));
+    m_VA0.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(double)));
     // Texture
-    m_VA0.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(6*sizeof(float)));
+    m_VA0.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(float) + 3*sizeof(double)));
     // Color
-    m_VA0.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(8*sizeof(float)));
+    m_VA0.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(5*sizeof(float) + 3*sizeof(double)));
 
     if (m_instanceCount > 1) {
         // Position
-        m_VA0.LinkAttribute(instanceVBO, 4, 4, GL_FLOAT, sizeof(mat4x4f), reinterpret_cast<void*>(0));
+        m_VA0.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
         // Normal
-        m_VA0.LinkAttribute(instanceVBO, 5, 4, GL_FLOAT, sizeof(mat4x4f), reinterpret_cast<void*>(1*sizeof(vec4f)));
+        m_VA0.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(1*sizeof(vec4d)));
         // Texture
-        m_VA0.LinkAttribute(instanceVBO, 6, 4, GL_FLOAT, sizeof(mat4x4f), reinterpret_cast<void*>(2*sizeof(vec4f)));
+        m_VA0.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(2*sizeof(vec4d)));
         // Color(?)
-        m_VA0.LinkAttribute(instanceVBO, 7, 4, GL_FLOAT, sizeof(mat4x4f), reinterpret_cast<void*>(3*sizeof(vec4f)));
+        m_VA0.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(3*sizeof(vec4d)));
 
         glVertexAttribDivisor(4, 1);
         glVertexAttribDivisor(5, 1);
@@ -52,7 +52,7 @@ Mesh::Mesh(std::vector<vertexf> vertices, std::vector<uint32_t> indices, std::ve
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-Mesh::Mesh(const std::string& filename, int32_t instances /* = 1*/, std::vector<mat4x4f> matrices /* = {}*/)
+Mesh::Mesh(const std::string& filename, int32_t instances /* = 1*/, std::vector<mat4x4d> matrices /* = {}*/)
     : m_instanceCount{instances}, m_instanceMatrices{matrices}
 {
     // Load vertex data from file
@@ -67,23 +67,23 @@ Mesh::Mesh(const std::string& filename, int32_t instances /* = 1*/, std::vector<
     ElementBuffer EBO(m_indices);
 
     // Position
-    m_VA0.LinkAttribute(VBO, 0, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(0));
+    m_VA0.LinkAttribute(VBO, 0, 3, GL_DOUBLE, sizeof(vertex), reinterpret_cast<void*>(0));
     // Normal
-    m_VA0.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(3*sizeof(float)));
+    m_VA0.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(double)));
     // Texture
-    m_VA0.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(6*sizeof(float)));
+    m_VA0.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(float) + 3*sizeof(double)));
     // Color
-    m_VA0.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertexf), reinterpret_cast<void*>(8*sizeof(float)));
+    m_VA0.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(5*sizeof(float) + 3*sizeof(double)));
 
     if (m_instanceCount > 1) {
         // Position
-        m_VA0.LinkAttribute(instanceVBO, 4, 4, GL_FLOAT, sizeof(mat4x4f), reinterpret_cast<void*>(0));
+        m_VA0.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
         // Normal
-        m_VA0.LinkAttribute(instanceVBO, 5, 4, GL_FLOAT, sizeof(mat4x4f), reinterpret_cast<void*>(1*sizeof(vec4f)));
+        m_VA0.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(1*sizeof(vec4d)));
         // Texture
-        m_VA0.LinkAttribute(instanceVBO, 6, 4, GL_FLOAT, sizeof(mat4x4f), reinterpret_cast<void*>(2*sizeof(vec4f)));
+        m_VA0.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(2*sizeof(vec4d)));
         // Color(?)
-        m_VA0.LinkAttribute(instanceVBO, 7, 4, GL_FLOAT, sizeof(mat4x4f), reinterpret_cast<void*>(3*sizeof(vec4f)));
+        m_VA0.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(3*sizeof(vec4d)));
 
         // order, 2 -> use for 2 instances
         // order, 1 -> whole instance
@@ -123,13 +123,13 @@ std::vector<std::string> Mesh::SplitString(const std::string& str, char delimite
     return tokens;
 }
 
-void Mesh::ProcessVertex(std::vector<vertexf>& vertexBin, 
+void Mesh::ProcessVertex(std::vector<vertex>& vertexBin, 
                     std::vector<std::string>& vertexMarker, 
-                    std::vector<vec3f>& v, 
+                    std::vector<vec3d>& v, 
                     std::vector<vec2f>& vt, 
                     std::vector<vec3f>& vn)
 {
-    vertexf temp;
+    vertex temp;
     std::size_t vertItr = stoull(vertexMarker[0]) - 1;
     std::size_t texItr = stoull(vertexMarker[1]) - 1;
     std::size_t normItr = stoull(vertexMarker[2]) - 1;
@@ -140,9 +140,10 @@ void Mesh::ProcessVertex(std::vector<vertexf>& vertexBin,
     vertexBin.push_back(temp);
 }
 
-void Mesh::LoadObject(const std::string& filename, std::vector<vertexf>& vertexBin)
+void Mesh::LoadObject(const std::string& filename, std::vector<vertex>& vertexBin)
 {
-    std::vector<vec3f> v, vn;
+    std::vector<vec3d> v;
+    std::vector<vec3f> vn;
     std::vector<vec2f> vt;
 
     std::size_t v_count, vt_count, vn_count, f_count;
@@ -160,13 +161,14 @@ void Mesh::LoadObject(const std::string& filename, std::vector<vertexf>& vertexB
         std::string firstWord, temp;
         iss >> firstWord;
 
-        switch (HashString(firstWord)) {
+        switch (HashString(firstWord)) 
+        {
             case 1: // first word = "v"
             {
-                vec3f holdv;
-                if(iss >> temp) { holdv.data[0] = std::stof(temp); }
-                if(iss >> temp) { holdv.data[1] = std::stof(temp); }
-                if(iss >> temp) { holdv.data[2] = std::stof(temp); }
+                vec3d holdv;
+                if(iss >> temp) { holdv.data[0] = std::stod(temp); }
+                if(iss >> temp) { holdv.data[1] = std::stod(temp); }
+                if(iss >> temp) { holdv.data[2] = std::stod(temp); }
                 v.push_back(holdv);
                 ++v_count;
                 break;

@@ -1,7 +1,8 @@
-#version 330 core
+#version 410 core
 out vec4 color;
 
-struct DirLight {
+struct DirLight 
+{
     vec3 direction;
     vec4 color;
 	
@@ -10,8 +11,9 @@ struct DirLight {
     vec3 specular;
 };
 
-struct PointLight {
-    vec3 position;
+struct PointLight 
+{
+    dvec3 position;
     vec4 color;
     
     float constant;
@@ -25,55 +27,43 @@ struct PointLight {
 
 #define NR_POINT_LIGHTS 4
 
-float near = 0.1;
-float far = 1.0;
-
 in vec3 fragPosition;
 in vec3 fragNormal;
 in vec2 fragTexCoord;
 
-uniform vec3 cameraPosition;
+uniform dvec3 cameraPosition;
 uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 
-float LinearizeDepth(float depth);
 vec4 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec4 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
 {
-    // AMBIENT LIGHT CALC
-    vec3 ambient = vec3(0.2f,0.2f,0.2f);
-
-    // Second iteration of lighting
-    // properties
+    // Second iteration of lighting properties
     vec3 norm = normalize(fragNormal);
-    vec3 viewDir = normalize(cameraPosition - fragPosition);
+    vec3 viewDir = normalize(vec3(cameraPosition) - fragPosition);
 
     vec4 result;
     // phase 1: Directional lighting
     result = CalcDirLight(dirLight, norm, viewDir);
+
     // phase 2: Point lights
-    for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, fragPosition, viewDir);    
+    for (int i = 0; (i < NR_POINT_LIGHTS); ++i) {
+        result += CalcPointLight(pointLights[i], norm, fragPosition, viewDir);
+    }
+
     // phase 3: Spot light
-    //result += CalcSpotLight(spotLight, norm, fragPosition, viewDir);
+    //result += CalcSpotLight(spotLight, norm, vfragPosition, viewDir);
 
     // Calc visibility based on distance in the relative z-axis
-    //result.w = LinearizeDepth(gl_FragCoord.z) / far;
     result.w = 1.0f;
-    color = result; // + vec4(ambient, 0.0f);
-}
-
-float LinearizeDepth(float depth)
-{
-    float z = depth * 2.0 - 1.0; // back to NDC
-    return (2.0 * near * far) / (far + near - z * (far - near));
+    color = result; 
 }
 
 vec4 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
-    vec3 lightDir = normalize(cameraPosition - light.direction);
+    vec3 lightDir = normalize(light.direction);
 
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0f);
@@ -91,7 +81,7 @@ vec4 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 
 vec4 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 {
-    vec3 lightDir = normalize(light.position - fragPos);
+    vec3 lightDir = normalize(vec3(light.position) - fragPos);
 
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0f);
@@ -101,7 +91,7 @@ vec4 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float spec = pow(max(dot(viewDir, reflectDir), 0.0f), 1.0f);
 
     // attenuation
-    float distance    = length(light.position - fragPos);
+    float distance    = length(vec3(light.position) - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + 
   			     light.quadratic * (distance * distance));   
                  
@@ -114,4 +104,4 @@ vec4 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     specular *= attenuation;
 
     return vec4((ambient + diffuse + specular),1.0f) * light.color;
-} 
+}

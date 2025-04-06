@@ -24,13 +24,13 @@ enum class ModelType
 };
 
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader);
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position);
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position);
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale);
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, uint32_t renderMode);
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, uint32_t renderMode, bool isPhysicalized);
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale);
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, uint32_t renderMode);
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, uint32_t renderMode, bool isPhysicalized);
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, vec4f color);
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, vec4f color);
 
 class IModel
 {
@@ -50,11 +50,11 @@ public:
     virtual std::shared_ptr<Shader> GetShader() const = 0;
     virtual void SetShader(std::shared_ptr<Shader> shader) = 0;
 
-    virtual vec3f GetPosition() const = 0;
-    virtual void SetPosition(const vec3f& position) = 0;
+    virtual vec3d GetPosition() const = 0;
+    virtual void SetPosition(const vec3d& position) = 0;
 
-    virtual vec3f GetRotation() const = 0;
-    virtual void SetRotation(const vec3f& rotation) = 0;
+    virtual vec3d GetRotation() const = 0;
+    virtual void SetRotation(const vec3d& rotation) = 0;
 
     virtual float GetScale() const = 0;
     virtual void SetScale(float scalarVec) = 0;
@@ -105,11 +105,11 @@ public:
         m_modelShader= shader; 
     }
 
-    vec3f GetPosition() const override { return m_position; }
-    void SetPosition(const vec3f& position) override { m_position = position; }
+    vec3d GetPosition() const override { return m_position; }
+    void SetPosition(const vec3d& position) override { m_position = position; }
 
-    vec3f GetRotation() const override { return m_rotation; }
-    void SetRotation(const vec3f& rotation) override { m_rotation = rotation; }
+    vec3d GetRotation() const override { return m_rotation; }
+    void SetRotation(const vec3d& rotation) override { m_rotation = rotation; }
 
     float GetScale() const override { return m_scale; }
     void SetScale(float scalar) override { m_scale = scalar; }
@@ -126,9 +126,9 @@ public:
 protected:
     std::shared_ptr<Mesh> m_modelMesh;
     std::shared_ptr<Shader> m_modelShader;
-    vec3f m_position = {0.0f, 0.0f, 0.0f};
-    vec3f m_rotation = {0.0f, 0.0f, 0.0f};
-    float m_scale = 1.f;
+    vec3d m_position = {0.0, 0.0, 0.0};
+    vec3d m_rotation = {0.0, 0.0, 0.0};
+    float m_scale = 1.0f;
     uint32_t m_renderMethod = GL_TRIANGLES;
     bool m_isPhysicalized = false;
 };
@@ -200,7 +200,6 @@ public:
 
     // Methods
     void UpdatePosition(); // Updates positon using arrow keys
-    void UpdateUniform(const uint32_t shaderID, const std::string uniformName); // Updates named shader uniform
 
     // Data Member Methods
     vec4f GetColor() const override { return m_color; }

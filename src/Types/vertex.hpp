@@ -7,15 +7,11 @@
 
 // Vertex layout: span of 11 if fully packed
 // { x y z }{ n1 n2 n3 }{ tx1 tx2 }{ r g b }
-template <typename UNIT>
 struct vertex
 {
 public:
-    vec3<UNIT> v;
-    vec3<UNIT> vn;
-    vec2<UNIT> vt;
-    vec4<UNIT> color;
+    vec3d v;
+    vec3f vn;
+    vec2f vt;
+    vec4f color;
 };
-// Type aliases
-using vertexf = vertex<float>;
-using vertexd = vertex<double>;

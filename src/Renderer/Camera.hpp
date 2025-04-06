@@ -11,7 +11,7 @@ class Camera
 {
 public:
     Camera() = default;
-    Camera(const mat4x4f& matrix)
+    Camera(const mat4x4d& matrix)
         : m_cameraMatrix(matrix) {}
 
     virtual ~Camera() = default;
@@ -19,8 +19,8 @@ public:
     virtual void OnUpdate() = 0;
     virtual void OnEvent(Event& e) = 0;
 
-    const mat4x4f& GetCameraMatrix() const { return m_cameraMatrix; }
+    const mat4x4d& GetCameraMatrix() const { return m_cameraMatrix; }
 
 protected:
-    mat4x4f m_cameraMatrix{1.0f};
+    mat4x4d m_cameraMatrix{1.0f};
 };

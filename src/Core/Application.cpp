@@ -98,7 +98,7 @@ void Application::Run()
     models.push_back(CreateModelFactory(ModelType::Terrain, 
                                         std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100)), 
                                         multiLights, 
-                                        {0.0f, -12.f, 0.0f}, 
+                                        {0.0, -12.0, 0.0}, 
                                         100.0f,
                                         GL_LINES,
                                         false));
@@ -106,48 +106,48 @@ void Application::Run()
     models.push_back(CreateModelFactory(ModelType::Shape, 
                                         cubeMesh, 
                                         multiLights, 
-                                        {0.0f, 0.0f, 0.0f}, 
-                                        12.f));
+                                        {0.0, 0.0, 0.0}, 
+                                        12.0f));
     // Init sphere
     models.push_back(CreateModelFactory(ModelType::Shape, 
                                         sphereMesh,
                                         multiLights,
-                                        {25.0f, 0.0f, 25.0f},
-                                        5.f));
+                                        {25.0, 0.0, 25.0},
+                                        5.0f));
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, 
                                         cubeMesh, 
                                         lightShader, 
-                                        {5 + rand()%30, 5.0f, 5 + rand()%30}, 
-                                        1.f,
-                                        {.1f,.5f,.9f,.8f}));
+                                        {5 + rand()%30, 5.0, 5 + rand()%30}, 
+                                        1.0f,
+                                        {0.1f, 0.5f, 0.9f, 0.8f}));
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, 
                                         cubeMesh, 
                                         lightShader, 
-                                        {5 + -rand()%30, 25.0f, 5 + rand()%30}, 
-                                        1.f,
-                                        {.2f,.6f,1.0f,.7f}));
+                                        {5 + -rand()%30, 25.0, 5 + rand()%30}, 
+                                        1.0f,
+                                        {0.2f, 0.6f, 1.0f, 0.7f}));
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, 
                                         cubeMesh, 
                                         lightShader, 
-                                        {5 + -rand()%30, -5.0f, 5 + -rand()%30}, 
-                                        1.f,
-                                        {.3f,.7f,.9f,.6f}));
+                                        {5 + -rand()%30, -5.0, 5 + -rand()%30}, 
+                                        1.0,
+                                        {0.3f, 0.7f, 0.9f, 0.6f}));
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, 
                                         cubeMesh, 
                                         lightShader, 
                                         {5 + rand()%30, 12.0f, 5 + -rand()%30}, 
-                                        1.f,
-                                        {.4f,.8f,.7f,.5f}));
+                                        1.0f,
+                                        {0.4f, 0.8f, 0.7f, 0.5f}));
 
-    EditorCamera camera = EditorCamera(vec3f({0.0f, 0.0f, 125.0f}), m_spWindow->GetWidth(), m_spWindow->GetHeight());
+    EditorCamera camera = EditorCamera(vec3d({0.0, 0.0, 125.0}), m_spWindow->GetWidth(), m_spWindow->GetHeight());
     std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();
 
-    m_stats.lastFrameTime = static_cast<float>(glfwGetTime());
-    float theta = 0.0f;
+    m_stats.lastFrameTime = glfwGetTime();
+    double theta = 0.0;
     while (m_bRunning) 
     {
         /* Clears back buffer before new buffer is drawn */
@@ -160,9 +160,9 @@ void Application::Run()
         /* Shader Uniforms */
         // Multiple Lights Shader Lighting
         // directional light:
-        multiLights->SetUniform4fm("cameraMatrix", camera.GetCameraMatrix());
-        multiLights->SetUniform3fv("cameraPosition", camera.GetPosition());
-        multiLights->SetUniform3fv("dirLight.position", {0.0f, -10.0f, 0.0f});
+        multiLights->SetUniform4dm("cameraMatrix", camera.GetCameraMatrix());
+        multiLights->SetUniform3dv("cameraPosition", camera.GetPosition());
+        multiLights->SetUniform3dv("dirLight.position", {0.0, -10.0, 0.0});
         multiLights->SetUniform3fv("dirLight.ambient", {0.05f, 0.05f, 0.05f});
         multiLights->SetUniform3fv("dirLight.diffuse", {0.4f, 0.4f, 0.4f});
         multiLights->SetUniform3fv("dirLight.specular", {0.5f, 0.5f, 0.5f});
@@ -174,26 +174,26 @@ void Application::Run()
             {
                 case 0:
                 {
-                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], 30.f*sin(theta * (M_PI/180.f))});
+                    light->SetPosition({-30.0*cos(theta * (M_PI/180.0)), light->GetPosition()[1], 30.0*sin(theta * (M_PI/180.0))});
                     break;
                 }
                 case 1:
                 {
-                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), -30.f*sin(theta * (M_PI/180.f)), light->GetPosition()[1]});
+                    light->SetPosition({-30.0*cos(theta * (M_PI/180.0)), -30.0*sin(theta * (M_PI/180.0)), light->GetPosition()[1]});
                     break;
                 }
                 case 2:
                 {
-                    light->SetPosition({30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], -30.f*sin(theta * (M_PI/180.f))});
+                    light->SetPosition({30.0*cos(theta * (M_PI/180.0)), light->GetPosition()[1], -30.0*sin(theta * (M_PI/180.0))});
                     break;
                 }
                 case 3:
                 {
-                    light->SetPosition({-30.f*cos(theta * (M_PI/180.f)), light->GetPosition()[1], -30.f*sin(theta * (M_PI/180.f))});
+                    light->SetPosition({-30.0*cos(theta * (M_PI/180.0)), light->GetPosition()[1], -30.0*sin(theta * (M_PI/180.0))});
                     break;
                 }
             }
-            multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].position", light->GetPosition());
+            multiLights->SetUniform3dv("pointLights[" + std::to_string(lightIndex) + "].position", light->GetPosition());
             multiLights->SetUniform4fv("pointLights[" + std::to_string(lightIndex) + "].color", light->GetColor());
             multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].ambient", {0.05f, 0.05f, 0.05f});
             multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].diffuse", {0.8f, 0.8f, 0.8f});
@@ -205,11 +205,11 @@ void Application::Run()
         }
          
         // Light Shader Lighting - all lights are the same so use the last one
-        lightShader->SetUniform4fm("cameraMatrix", camera.GetCameraMatrix());
+        lightShader->SetUniform4dm("cameraMatrix", camera.GetCameraMatrix());
         for (std::shared_ptr<IModel> light : lights) 
         {
             lightShader->SetUniform4fv("lightColor", light->GetColor());
-            renderer->DrawModelMesh(light); 
+            renderer->DrawModelMesh(light);
         }
         for (std::shared_ptr<IModel> model : models) 
         { 
@@ -218,7 +218,7 @@ void Application::Run()
                  
         /* Clean Up and Measure */
         m_spWindow->OnUpdate();
-        ClearErrors();
+        //ClearErrors();
         DisplayStats();
 
         if (theta < 360 || theta >= 0) { 
@@ -244,6 +244,6 @@ void Application::DisplayStats()
 void Application::ClearErrors() const
 {
     while (glGetError() != GL_NO_ERROR) {
-        std::cout << glGetError() << std::endl;
+        std::cout << "error code: " << glGetError() << std::endl;
     }
 }

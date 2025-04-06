@@ -14,8 +14,8 @@ public:
     // Constructors
     VertexBuffer() = default;
     // Generates a VBO and links it to a list of vertices
-    VertexBuffer(std::vector<vertexf>& vertices);
-    VertexBuffer(std::vector<mat4x4f>& matrices);
+    VertexBuffer(std::vector<vertex>& vertices);
+    VertexBuffer(std::vector<mat4x4d>& matrices);
 
     // Destructors
     ~VertexBuffer() { Destroy(); }

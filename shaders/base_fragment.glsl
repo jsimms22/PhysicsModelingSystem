@@ -1,4 +1,4 @@
-#version 330 core
+#version 410 core
 
 out vec4 color;
 
@@ -8,28 +8,28 @@ in vec2 fragTexCoord;
 in vec4 fragColor;
 
 uniform vec4 lightColor;
-uniform vec3 lightPosition;
-uniform vec3 cameraPosition;
+uniform dvec3 lightPosition;
+uniform dvec3 cameraPosition;
 
-float near = 0.1;
-float far = 250.0;
+double near = 0.1;
+double far = 250.0;
 
-float LinearizeDepth(float depth);
+double LinearizeDepth(double depth);
 
 vec4 pointLight();
 
 void main()
 {
     // Calc visibility based on distance in the relative z-axis
-    float depth = LinearizeDepth(gl_FragCoord.z) / far;
+    double depth = LinearizeDepth(double(gl_FragCoord.z)) / far;
     // First iteration of lighting
     vec4 point = pointLight();
-    color = vec4(0.0f, 0.0f, 0.0f, depth) + point;
+    color = vec4(0.0f, 0.0f, 0.0f, float(depth)) + point;
 }
 
-float LinearizeDepth(float depth)
+double LinearizeDepth(double depth)
 {
-    float z = depth * 2.0 - 1.0; // back to NDC
+    double z = depth * 2.0 - 1.0; // back to NDC
     return (2.0 * near * far) / (far + near - z * (far - near));
 }
 
@@ -40,7 +40,7 @@ vec4 pointLight()
 
     // DIFFUSE LIGHT CALC
     vec3 normal = normalize(fragNormal);
-    vec3 lightDir = normalize(lightPosition - fragPosition);
+    vec3 lightDir = normalize(vec3(lightPosition) - fragPosition);
     float diffuse = max(dot(normal, lightDir), 0.0f);
 
     // LIGHT INTENSITY CALC

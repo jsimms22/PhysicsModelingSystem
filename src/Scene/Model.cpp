@@ -32,7 +32,7 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
     }
 }
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position)
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position)
 {
     switch (type)
     {   
@@ -64,7 +64,7 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
     }
 }
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale){
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale){
     switch (type)
     {   
         case ModelType::Shape:
@@ -98,7 +98,7 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
     }
 }
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, uint32_t renderMode)
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, uint32_t renderMode)
 {
     switch (type)
     {   
@@ -136,7 +136,7 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
     }
 }
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, uint32_t renderMode, bool isPhysicalized)
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, uint32_t renderMode, bool isPhysicalized)
 {
     switch (type)
     {   
@@ -177,7 +177,7 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
     }
 }
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3f position, float scale, vec4f color)
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, vec4f color)
 {
     switch (type)
     {   
@@ -220,13 +220,6 @@ void Light::Update()
     //std::cout << "I am a Light.\n"; 
 
     UpdatePosition();
-
-    for (std::pair<std::shared_ptr<Shader>, std::vector<std::string>> shaderPair : m_shaderUpdateMap)
-    {
-        shaderPair.first->Bind();
-        for (std::string& name : shaderPair.second) { UpdateUniform(shaderPair.first->GetID(), name); }
-        shaderPair.first->Unbind();
-    }
 }
 
 void Light::AddMesh(std::shared_ptr<Shader> shader, std::string uniformName)
@@ -252,22 +245,4 @@ void Light::UpdatePosition()
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
         m_position.data[0] += 1.0;
     } 
-}
-
-void Light::UpdateUniform(const uint32_t shaderID, const std::string uniformName) 
-{
-    if (uniformName == "lightColor") {
-        glUniform4f(glGetUniformLocation(shaderID, "lightColor"),
-                    m_color.data[0], 
-                    m_color.data[1], 
-                    m_color.data[2], 
-                    m_color.data[3]);
-    }
-    
-    if (uniformName == "lightPosition") {
-        glUniform3f(glGetUniformLocation(shaderID, "lightPosition"), 
-                    m_position.data[0], 
-                    m_position.data[1], 
-                    m_position.data[2]);
-    }
 }

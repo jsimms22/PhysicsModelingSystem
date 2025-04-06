@@ -5,18 +5,18 @@
 #include <vector>
 #include <iostream>
 
-std::vector<vertexf> FloorVertex(uint32_t vertexCount, float length, float width)
+std::vector<vertex> FloorVertex(uint32_t vertexCount, double length, double width)
 {
-    float coord_x = -(width / 2);
-    float coord_z = -(length / 2);
-    float dx = (width / vertexCount);
-    float dz = (length / vertexCount);
-    std::vector<vertexf> floor;
+    double coord_x = -(width / 2);
+    double coord_z = -(length / 2);
+    double dx = (width / vertexCount);
+    double dz = (length / vertexCount);
+    std::vector<vertex> floor;
     for (uint32_t i=0; i<vertexCount; ++i) {
         for (uint32_t j=0; j<vertexCount; ++j) {
-            floor.push_back(vertexf
+            floor.push_back(vertex
                 {   //position
-                    vec3f{ (coord_x + j*dx), 0.0f, (coord_z + i*dz) },
+                    vec3d{ (coord_x + j*dx), 0.0, (coord_z + i*dz) },
                     // normal
                     vec3f{ 1.0f, 1.0f, 1.0f },
                     // texture
