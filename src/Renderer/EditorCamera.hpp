@@ -27,7 +27,9 @@ public:
 
     void UpdateViewport(float width, float height);
 
-    const vec3d& GetPosition() const { return m_position; }
+    const vec3d GetPosition() const { return m_position; }
+
+    const vec3d GetDirection() const { return m_forward; }
 
 private: // methods
     void UpdatePosition();

@@ -16,14 +16,14 @@ class Texture
 {
 public:
     Texture(const std::string& file,
-            uint32_t textureType, 
-            uint32_t slotType,
-            uint32_t m_formatType,
-            uint32_t m_pixelType);
+            std::uint32_t textureType, 
+            std::uint32_t slotType,
+            std::uint32_t m_formatType,
+            std::uint32_t m_pixelType);
     
     ~Texture() { Destroy(); }
     
-    void UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, uint32_t unit);
+    void UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, std::uint32_t unit);
 
     void Bind() { glBindTexture(m_textureType, m_ID); }
     void Unbind() { glBindTexture(m_textureType, 0); }
@@ -31,6 +31,6 @@ public:
     void Destroy() { glDeleteTextures(1, &m_ID); }
 
 private:
-    uint32_t m_ID;
-    uint32_t m_textureType;
+    std::uint32_t m_ID;
+    std::uint32_t m_textureType;
 };

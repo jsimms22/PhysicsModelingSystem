@@ -29,7 +29,7 @@ public:
          std::vector<mat4x4d> matrices = {});
 
     Mesh(std::vector<vertex> vertices, 
-         std::vector<uint32_t> indices, 
+         std::vector<std::uint32_t> indices, 
          std::vector<Texture> textures = {}, 
          int32_t instances = 1, 
          std::vector<mat4x4d> matrices = {});
@@ -37,7 +37,7 @@ public:
     //void draw(Shader& shader, EditorCamera& camera);
 
     std::vector<vertex> m_vertices;
-    std::vector<uint32_t> m_indices;
+    std::vector<std::uint32_t> m_indices;
     std::vector<Texture> m_textures;
     
     int32_t m_instanceCount = 1;

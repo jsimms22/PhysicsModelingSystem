@@ -98,7 +98,7 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
     }
 }
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, uint32_t renderMode)
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, std::uint32_t renderMode)
 {
     switch (type)
     {   
@@ -136,7 +136,7 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
     }
 }
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, uint32_t renderMode, bool isPhysicalized)
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, std::uint32_t renderMode, bool isPhysicalized)
 {
     switch (type)
     {   

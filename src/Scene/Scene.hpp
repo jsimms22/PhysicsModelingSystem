@@ -9,17 +9,25 @@
 #include <vector>
 #include <string>
 
+class Entity;
+
 class Scene
 {
 public:
     Scene();
     ~Scene();
-    
-    // PLACEHOLDER
-    const std::vector<std::shared_ptr<IModel>>& Load(const std::string& entityType);
-    const std::shared_ptr<IModel>& CreateModel(const std::string& model_desc = {});
-    void DestroyModel(IModel& model);
 
-private:
-    std::unordered_map<std::string, std::shared_ptr<IModel>> m_modelContainer;
+private: // methods
+
+private: // members
+    std::uint32_t m_ViewportWidth = 0;
+    std::uint32_t m_ViewportHeight = 0;
+    bool m_IsRunning = false;
+    bool m_IsPaused = false;
+    bool m_EnablePhysics = false;
+
+    std::unordered_map<std::string, Entity> m_entityMap;
+
+private: // friends
+    friend class Entity;
 };

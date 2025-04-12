@@ -19,5 +19,5 @@ void main()
     fragNormal = mat3(transpose(inverse(model))) * vertexNormal;
     fragTexCoord = vertexTexCoord;
 
-    gl_Position = vec4(cameraMatrix * model * dvec4(vertexPosition, 1.0));
+    gl_Position = vec4(cameraMatrix * dvec4(fragPosition, 1.0));
 }

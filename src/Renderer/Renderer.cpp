@@ -15,7 +15,7 @@ void Renderer::Clear()
     RenderCommand::Clear();
 }
 
-void Renderer::OnWindowResize(uint32_t width, uint32_t height)
+void Renderer::OnWindowResize(std::uint32_t width, std::uint32_t height)
 {
     
     RenderCommand::SetViewport(0, 0, width, height);
@@ -35,7 +35,7 @@ void Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
     // Retrive 
     std::shared_ptr<Mesh> mesh = pModel->GetMesh();
     std::shared_ptr<Shader> shader = pModel->GetShader();
-    uint32_t mode = pModel->GetRenderMethod();
+    std::uint32_t mode = pModel->GetRenderMethod();
     vec3d position = pModel->GetPosition();
     vec3d rotation = pModel->GetRotation();
     double scale = static_cast<double>(pModel->GetScale());

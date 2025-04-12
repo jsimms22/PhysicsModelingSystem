@@ -20,9 +20,9 @@ public:
 
     // Links a VBO attribute 
     void LinkAttribute(VertexBuffer& VBO, 
-                       uint32_t order, 
+                       std::uint32_t order, 
                        int layout, 
-                       uint32_t type, 
+                       std::uint32_t type, 
                        int stride, 
                        void* offset);
 
@@ -31,8 +31,8 @@ public:
 
     void Destroy() { glDeleteVertexArrays(1, &(m_ID)); }
 
-    uint32_t GetID() const { return m_ID; }
+    std::uint32_t GetID() const { return m_ID; }
 
 private:
-    uint32_t m_ID;
+    std::uint32_t m_ID;
 };

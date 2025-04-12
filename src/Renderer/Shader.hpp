@@ -19,7 +19,7 @@ public:
     // Destructors
     ~Shader() { Destroy(); }
 
-    uint32_t GetID() const { return m_ID; }
+    std::uint32_t GetID() const { return m_ID; }
 
     void Bind() { glUseProgram(m_ID); }
     void Unbind() { glUseProgram(0); }
@@ -30,7 +30,7 @@ public:
 
     // Single Value
     void SetInteger(const std::string& uniformName, const int32_t& value);
-    void SetUnsigned(const std::string& uniformName, const uint32_t& value);
+    void SetUnsigned(const std::string& uniformName, const std::uint32_t& value);
     void SetFloat(const std::string& uniformName, const float& value);
     void SetDouble(const std::string& uniformName, const double& value);
     // Vectors
@@ -49,12 +49,12 @@ public:
     void SetUniform4dm(const std::string& uniformName, const mat4x4d& values, bool transpose = false); // double
 
 private: // methods
-    uint32_t GetUniformLocation(const std::string& uniformName);
+    std::uint32_t GetUniformLocation(const std::string& uniformName);
 
     std::string ReadFileContents(const std::string& filename);
-    uint32_t CompileShader(uint32_t type, const std::string& fileText);
+    std::uint32_t CompileShader(std::uint32_t type, const std::string& fileText);
 
 private: // members
-    uint32_t m_ID;
+    std::uint32_t m_ID;
     std::unordered_map<std::string, int32_t> m_uniformLocationCache;
 };

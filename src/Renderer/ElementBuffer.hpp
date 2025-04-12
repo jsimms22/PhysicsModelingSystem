@@ -13,7 +13,7 @@ class ElementBuffer
 public:
     // Constructors
     ElementBuffer() = default; 
-    ElementBuffer(std::vector<uint32_t> indices);
+    ElementBuffer(std::vector<std::uint32_t> indices);
 
     // Destructors
     ~ElementBuffer() { Destroy(); }
@@ -23,8 +23,8 @@ public:
 
     void Destroy() { glDeleteBuffers(1, &(m_ID)); }
 
-    uint32_t GetID() const { return m_ID; }
+    std::uint32_t GetID() const { return m_ID; }
 
 private:
-    uint32_t m_ID;
+    std::uint32_t m_ID;
 };

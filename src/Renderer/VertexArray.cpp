@@ -7,9 +7,9 @@
 // std library
 
 void VertexArray::LinkAttribute(VertexBuffer& VBO, 
-                                uint32_t order, 
+                                std::uint32_t order, 
                                 int layout, 
-                                uint32_t type, 
+                                std::uint32_t type, 
                                 int stride, 
                                 void* offset)
 {

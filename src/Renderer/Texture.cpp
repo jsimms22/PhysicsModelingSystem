@@ -16,10 +16,10 @@
 // std library
 
 Texture::Texture(const std::string& file,
-                 uint32_t textureType, 
-                 uint32_t slot,
-                 uint32_t m_formatType,
-                 uint32_t m_pixelType)
+                 std::uint32_t textureType, 
+                 std::uint32_t slot,
+                 std::uint32_t m_formatType,
+                 std::uint32_t m_pixelType)
     : m_textureType{textureType}
 {
     struct image
@@ -63,9 +63,9 @@ Texture::Texture(const std::string& file,
     Unbind();
 }
 
-void Texture::UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, uint32_t unit)
+void Texture::UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, std::uint32_t unit)
 {
-    uint32_t textureLocation = glGetUniformLocation(shader->GetID(), uniform.c_str());
+    std::uint32_t textureLocation = glGetUniformLocation(shader->GetID(), uniform.c_str());
     shader->Bind();
     glUniform1i(textureLocation,unit);
 }

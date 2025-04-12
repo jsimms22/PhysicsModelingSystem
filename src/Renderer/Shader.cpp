@@ -13,12 +13,12 @@ Shader::Shader(const std::string& vertexFile, const std::string& fragmentFile)
 #endif
     // Create a shader object and compile it during runtime
     std::string vertexSource = ReadFileContents(vertexFile);
-    uint32_t vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSource);
+    std::uint32_t vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSource);
     if (vertexShader == 0) { throw "shader compilation failure"; } 
 
     // Perform the same steps for the fragment shader
     std::string fragmentSource = ReadFileContents(fragmentFile);
-    uint32_t fragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
+    std::uint32_t fragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
     if (fragmentShader == 0) { throw "shader compilation failure"; }
 
     // Create a shader program and link the two shader steps together
@@ -40,7 +40,7 @@ void Shader::SetInteger(const std::string& uniformName, const int32_t& value) //
     Unbind();
 }
 
-void Shader::SetUnsigned(const std::string& uniformName, const uint32_t& value) // unsigned int
+void Shader::SetUnsigned(const std::string& uniformName, const std::uint32_t& value) // unsigned int
 {
     Bind();
     glUniform1ui(GetUniformLocation(uniformName), value);
@@ -130,7 +130,7 @@ void Shader::SetUniform4dm(const std::string& uniformName, const mat4x4d& values
     Unbind();
 }
 
-uint32_t Shader::GetUniformLocation(const std::string& uniformName) 
+std::uint32_t Shader::GetUniformLocation(const std::string& uniformName) 
 {
     std::unordered_map<std::string, int32_t>::const_iterator itr = m_uniformLocationCache.find(uniformName);
 
@@ -172,10 +172,10 @@ std::string Shader::ReadFileContents(const std::string& filename)
     return buffer.str();
 }
 
-uint32_t Shader::CompileShader(uint32_t type, const std::string& fileText)
+std::uint32_t Shader::CompileShader(std::uint32_t type, const std::string& fileText)
 {
     // Create a shader object and compile
-    uint32_t id = glCreateShader(type);
+    std::uint32_t id = glCreateShader(type);
 
     // OpenGL requires an lvalue convertable to GLchar**
     const char* src = fileText.c_str();

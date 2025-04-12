@@ -162,11 +162,24 @@ void Application::Run()
         // directional light:
         multiLights->SetUniform4dm("cameraMatrix", camera.GetCameraMatrix());
         multiLights->SetUniform3dv("cameraPosition", camera.GetPosition());
-        multiLights->SetUniform3dv("dirLight.position", {0.0, -10.0, 0.0});
+        multiLights->SetUniform3fv("dirLight.direction", {1.0f, 0.0f, 1.0f});
+        multiLights->SetUniform4fv("dirLight.color", {0.1f, 0.1f, 0.1f, 0.1f});
         multiLights->SetUniform3fv("dirLight.ambient", {0.05f, 0.05f, 0.05f});
         multiLights->SetUniform3fv("dirLight.diffuse", {0.4f, 0.4f, 0.4f});
         multiLights->SetUniform3fv("dirLight.specular", {0.5f, 0.5f, 0.5f});
         // spotlight
+        multiLights->SetUniform3dv("spotLight.position", camera.GetPosition());
+        multiLights->SetUniform3fv("spotLight.direction", static_cast<vec3f>(camera.GetDirection()));
+        multiLights->SetUniform4fv("spotLight.color", {1.0f, 1.0f, 1.0f, 1.0f});
+        multiLights->SetUniform3fv("spotLight.ambient", {0.1f, 0.1f, 0.1f});
+        multiLights->SetUniform3fv("spotLight.diffuse", {1.0f, 1.0f, 1.0f});
+        multiLights->SetUniform3fv("spotLight.specular", {1.0f, 1.0f, 1.0f});
+        multiLights->SetFloat("spotLight.constant", 1.0f);
+        multiLights->SetFloat("spotLight.linear", 0.09f);
+        multiLights->SetFloat("spotLight.quadratic", 0.032f);
+        multiLights->SetFloat("spotLight.cutOff", cos(0.2181662));
+        multiLights->SetFloat("spotLight.outerCutOff", cos(0.61799)); 
+
         std::size_t lightIndex {};
         for (std::shared_ptr<IModel> light : lights) 
         {
@@ -193,6 +206,7 @@ void Application::Run()
                     break;
                 }
             }
+
             multiLights->SetUniform3dv("pointLights[" + std::to_string(lightIndex) + "].position", light->GetPosition());
             multiLights->SetUniform4fv("pointLights[" + std::to_string(lightIndex) + "].color", light->GetColor());
             multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].ambient", {0.05f, 0.05f, 0.05f});
@@ -211,8 +225,10 @@ void Application::Run()
             lightShader->SetUniform4fv("lightColor", light->GetColor());
             renderer->DrawModelMesh(light);
         }
+
         for (std::shared_ptr<IModel> model : models) 
-        { 
+        {
+            multiLights->SetFloat("material.shininess", 16.0f);
             renderer->DrawModelMesh(model); 
         }
                  

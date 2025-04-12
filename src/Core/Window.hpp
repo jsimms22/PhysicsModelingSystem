@@ -14,12 +14,12 @@
 
 struct WindowProps
 {
-    uint32_t width;
-    uint32_t height;
+    std::uint32_t width;
+    std::uint32_t height;
     std::string title;
 
-    WindowProps(uint32_t _width = 1200,
-                uint32_t _height = 1200,
+    WindowProps(std::uint32_t _width = 1200,
+                std::uint32_t _height = 1200,
                 const std::string& _title = "My Application")
         : width{_width}, height{_height}, title{_title} {}
 };
@@ -35,8 +35,8 @@ public:
 
     virtual void OnUpdate() = 0;
 
-    virtual uint32_t GetWidth() const = 0;
-	virtual uint32_t GetHeight() const = 0;
+    virtual std::uint32_t GetWidth() const = 0;
+	virtual std::uint32_t GetHeight() const = 0;
 
     // Window attributes
     virtual void SetEventCallback(const EventCallbackFn& callback) = 0;

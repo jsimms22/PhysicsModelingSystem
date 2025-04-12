@@ -44,8 +44,8 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
             WindowResizeEvent event(width, height);
-            data.width = static_cast<uint32_t>(width);
-            data.height = static_cast<uint32_t>(height);
+            data.width = static_cast<std::uint32_t>(width);
+            data.height = static_cast<std::uint32_t>(height);
             data.EventCallback(event);
         });
     glfwSetWindowCloseCallback(m_pWindow, [](GLFWwindow* window) -> void 

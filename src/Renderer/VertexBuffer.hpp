@@ -25,8 +25,8 @@ public:
 
     void Destroy() { glDeleteBuffers(1, &(m_ID));}
     
-    uint32_t GetID() const { return m_ID; }
+    std::uint32_t GetID() const { return m_ID; }
 
 private:
-    uint32_t m_ID;
+    std::uint32_t m_ID;
 };

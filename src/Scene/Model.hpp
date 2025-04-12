@@ -27,8 +27,8 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh>
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position);
 
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale);
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, uint32_t renderMode);
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, uint32_t renderMode, bool isPhysicalized);
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, std::uint32_t renderMode);
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, std::uint32_t renderMode, bool isPhysicalized);
 
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, vec4f color);
 
@@ -59,8 +59,8 @@ public:
     virtual float GetScale() const = 0;
     virtual void SetScale(float scalarVec) = 0;
 
-    virtual uint32_t GetRenderMethod() const = 0;
-    virtual void SetRenderMethod(uint32_t rendMethod) = 0;
+    virtual std::uint32_t GetRenderMethod() const = 0;
+    virtual void SetRenderMethod(std::uint32_t rendMethod) = 0;
     
     virtual bool IsPhysicalized() const = 0;
     virtual void SetIsPhysicalized(bool enablePhysics) = 0;
@@ -76,9 +76,9 @@ public:
     BaseModel() = default;
     BaseModel(std::shared_ptr<Mesh> mesh)
         : m_modelMesh{mesh} {}
-    BaseModel(std::shared_ptr<Mesh> mesh, float scalar, uint32_t renderMethod)
+    BaseModel(std::shared_ptr<Mesh> mesh, float scalar, std::uint32_t renderMethod)
         : m_modelMesh{mesh}, m_scale{scalar}, m_renderMethod{renderMethod} {}
-    BaseModel(std::shared_ptr<Mesh> mesh, float scalar, uint32_t renderMethod, bool isPhysicalized)
+    BaseModel(std::shared_ptr<Mesh> mesh, float scalar, std::uint32_t renderMethod, bool isPhysicalized)
         : m_modelMesh{mesh}, m_scale{scalar}, m_renderMethod{renderMethod}, m_isPhysicalized(isPhysicalized) {}
 
     // Destructor
@@ -114,8 +114,8 @@ public:
     float GetScale() const override { return m_scale; }
     void SetScale(float scalar) override { m_scale = scalar; }
 
-    uint32_t GetRenderMethod() const override { return m_renderMethod; }
-    void SetRenderMethod(uint32_t renderMethod) override { m_renderMethod = renderMethod; }
+    std::uint32_t GetRenderMethod() const override { return m_renderMethod; }
+    void SetRenderMethod(std::uint32_t renderMethod) override { m_renderMethod = renderMethod; }
 
     bool IsPhysicalized() const override { return m_isPhysicalized; }
     void SetIsPhysicalized(bool isPhysicalized) override { m_isPhysicalized = isPhysicalized; }
@@ -129,7 +129,7 @@ protected:
     vec3d m_position = {0.0, 0.0, 0.0};
     vec3d m_rotation = {0.0, 0.0, 0.0};
     float m_scale = 1.0f;
-    uint32_t m_renderMethod = GL_TRIANGLES;
+    std::uint32_t m_renderMethod = GL_TRIANGLES;
     bool m_isPhysicalized = false;
 };
 
@@ -140,7 +140,7 @@ public:
     Shape() = default;
     Shape(std::shared_ptr<Mesh> mesh, bool isPhysicalized = true)
         : BaseModel(mesh) { m_isPhysicalized = isPhysicalized; }
-    Shape(std::shared_ptr<Mesh> mesh, float scalar, uint32_t renderMethod, bool isPhysicalized = true)
+    Shape(std::shared_ptr<Mesh> mesh, float scalar, std::uint32_t renderMethod, bool isPhysicalized = true)
         : BaseModel(mesh, scalar, renderMethod, isPhysicalized) {}
     // Destructor
     ~Shape() = default;
@@ -163,7 +163,7 @@ public:
     Terrain() = default;
     Terrain(std::shared_ptr<Mesh> mesh)
         : BaseModel(mesh) {}
-    Terrain(std::shared_ptr<Mesh> mesh, float scalar, uint32_t renderMethod)
+    Terrain(std::shared_ptr<Mesh> mesh, float scalar, std::uint32_t renderMethod)
         : BaseModel(mesh, scalar, renderMethod) {}
 
     // Destructor
@@ -187,7 +187,7 @@ public:
     Light() = default;
     Light(std::shared_ptr<Mesh> mesh)
         : BaseModel(mesh) {}
-    Light(std::shared_ptr<Mesh> mesh, float scalar, uint32_t renderMethod)
+    Light(std::shared_ptr<Mesh> mesh, float scalar, std::uint32_t renderMethod)
         : BaseModel(mesh, scalar, renderMethod) {}
 
     // Destructors

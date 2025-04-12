@@ -24,7 +24,7 @@ public:
     {
         double lastFrameTime = 0.0;
         double deltaTime = 0.0;
-        uint32_t targetFPS = 144;
+        std::uint32_t targetFPS = 144;
         std::size_t totalModels = 0;
         std::size_t totalFrames = 0;
     };

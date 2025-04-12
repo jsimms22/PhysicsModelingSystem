@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iostream>
 
-Mesh::Mesh(std::vector<vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures /* = {}*/, int32_t instances /* = 1*/, std::vector<mat4x4d> matrices /* = {}*/)
+Mesh::Mesh(std::vector<vertex> vertices, std::vector<std::uint32_t> indices, std::vector<Texture> textures /* = {}*/, int32_t instances /* = 1*/, std::vector<mat4x4d> matrices /* = {}*/)
     : m_vertices{vertices}, m_indices{indices}, m_textures{textures}, m_instanceCount{instances}, m_instanceMatrices{matrices}
 {
     // Bind the Vertex Array Object first,

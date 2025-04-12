@@ -20,7 +20,7 @@ void OpenGLRenderAPI::Init()
     //glPointSize(3.0f);
 }
 
-void OpenGLRenderAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+void OpenGLRenderAPI::SetViewport(std::uint32_t x, std::uint32_t y, std::uint32_t width, std::uint32_t height)
 {
     glViewport(x, y, width, height);
 }

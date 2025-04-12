@@ -28,11 +28,11 @@ private:
 class WindowOpenEvent : public Event
 {
 public:
-    WindowOpenEvent(uint32_t width, uint32_t height)
+    WindowOpenEvent(std::uint32_t width, std::uint32_t height)
         : m_width{width}, m_height{height} {}
     
-    uint32_t GetWidth() const { return m_width; }
-    uint32_t GetHeight() const { return m_height; }
+    std::uint32_t GetWidth() const { return m_width; }
+    std::uint32_t GetHeight() const { return m_height; }
 
     std::string_view ToString() const override
     {
@@ -48,8 +48,8 @@ public:
     virtual const char* GetName() const { return "WindowOpenEvent"; };
 
 private:
-    uint32_t m_width;
-    uint32_t m_height;
+    std::uint32_t m_width;
+    std::uint32_t m_height;
 
     static const std::bitset<EventCategoryFlag::BitLength> m_category;
 };
@@ -58,11 +58,11 @@ private:
 class WindowResizeEvent : public Event
 {
 public:
-    WindowResizeEvent(uint32_t width, uint32_t height)
+    WindowResizeEvent(std::uint32_t width, std::uint32_t height)
         : m_width{width}, m_height{height} {}
     
-    uint32_t GetWidth() const { return m_width; }
-    uint32_t GetHeight() const { return m_height; }
+    std::uint32_t GetWidth() const { return m_width; }
+    std::uint32_t GetHeight() const { return m_height; }
 
     std::string_view ToString() const override
     {
@@ -78,8 +78,8 @@ public:
     virtual const char* GetName() const { return "WindowResizeEvent"; };
 
 private:
-    uint32_t m_width;
-    uint32_t m_height;
+    std::uint32_t m_width;
+    std::uint32_t m_height;
 
     static const std::bitset<EventCategoryFlag::BitLength> m_category;
 };

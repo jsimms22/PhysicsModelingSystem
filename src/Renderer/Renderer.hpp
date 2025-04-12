@@ -21,7 +21,7 @@ public:
 
     static void Clear();
 
-    static void OnWindowResize(uint32_t width, uint32_t height);
+    static void OnWindowResize(std::uint32_t width, std::uint32_t height);
 
     static RenderAPI::API GetAPI();
     
