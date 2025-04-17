@@ -36,13 +36,26 @@ https://morning-flow.com/2023/02/06/the-math-behind-the-lookat-transform/
 https://www.songho.ca/opengl/gl_projectionmatrix.html
 https://open.gl/transformations
 
-TODO:
+ECS Talks/Overview/References:
+https://austinmorlan.com/posts/entity_component_system/#what-is-an-ecs
+https://www.youtube.com/watch?v=NTWSeQtHZ9M&t=1485s
+https://www.youtube.com/watch?v=3N1pLtTV2Uc&t=1s
+https://github.com/skypjack/entt
 
+TODO (roadmap):
+
+- rewrite build system to use cmake
+- research meta-programming libraries (consider: boost::mpl11, boost::hana, hyperion::mpl)
+- bundle mpl submodule w/ project
+- continue implementing component system
+- implement scene system with new ecs
+- add a logging library (consider: spdlog)
+- implement serializer
+- research math libraries (consider: glm)
+- (tbd) rewrite to use 3rd party math lib
 - move uniform types list into the shader constructor
-- add instanced rendering for models
 - update floor/terrain to be "infinite" by default
-- refactor model update part of the game loop
-- add a logging library (probably spdlog)
+- add instanced rendering for models
 - (delayed) add simple gravity forces 
 - (delayed) add simple non-elastic collision forces
 
