@@ -44,7 +44,8 @@ https://github.com/skypjack/entt
 
 TODO (roadmap):
 
-- rewrite build system to use cmake
+- rewrite build system to use cmake (implemented - needs some cleaning)
+- wrap existing vendor dependencies into git submodules
 - research meta-programming libraries (consider: boost::mpl11, boost::hana, hyperion::mpl)
 - bundle mpl submodule w/ project
 - continue implementing component system

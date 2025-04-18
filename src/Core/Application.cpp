@@ -187,22 +187,22 @@ void Application::Run()
             {
                 case 0:
                 {
-                    light->SetPosition({-30.0*cos(theta * (M_PI/180.0)), light->GetPosition()[1], 30.0*sin(theta * (M_PI/180.0))});
+                    light->SetPosition({-30.0*cos(theta * (PI/180.0)), light->GetPosition()[1], 30.0*sin(theta * (PI/180.0))});
                     break;
                 }
                 case 1:
                 {
-                    light->SetPosition({-30.0*cos(theta * (M_PI/180.0)), -30.0*sin(theta * (M_PI/180.0)), light->GetPosition()[1]});
+                    light->SetPosition({-30.0*cos(theta * (PI/180.0)), -30.0*sin(theta * (PI/180.0)), light->GetPosition()[1]});
                     break;
                 }
                 case 2:
                 {
-                    light->SetPosition({30.0*cos(theta * (M_PI/180.0)), light->GetPosition()[1], -30.0*sin(theta * (M_PI/180.0))});
+                    light->SetPosition({30.0*cos(theta * (PI/180.0)), light->GetPosition()[1], -30.0*sin(theta * (PI/180.0))});
                     break;
                 }
                 case 3:
                 {
-                    light->SetPosition({-30.0*cos(theta * (M_PI/180.0)), light->GetPosition()[1], -30.0*sin(theta * (M_PI/180.0))});
+                    light->SetPosition({-30.0*cos(theta * (PI/180.0)), light->GetPosition()[1], -30.0*sin(theta * (PI/180.0))});
                     break;
                 }
             }

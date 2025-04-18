@@ -21,7 +21,7 @@ void EditorCamera::UpdateMatrix()
 void EditorCamera::UpdateProjection()
 {
     m_aspectRatio = m_width / m_height;
-    mat4x4_projection(m_projectionMatrix, static_cast<double>(m_FOV)*(M_PI / 180.0), 
+    mat4x4_projection(m_projectionMatrix, static_cast<double>(m_FOV)*(PI / 180.0), 
                       m_aspectRatio, m_nearPlane, m_farPlane);
 }
 
@@ -99,16 +99,16 @@ void EditorCamera::UpdatePosition()
 
         // Calculates upcoming vertical change in the orientation
         vec3d newOrientation = m_orientation;
-        mat3x3_rotate_X(newOrientation, newOrientation, (M_PI/180.0)*(-rotX));
+        mat3x3_rotate_X(newOrientation, newOrientation, (PI/180.0)*(-rotX));
 
         // Decides whether or not the next vertical orientation is legal or not
-        if (abs(vec3_angle(newOrientation, m_up) - (M_PI/180.0)*90.0) <= (M_PI/180.0)*85.0)
+        if (abs(vec3_angle(newOrientation, m_up) - (PI/180.0)*90.0) <= (PI/180.0)*85.0)
         {
             m_orientation = newOrientation;
         }
 
         // Rotates the orientation left and right
-        mat3x3_rotate_Y(m_orientation, m_orientation, (M_PI/180.0)*(-rotY));
+        mat3x3_rotate_Y(m_orientation, m_orientation, (PI/180.0)*(-rotY));
         vec3_normal(m_orientation, m_orientation);
 
         // Sets mouse cursor to the middle of the screen so that it doesn't end up roaming around

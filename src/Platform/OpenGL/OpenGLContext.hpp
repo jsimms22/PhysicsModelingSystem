@@ -14,6 +14,8 @@ public:
     OpenGLContext(GLFWwindow* handle)
     : m_pWindowHandle{handle} {}
 
+    virtual ~OpenGLContext() = default;
+
     void Init() override;
     void SwapBuffers() override;
 private:
