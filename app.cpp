@@ -1,6 +1,6 @@
 // vendors
 // project headers
-#include "Core/Application.hpp"
+#include "src/Core/Application.hpp"
 // std library
 #include <memory>
 

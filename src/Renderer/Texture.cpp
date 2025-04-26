@@ -8,7 +8,7 @@
     #pragma GCC diagnostic ignored "-Wsign-compare"
     #pragma GCC diagnostic ignored "-Wstringop-overflow="
     #define STB_IMAGE_IMPLEMENTATION
-    #include "../../vendor/STB/include/stb_image.h"
+    #include "stb_image.h"
     #pragma GCC diagnostic pop
 #endif
 // project headers

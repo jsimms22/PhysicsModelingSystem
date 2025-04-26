@@ -1,7 +1,7 @@
 // vendor
 #define GLFW_INCLUDE_NONE
-#include "../../../vendor/GL/include/glew.h"
-#include "../../../vendor/GLFW/include/glfw3.h"
+#include "GL/glew.h"
+#include "GLFW/glfw3.h"
 // project header
 #include "../OpenGL/OpenGLContext.hpp"
 // std library

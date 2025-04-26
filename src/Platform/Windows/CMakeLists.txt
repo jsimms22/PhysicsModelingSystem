@@ -12,5 +12,5 @@ target_link_libraries(Windows
     PRIVATE
         Core
         Events
-        GLFW
+        app_vendor_deps
 )

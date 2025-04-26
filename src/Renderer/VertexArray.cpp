@@ -1,7 +1,7 @@
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/glew.h"
-#include "../../vendor/GLFW/include/glfw3.h"
+#include "GL/glew.h"
+#include "GLFW/glfw3.h"
 // project headers
 #include "../Renderer/VertexArray.hpp"
 // std library

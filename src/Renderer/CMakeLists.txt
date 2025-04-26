@@ -35,8 +35,5 @@ target_link_libraries(Renderer
         Events
         ${PLATFORM_IMPL_OS}
         ${PLATFORM_IMPL_RENDER}
-        GLEW
-        ${GLFW_LIBRARIES}
-        ${GLEW_LIBRARIES}
-        ${OPENGL_LIBRARIES}
+        app_vendor_deps
 )
