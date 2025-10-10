@@ -92,53 +92,52 @@ void Application::Run()
     std::vector<std::shared_ptr<IModel>> models;
     std::vector<std::shared_ptr<IModel>> lights;
     // Init floor terrain
-    models.push_back(CreateModelFactory(ModelType::Terrain, 
-                                        std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100)), 
-                                        multiLights, 
-                                        {0.0, -12.0, 0.0}, 
-                                        100.0f,
-                                        GL_LINES,
-                                        false));
+    models.push_back(CreateModelFactory(ModelType::Terrain, std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100))));
+    models.back()->SetShader(multiLights);
+    models.back()->SetPosition({0.0, -12.0, 0.0});
+    models.back()->SetScale(100.f);
+    models.back()->SetRenderMethod(GL_LINES);
+    models.back()->SetIsPhysicalized(false);
+
     // Init container
-    models.push_back(CreateModelFactory(ModelType::Shape, 
-                                        cubeMesh, 
-                                        multiLights, 
-                                        {0.0, 0.0, 0.0}, 
-                                        12.0f));
+    models.push_back(CreateModelFactory(ModelType::Shape, cubeMesh));
+    models.back()->SetShader(multiLights);
+    models.back()->SetPosition({0.0, 0.0, 0.0});
+    models.back()->SetScale(12.0f);
+
     // Init sphere
-    models.push_back(CreateModelFactory(ModelType::Shape, 
-                                        sphereMesh,
-                                        multiLights,
-                                        {25.0, 0.0, 25.0},
-                                        5.0f));
+    models.push_back(CreateModelFactory(ModelType::Shape, sphereMesh));
+    models.back()->SetShader(multiLights);
+    models.back()->SetPosition({25.0, 0.0, 25.0});
+    models.back()->SetScale(5.0f);
+
     // Init light cube
-    lights.push_back(CreateModelFactory(ModelType::Light, 
-                                        cubeMesh, 
-                                        lightShader, 
-                                        {5 + rand()%30, 5.0, 5 + rand()%30}, 
-                                        1.0f,
-                                        {0.1f, 0.5f, 0.9f, 0.8f}));
+    lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
+    lights.back()->SetShader(lightShader);
+    lights.back()->SetPosition({5 + rand()%30, 5.0, 5 + rand()%30});
+    lights.back()->SetScale(1.0f);
+    lights.back()->SetColor({0.1f, 0.5f, 0.9f, 0.8f});
+
     // Init light cube
-    lights.push_back(CreateModelFactory(ModelType::Light, 
-                                        cubeMesh, 
-                                        lightShader, 
-                                        {5 + -rand()%30, 25.0, 5 + rand()%30}, 
-                                        1.0f,
-                                        {0.2f, 0.6f, 1.0f, 0.7f}));
+    lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
+    lights.back()->SetShader(lightShader);
+    lights.back()->SetPosition({5 + -rand()%30, 25.0, 5 + rand()%30});
+    lights.back()->SetScale(1.0f);
+    lights.back()->SetColor({0.2f, 0.6f, 1.0f, 0.7f});
+
     // Init light cube
-    lights.push_back(CreateModelFactory(ModelType::Light, 
-                                        cubeMesh, 
-                                        lightShader, 
-                                        {5 + -rand()%30, -5.0, 5 + -rand()%30}, 
-                                        1.0,
-                                        {0.3f, 0.7f, 0.9f, 0.6f}));
+    lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
+    lights.back()->SetShader(lightShader);
+    lights.back()->SetPosition({5 + -rand()%30, -5.0, 5 + -rand()%30});
+    lights.back()->SetScale(1.0f);
+    lights.back()->SetColor({0.3f, 0.7f, 0.9f, 0.6f});
+    
     // Init light cube
-    lights.push_back(CreateModelFactory(ModelType::Light, 
-                                        cubeMesh, 
-                                        lightShader, 
-                                        {5 + rand()%30, 12.0f, 5 + -rand()%30}, 
-                                        1.0f,
-                                        {0.4f, 0.8f, 0.7f, 0.5f}));
+    lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
+    lights.back()->SetShader(lightShader);
+    lights.back()->SetPosition({5 + -rand()%30, 12.0f, 5 + -rand()%30});
+    lights.back()->SetScale(1.0f);
+    lights.back()->SetColor({0.4f, 0.8f, 0.7f, 0.5f});
 
     EditorCamera camera = EditorCamera(vec3d({0.0, 0.0, 125.0}), m_spWindow->GetWidth(), m_spWindow->GetHeight());
     std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();

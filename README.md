@@ -14,7 +14,7 @@ g++ -c stb.cpp -o stb.o
 ```
 - then
 ```
-ar rcs stbdll.a stb.o
+ar rcs stb.a stb.o
 ```
 - Now move the static lib file to where the header file lives and add the paths to the makefile commands for the compiler to link to
 - Append the include header preprocessor command where it is needed in the project

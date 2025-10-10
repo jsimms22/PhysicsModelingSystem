@@ -12,9 +12,14 @@
 #include <iostream>
 #include <memory>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 class IModel;
+class BaseModel;
+class Shape;
+class Terrain;
+class Light;
 
 enum class ModelType
 {
@@ -23,14 +28,34 @@ enum class ModelType
     Light
 };
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader);
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position);
+template <typename T, typename... Args>
+std::enable_if_t<std::is_constructible<T, Args...>::value, std::shared_ptr<T>>
+Create(Args&&... args) {
+    return std::make_shared<T>(std::forward<Args>(args)...);
+}
 
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale);
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, std::uint32_t renderMode);
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, std::uint32_t renderMode, bool isPhysicalized);
-
-std::shared_ptr<IModel> CreateModelFactory(ModelType type, std::shared_ptr<Mesh> mesh, std::shared_ptr<Shader> shader, vec3d position, float scale, vec4f color);
+template <class... Args>
+std::shared_ptr<IModel> CreateModelFactory(ModelType type, Args&&... args)
+{switch (type)
+    {   
+        case ModelType::Shape:
+        {
+            return Create<Shape>(std::forward<Args>(args)...);
+        }
+        case ModelType::Terrain:
+        {
+            return  Create<Terrain>(std::forward<Args>(args)...);
+        }
+        case ModelType::Light:
+        {
+            return  Create<Light>(std::forward<Args>(args)...);
+        }
+        default:
+        {
+            throw std::invalid_argument("Unknown ModelType");
+        }
+    }
+}
 
 class IModel
 {
