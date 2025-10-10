@@ -1,0 +1,1 @@
+.\bin\build\app.exe
