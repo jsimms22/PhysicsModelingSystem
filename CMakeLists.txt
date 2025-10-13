@@ -19,6 +19,7 @@ project(PhysicsModelSystem LANGUAGES CXX)
 ## BUILD APP ##
 include_directories(
     vendor/GL/include/
+    vendor/GLM/glm/
     vendor/GLFW/include/
     vendor/STB/include/
 )

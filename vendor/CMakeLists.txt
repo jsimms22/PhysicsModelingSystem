@@ -1,6 +1,7 @@
 find_package(OpenGL REQUIRED)
 
 add_subdirectory(GL/build/cmake)
+add_subdirectory(GLM/glm)
 add_subdirectory(GLFW)
 
 ## STB ##
@@ -16,6 +17,7 @@ add_library(app_vendor_deps INTERFACE)
 
 target_link_libraries(app_vendor_deps INTERFACE
     glew
+    glm
     glfw3
     STB
 )

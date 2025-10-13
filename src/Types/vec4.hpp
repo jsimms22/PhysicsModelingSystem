@@ -1,10 +1,15 @@
 #pragma once
 #include <cstdint>
+#include <ostream>
+#include <string>
 // TODO: define methods/getters/setters
 
 template <typename UNIT>
 struct vec4 {
-    UNIT data[4] = {UNIT(0), UNIT(0), UNIT(0), UNIT(0)};
+    UNIT data[4] = {static_cast<UNIT>(0), 
+                    static_cast<UNIT>(0), 
+                    static_cast<UNIT>(0), 
+                    static_cast<UNIT>(0)};
 
     vec4() = default;
     vec4(UNIT x, UNIT y, UNIT z, UNIT w) 
@@ -23,6 +28,17 @@ struct vec4 {
     UNIT& operator[](std::size_t index) { return data[index]; }
     const UNIT& operator[](std::size_t index) const { return data[index]; }
 };
+
+template <typename UNIT>
+std::ostream& operator<<(std::ostream& os, const vec4<UNIT>& obj)
+{
+    os << std::to_string(obj.data[0]) << ", " 
+       << std::to_string(obj.data[1]) << ", "
+       << std::to_string(obj.data[2]) << ", "
+       << std::to_string(obj.data[3]);
+    return os;
+}
+
 // Type aliases
 using vec4f = vec4<float>;
 using vec4d = vec4<double>;

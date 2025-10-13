@@ -72,7 +72,9 @@
         "xloctime": "cpp",
         "xtree": "cpp",
         "bitset": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "cstdarg": "cpp",
+        "numeric": "cpp"
     },
     "makefile.configurations": [
         {

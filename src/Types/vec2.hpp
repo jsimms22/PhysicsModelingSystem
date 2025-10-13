@@ -1,10 +1,14 @@
 #pragma once
+#include <cstdint>
+#include <ostream>
+#include <string>
 
 // TODO: define methods/getters/setters
 
 template <typename UNIT>
 struct vec2 {
-    UNIT data[2] = {UNIT(0), UNIT(0)};
+    UNIT data[2] = {static_cast<UNIT>(0.0), 
+                    static_cast<UNIT>(0.0)};
 
     vec2() = default;
     vec2(UNIT x, UNIT y) 
@@ -23,6 +27,15 @@ struct vec2 {
     UNIT& operator[](std::size_t index) { return data[index]; }
     const UNIT& operator[](std::size_t index) const { return data[index]; }
 };
+
+template <typename UNIT>
+std::ostream& operator<<(std::ostream& os, const vec2<UNIT>& obj)
+{
+    os << std::to_string(obj.data[0]) << ", " 
+       << std::to_string(obj.data[1]);
+    return os;
+}
+
 // Type aliases
 using vec2f = vec2<float>;
 using vec2d = vec2<double>;

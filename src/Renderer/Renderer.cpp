@@ -4,6 +4,15 @@
 #include "../Renderer/Renderer.hpp"
 #include "../Scene/Model.hpp"
 // std library
+#include <iostream>
+
+struct ModelData 
+{
+    mat4x4d position;
+    mat4x4d rotation;
+    mat4x4d scaling;
+    mat4x4d model;
+};
 
 void Renderer::Init()
 {
@@ -35,39 +44,40 @@ void Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
     // Retrive 
     std::shared_ptr<Mesh> mesh = pModel->GetMesh();
     std::shared_ptr<Shader> shader = pModel->GetShader();
-    std::uint32_t mode = pModel->GetRenderMethod();
-    vec3d position = pModel->GetPosition();
-    vec3d rotation = pModel->GetRotation();
-    double scale = static_cast<double>(pModel->GetScale());
+    const std::uint32_t mode = pModel->GetRenderMethod();
+    const vec3d position = pModel->GetPosition();
+    const vec3d rotation = pModel->GetRotation();
+    const double scale = static_cast<double>(pModel->GetScale());
+    const vec3d scaling{ scale, scale, scale };
 
-    vec3d scaling{ scale, scale, scale };
-
-    struct {
-        mat4x4d position;
-        mat4x4d rotation;
-        mat4x4d scaling;
-        mat4x4d model;
-    } matrices;
-
+    ModelData data;
     /* Position */
-    mat4x4_id(matrices.position);
-    mat4x4_translation(matrices.position, matrices.position, position);
+    data.position = mat4x4_translation<double>(data.position, position);
 
     /* Rotation */
-    mat4x4_id(matrices.rotation);
-    mat4_eulerAngles(matrices.rotation, rotation);
+    data.rotation = mat4_eulerAngles<double>(rotation);
 
     /* Scaling */
-    mat4x4_id(matrices.scaling);
-    mat4x4_buildScaler(matrices.scaling, matrices.scaling, scaling);
+    data.scaling = mat4x4_buildScaler<double>(scaling);
 
     /* Model matrix */
-    mat4x4_mul(matrices.model, matrices.rotation, matrices.scaling);
-    mat4x4_mul(matrices.model, matrices.position, matrices.model);
+    data.model = mat4x4_mul<double>(data.rotation, data.scaling);
+    data.model = mat4x4_mul<double>(data.position, data.model);
+
+#ifdef DEBUG
+    std::cout << "POSITION:\n";
+    std::cout << data.position << '\n';
+    std::cout << "ROTATION:\n";
+    std::cout << data.rotation << '\n';
+    std::cout << "SCALING:\n";
+    std::cout << data.scaling << '\n';
+    std::cout << "MODEL:\n";
+    std::cout << data.model << '\n';
+#endif //DEBUG
 
     // TODO: offload normal scaling to here from the vertex shaders
-
-    shader->SetUniform4dm("model", matrices.model);
+    
+    shader->SetUniform4dm("model", data.model);
 
     shader->Bind();
     mesh->m_VA0.Bind();

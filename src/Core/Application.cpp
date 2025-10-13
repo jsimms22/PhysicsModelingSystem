@@ -5,7 +5,6 @@
 #include "../types.hpp"
 
 #include "../Core/Application.hpp"
-//#include "../Core/Mouse.hpp"
 #include "../Core/Input.hpp"
 
 #include "../Physics/force.hpp"
@@ -38,7 +37,7 @@ Application::Application(Private p)
 
 void Application::OnEvent(Event& e)
 {
-    std::cout << e << std::endl;
+    //std::cout << e << std::endl;
     EventNotifier notifier(e);
     notifier.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) -> bool { return this->OnWindowClose(e); });
     notifier.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) -> bool { return this->OnWindowResize(e); });
@@ -98,33 +97,33 @@ void Application::Run()
     models.back()->SetScale(100.f);
     models.back()->SetRenderMethod(GL_LINES);
     models.back()->SetIsPhysicalized(false);
-
+    
     // Init container
     models.push_back(CreateModelFactory(ModelType::Shape, cubeMesh));
     models.back()->SetShader(multiLights);
     models.back()->SetPosition({0.0, 0.0, 0.0});
     models.back()->SetScale(12.0f);
-
+    
     // Init sphere
     models.push_back(CreateModelFactory(ModelType::Shape, sphereMesh));
     models.back()->SetShader(multiLights);
     models.back()->SetPosition({25.0, 0.0, 25.0});
     models.back()->SetScale(5.0f);
-
+    
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({5 + rand()%30, 5.0, 5 + rand()%30});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.1f, 0.5f, 0.9f, 0.8f});
-
+    
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({5 + -rand()%30, 25.0, 5 + rand()%30});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.2f, 0.6f, 1.0f, 0.7f});
-
+    
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
@@ -138,12 +137,13 @@ void Application::Run()
     lights.back()->SetPosition({5 + -rand()%30, 12.0f, 5 + -rand()%30});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.4f, 0.8f, 0.7f, 0.5f});
-
+    
     EditorCamera camera = EditorCamera(vec3d({0.0, 0.0, 125.0}), m_spWindow->GetWidth(), m_spWindow->GetHeight());
     std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();
 
     m_stats.lastFrameTime = glfwGetTime();
     double theta = 0.0;
+    std::cout << "Running\n";
     while (m_bRunning) 
     {
         /* Clears back buffer before new buffer is drawn */
@@ -159,7 +159,7 @@ void Application::Run()
         multiLights->SetUniform4dm("cameraMatrix", camera.GetCameraMatrix());
         multiLights->SetUniform3dv("cameraPosition", camera.GetPosition());
         multiLights->SetUniform3fv("dirLight.direction", {1.0f, 0.0f, 1.0f});
-        multiLights->SetUniform4fv("dirLight.color", {0.1f, 0.1f, 0.1f, 0.1f});
+        multiLights->SetUniform4fv("dirLight.color", {1.f, 1.f, 1.f, 1.f});
         multiLights->SetUniform3fv("dirLight.ambient", {0.05f, 0.05f, 0.05f});
         multiLights->SetUniform3fv("dirLight.diffuse", {0.4f, 0.4f, 0.4f});
         multiLights->SetUniform3fv("dirLight.specular", {0.5f, 0.5f, 0.5f});
@@ -167,7 +167,7 @@ void Application::Run()
         multiLights->SetUniform3dv("spotLight.position", camera.GetPosition());
         multiLights->SetUniform3fv("spotLight.direction", static_cast<vec3f>(camera.GetDirection()));
         multiLights->SetUniform4fv("spotLight.color", {1.0f, 1.0f, 1.0f, 1.0f});
-        multiLights->SetUniform3fv("spotLight.ambient", {0.1f, 0.1f, 0.1f});
+        multiLights->SetUniform3fv("spotLight.ambient", {0.0f, 0.0f, 0.0f});
         multiLights->SetUniform3fv("spotLight.diffuse", {1.0f, 1.0f, 1.0f});
         multiLights->SetUniform3fv("spotLight.specular", {1.0f, 1.0f, 1.0f});
         multiLights->SetFloat("spotLight.constant", 1.0f);
@@ -175,11 +175,12 @@ void Application::Run()
         multiLights->SetFloat("spotLight.quadratic", 0.032f);
         multiLights->SetFloat("spotLight.cutOff", cos(0.2181662));
         multiLights->SetFloat("spotLight.outerCutOff", cos(0.61799)); 
-
-        std::size_t lightIndex {};
+        multiLights->SetInteger("numPointLights", static_cast<int>(lights.size()));
+        
+        std::size_t lightIndex = 0;
         for (std::shared_ptr<IModel> light : lights) 
         {
-            switch (lightIndex)
+            switch (lightIndex % 4)
             {
                 case 0:
                 {
@@ -188,7 +189,7 @@ void Application::Run()
                 }
                 case 1:
                 {
-                    light->SetPosition({-30.0*cos(theta * (PI/180.0)), -30.0*sin(theta * (PI/180.0)), light->GetPosition()[1]});
+                    light->SetPosition({-30.0*cos(theta * (PI/180.0)), -30.0*sin(theta * (PI/180.0)), light->GetPosition()[2]});
                     break;
                 }
                 case 2:
@@ -213,7 +214,7 @@ void Application::Run()
             multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].quadratic", 0.0075f);
             ++lightIndex;
         }
-         
+        
         // Light Shader Lighting - all lights are the same so use the last one
         lightShader->SetUniform4dm("cameraMatrix", camera.GetCameraMatrix());
         for (std::shared_ptr<IModel> light : lights) 
@@ -224,7 +225,7 @@ void Application::Run()
 
         for (std::shared_ptr<IModel> model : models) 
         {
-            multiLights->SetFloat("material.shininess", 16.0f);
+            multiLights->SetFloat("material.shininess", 0.1f);
             renderer->DrawModelMesh(model); 
         }
                  

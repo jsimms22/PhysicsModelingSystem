@@ -8,41 +8,61 @@ vec3d GRAVITY = { 0.0, -9.8, 0.0 };
 
 bool IsColliding(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel>& model2)
 {
-    if (!model1 || !model2) { return false; }
+    if (!model1 || !model2) 
+    { 
+        return false; 
+    }
+    
     return true;
 }
 
 void ApplyCollisionForce(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel>& model2)
 {
-    if (!model1 || !model2) { return; }
+    if (!model1 || !model2) 
+    { 
+        return; 
+    }
+
     return;
 }
 
 void ApplyForces(std::vector<std::shared_ptr<IModel>>& container)
 {
     for (std::shared_ptr<IModel>& i_model : container) {
-        if (!i_model->IsPhysicalized()) { continue; }
+        if (!i_model->IsPhysicalized()) 
+        { 
+            continue; 
+        }
     
         // Apply simple gravity to the balls
-        vec3d result;
+        vec3d result = vec3_add(GRAVITY, i_model->GetPosition());
         //vec3_scale(settings.GRAVITY, static_cast<float>(glfwGetTime()) - lastFrameTime ,settings.GRAVITY);
-        vec3_add(result, GRAVITY, i_model->GetPosition());
+        
         
         // Only apply normal gravity vector if the model would not clip into the or be below the floor
-        if (((i_model->GetPosition().data[1] - i_model->GetScale()) > -12.f) && (result.data[1] - i_model->GetScale()) >= -12.f)
+        if (((i_model->GetPosition().data[1] - i_model->GetScale()) > -12.f) && 
+            (result.data[1] - i_model->GetScale()) >= -12.f)
         {
             i_model->SetPosition(result);
-        } else {
+        } 
+        else 
+        {
             // If model's bounds has fallen below the floor reset position to floor.y + .5*model height
             result.data[1] = -12.f + i_model->GetScale();
             i_model->SetPosition(result);
         }
         
         // Apply simple collision to the balls
-        for (std::shared_ptr<IModel>& j_model : container) {
-            if (i_model == j_model) { continue; }
+        for (std::shared_ptr<IModel>& j_model : container) 
+        {
+            if (i_model == j_model) 
+            { 
+                continue; 
+            }
+
             // Check for collision
-            if (IsColliding(i_model, j_model)) {
+            if (IsColliding(i_model, j_model)) 
+            {
                 // Apply the collision force response
                 ApplyCollisionForce(i_model, j_model);
     
