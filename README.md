@@ -44,20 +44,25 @@ https://github.com/skypjack/entt
 
 TODO (roadmap):
 
-- rewrite build system to use cmake (implemented - needs some cleaning)
-- wrap existing vendor dependencies into git submodules
+- [DONE] rewrite build system to use cmake (implemented - needs some cleaning)
+- [DONE] wrap existing vendor dependencies into git submodules
 - research meta-programming libraries (consider: boost::mpl11, boost::hana, hyperion::mpl)
 - bundle mpl submodule w/ project
 - continue implementing component system
 - implement scene system with new ecs
 - add a logging library (consider: spdlog)
 - implement serializer
-- research math libraries (consider: glm)
-- (tbd) rewrite to use 3rd party math lib
+- [DONE] research math libraries (consider: glm)
+- add testing for my own math methods to verify operations using glm
 - move uniform types list into the shader constructor
 - update floor/terrain to be "infinite" by default
 - add instanced rendering for models
 - (delayed) add simple gravity forces 
 - (delayed) add simple non-elastic collision forces
+- add material texture to model rendering and lighting
+- add a 3rd party model loading library (consider: assimp - likely option for now just to learn and load more complex model data in)
+
+KNOWN ISSUES:
+- Lighting is a bit weird. Point lights are not lighting in all directions, might be math related? Removed directional light calc from the multilights shader for now.
 
 ![alt text](image.png)
