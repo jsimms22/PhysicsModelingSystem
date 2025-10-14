@@ -5,8 +5,6 @@
 
 void Light::Update()
 { 
-    //std::cout << "I am a Light.\n"; 
-
     UpdatePosition();
 }
 

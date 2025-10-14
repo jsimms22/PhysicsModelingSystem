@@ -68,9 +68,12 @@ bool Application::OnWindowClose(WindowCloseEvent& e)
 
 std::shared_ptr<Application> Application::Create()
 {
-    if (auto instance = s_applicationInstance.lock()) {
+    if (auto instance = s_applicationInstance.lock()) 
+    {
         return instance;
-    } else {
+    } 
+    else 
+    {
         instance = std::make_shared<Application>(Application::Private());
         s_applicationInstance = instance;
         return instance;
@@ -91,7 +94,7 @@ void Application::Run()
     std::vector<std::shared_ptr<IModel>> models;
     std::vector<std::shared_ptr<IModel>> lights;
     // Init floor terrain
-    models.push_back(CreateModelFactory(ModelType::Terrain, std::make_shared<Mesh>(FloorVertex(100, 10, 10), FloorIndex(100))));
+    models.push_back(CreateModelFactory(ModelType::Terrain, std::make_shared<Mesh>(FloorVertex(100, 5, 5), FloorIndex(100))));
     models.back()->SetShader(multiLights);
     models.back()->SetPosition({0.0, -12.0, 0.0});
     models.back()->SetScale(100.f);
@@ -102,41 +105,41 @@ void Application::Run()
     models.push_back(CreateModelFactory(ModelType::Shape, cubeMesh));
     models.back()->SetShader(multiLights);
     models.back()->SetPosition({0.0, 0.0, 0.0});
-    models.back()->SetScale(12.0f);
+    models.back()->SetScale(5.0f);
     
     // Init sphere
-    models.push_back(CreateModelFactory(ModelType::Shape, sphereMesh));
+    models.push_back(CreateModelFactory(ModelType::Shape, cubeMesh));
     models.back()->SetShader(multiLights);
-    models.back()->SetPosition({25.0, 0.0, 25.0});
-    models.back()->SetScale(5.0f);
+    models.back()->SetPosition({25.0, 0.0, 0.0});
+    models.back()->SetScale(2.0f);
     
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({5 + rand()%30, 5.0, 5 + rand()%30});
     lights.back()->SetScale(1.0f);
-    lights.back()->SetColor({0.1f, 0.5f, 0.9f, 0.8f});
+    lights.back()->SetColor({0.1f, 0.5f, 0.9f, 1.f});
     
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({5 + -rand()%30, 25.0, 5 + rand()%30});
     lights.back()->SetScale(1.0f);
-    lights.back()->SetColor({0.2f, 0.6f, 1.0f, 0.7f});
+    lights.back()->SetColor({0.2f, 0.6f, 1.0f, 1.f});
     
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({5 + -rand()%30, -5.0, 5 + -rand()%30});
     lights.back()->SetScale(1.0f);
-    lights.back()->SetColor({0.3f, 0.7f, 0.9f, 0.6f});
+    lights.back()->SetColor({0.3f, 0.7f, 0.9f, 1.f});
     
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({5 + -rand()%30, 12.0f, 5 + -rand()%30});
     lights.back()->SetScale(1.0f);
-    lights.back()->SetColor({0.4f, 0.8f, 0.7f, 0.5f});
+    lights.back()->SetColor({0.4f, 0.8f, 0.7f, 1.f});
     
     EditorCamera camera = EditorCamera(vec3d({0.0, 0.0, 125.0}), m_spWindow->GetWidth(), m_spWindow->GetHeight());
     std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();
@@ -158,8 +161,8 @@ void Application::Run()
         // directional light:
         multiLights->SetUniform4dm("cameraMatrix", camera.GetCameraMatrix());
         multiLights->SetUniform3dv("cameraPosition", camera.GetPosition());
-        multiLights->SetUniform3fv("dirLight.direction", {1.0f, 0.0f, 1.0f});
-        multiLights->SetUniform4fv("dirLight.color", {1.f, 1.f, 1.f, 1.f});
+        multiLights->SetUniform3fv("dirLight.direction", {1.0f, 1.0f, 1.0f});
+        multiLights->SetUniform4fv("dirLight.color", {1.0f, 1.0f, 1.0f, 1.0f});
         multiLights->SetUniform3fv("dirLight.ambient", {0.05f, 0.05f, 0.05f});
         multiLights->SetUniform3fv("dirLight.diffuse", {0.4f, 0.4f, 0.4f});
         multiLights->SetUniform3fv("dirLight.specular", {0.5f, 0.5f, 0.5f});
@@ -204,23 +207,25 @@ void Application::Run()
                 }
             }
 
-            multiLights->SetUniform3dv("pointLights[" + std::to_string(lightIndex) + "].position", light->GetPosition());
             multiLights->SetUniform4fv("pointLights[" + std::to_string(lightIndex) + "].color", light->GetColor());
             multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].ambient", {0.05f, 0.05f, 0.05f});
             multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].diffuse", {0.8f, 0.8f, 0.8f});
-            multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].specular", {1.0f, 1.0f, 1.0f});
+            multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].specular", {1.f, 1.f, 1.f});
             multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].constant", 1.0f);
-            multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].linear", 0.04f);
+            multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].linear", 0.045f);
             multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].quadratic", 0.0075f);
             ++lightIndex;
         }
         
         // Light Shader Lighting - all lights are the same so use the last one
         lightShader->SetUniform4dm("cameraMatrix", camera.GetCameraMatrix());
+        lightIndex = 0;
         for (std::shared_ptr<IModel> light : lights) 
         {
             lightShader->SetUniform4fv("lightColor", light->GetColor());
-            renderer->DrawModelMesh(light);
+            Renderer::ModelData data = renderer->DrawModelMesh(light);
+            multiLights->SetUniform4dm("pointLights[" + std::to_string(lightIndex) + "].model", data.model);
+            ++lightIndex;
         }
 
         for (std::shared_ptr<IModel> model : models) 
@@ -234,10 +239,12 @@ void Application::Run()
         //ClearErrors();
         DisplayStats();
 
-        if (theta < 360 || theta >= 0) { 
+        if (theta < 360 || theta >= 0)
+        { 
             theta = theta + (60 * m_stats.deltaTime); 
         }
-        else { 
+        else 
+        { 
             theta = theta - (60 * m_stats.deltaTime); 
         }
     }

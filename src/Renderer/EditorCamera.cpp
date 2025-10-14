@@ -86,7 +86,8 @@ void EditorCamera::UpdatePosition()
         Input::ShowMouseCursor(false);
 
         // Prevents camera from jumping on the first click
-        if (m_firstClick) {
+        if (m_firstClick) 
+        {
             Input::SetMousePositionCenter();
             m_firstClick = false;
         }
@@ -123,7 +124,8 @@ void EditorCamera::UpdatePosition()
 
 void EditorCamera::ResetCamera()
 {
-    if (Input::IsKeyPressed(KeyCode::F1)) {
+    if (Input::IsKeyPressed(KeyCode::F1)) 
+    {
         m_position = m_resetLoc;
         m_orientation = m_resetOrient;
     }

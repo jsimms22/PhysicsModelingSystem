@@ -20,10 +20,7 @@ public:
         : Camera(matrix), m_position{_pos}, m_resetLoc{_pos}, m_width{_width}, m_height{_height} {}
     
     void OnUpdate() override;
-    void OnEvent(Event& e) override 
-    {
-        
-    };
+    void OnEvent(Event& e) override {};
 
     void UpdateViewport(float width, float height);
 
@@ -31,15 +28,13 @@ public:
 
     const vec3d GetDirection() const { return m_forward; }
 
-private: // methods
+private:
     void UpdatePosition();
     void ResetCamera();
-
     void UpdateProjection();
     void UpdateView();
     void UpdateMatrix();
 
-private: // members
     // EditorCamera "eye" location
     vec3d m_position = {0.0f, 0.0f, 0.0f};
     vec3d m_resetLoc = m_position;

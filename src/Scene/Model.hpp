@@ -30,13 +30,15 @@ enum class ModelType
 
 template <typename T, typename... Args>
 std::enable_if_t<std::is_constructible<T, Args...>::value, std::shared_ptr<T>>
-Create(Args&&... args) {
+Create(Args&&... args) 
+{
     return std::make_shared<T>(std::forward<Args>(args)...);
 }
 
 template <class... Args>
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, Args&&... args)
-{switch (type)
+{
+    switch (type)
     {   
         case ModelType::Shape:
         {
@@ -173,7 +175,7 @@ public:
     // Overrides
     bool SupportsType(const ModelType type) const override { return type == ModelType::Shape; };
     void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override { if (shader) { } };
-    void Update() override { /*std::cout << "I am a Shape.\n";*/ };
+    void Update() override {};
 
     vec4f GetColor() const override { return {}; };
     void SetColor(const vec4f& color) override {};
@@ -197,7 +199,7 @@ public:
     // Overrides
     bool SupportsType(const ModelType type) const override { return type == ModelType::Terrain; };
     void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override { if (shader) { } };
-    void Update() override { /*std::cout << "I am a Terrain.\n";*/ };
+    void Update() override {};
 
     vec4f GetColor() const override { return {}; };
     void SetColor(const vec4f& color) override {};

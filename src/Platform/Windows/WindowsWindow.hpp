@@ -35,8 +35,14 @@ public:
     void SetEventCallback(const EventCallbackFn& callback) override { m_data.EventCallback = callback; };
     void SetVSync(bool enabled) override 
     { 
-        if (enabled) { glfwSwapInterval(1); }
-		else { glfwSwapInterval(0); }
+        if (enabled) 
+        { 
+            glfwSwapInterval(1); 
+        }
+		else 
+        { 
+            glfwSwapInterval(0); 
+        }
 
         m_data.vsync = enabled;
     }

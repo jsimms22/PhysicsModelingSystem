@@ -82,7 +82,6 @@ void Shader::SetUniform4fv(const std::string& uniformName, const vec4f& values) 
     Unbind();
 }
 
-
 void Shader::SetUniform2dv(const std::string& uniformName, const vec2d& values) // double
 {
     Bind();
@@ -136,16 +135,20 @@ std::uint32_t Shader::GetUniformLocation(const std::string& uniformName)
 
     int32_t location = -1;
 
-    if (itr == m_uniformLocationCache.end()) {
+    if (itr == m_uniformLocationCache.end()) 
+    {
         location = glGetUniformLocation(m_ID, uniformName.c_str());
         m_uniformLocationCache.insert_or_assign(uniformName,location);
-    } else {
+    } 
+    else 
+    {
         location = itr->second;
     }
 
 #ifdef DEBUG
     // If no id or return is -1
-    if (location == -1) {
+    if (location == -1) 
+    {
         // Do not throw, might be useful to continue, but inform caller
         std::cout << "Warning: uniform '" << uniformName << "' does not exist." << std::endl;
     }
@@ -169,6 +172,7 @@ std::string Shader::ReadFileContents(const std::string& filename)
     {
         std::cout << "Failed to read: " << filename << std::endl;
     }
+    
     return buffer.str();
 }
 
@@ -193,12 +197,13 @@ std::uint32_t Shader::CompileShader(std::uint32_t type, const std::string& fileT
         glGetShaderInfoLog(id, length, &length, msgLog);
 
         std::cout << "Failed to compile " 
-            << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") 
-            << " shader." << std::endl;
+                  << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") 
+                  << " shader." << std::endl;
         
         std::cout << msgLog << std::endl;
 
         glDeleteShader(id);
+
         return 0;
     }
 

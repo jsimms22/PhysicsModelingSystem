@@ -6,7 +6,9 @@
 // TODO: define methods/getters/setters
 
 template <typename UNIT>
-struct vec3 {
+class vec3 
+{
+public:
     UNIT data[3] = {static_cast<UNIT>(0), 
                     static_cast<UNIT>(0), 
                     static_cast<UNIT>(0)};
@@ -19,8 +21,10 @@ struct vec3 {
     
     // Constructor to convert between different types of vec3
     template <typename OtherUNIT>
-    vec3(const vec3<OtherUNIT>& other) {
-        for (std::size_t i = 0; i < 3; ++i) {
+    vec3(const vec3<OtherUNIT>& other) 
+    {
+        for (std::size_t i = 0; i < 3; ++i)
+        {
             data[i] = static_cast<UNIT>(other[i]);
         }
     }
@@ -29,15 +33,16 @@ struct vec3 {
     const UNIT& operator[](std::size_t index) const { return data[index]; }
 };
 
+// Type aliases
+using vec3f = vec3<float>;
+using vec3d = vec3<double>;
+
 template <typename UNIT>
 std::ostream& operator<<(std::ostream& os, const vec3<UNIT>& obj)
 {
     os << std::to_string(obj.data[0]) << ", " 
        << std::to_string(obj.data[1]) << ", "
        << std::to_string(obj.data[2]);
+
     return os;
 }
-
-// Type aliases
-using vec3f = vec3<float>;
-using vec3d = vec3<double>;

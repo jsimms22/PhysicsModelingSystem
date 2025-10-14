@@ -7,7 +7,7 @@
 
 // Vertex layout: span of 11 if fully packed
 // { x y z }{ n1 n2 n3 }{ tx1 tx2 }{ r g b }
-struct vertex
+class vertex
 {
 public:
     vec3d v;

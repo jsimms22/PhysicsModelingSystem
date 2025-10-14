@@ -19,7 +19,8 @@ void OpenGLContext::Init()
     //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Initialize GLEW (or any other OpenGL function loader)
-    if (glewInit() != GLEW_OK) {
+    if (glewInit() != GLEW_OK) 
+    {
         std::cout << "GLEW initialization failure" << std::endl;
         throw std::runtime_error("Failed to initialize GLEW.");
     }

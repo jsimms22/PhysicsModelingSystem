@@ -14,12 +14,10 @@ class Entity;
 class Scene
 {
 public:
-    Scene();
-    ~Scene();
+    Scene() = default;
+    ~Scene() = default;
 
-private: // methods
-
-private: // members
+private:
     std::uint32_t m_ViewportWidth = 0;
     std::uint32_t m_ViewportHeight = 0;
     bool m_IsRunning = false;
@@ -28,6 +26,6 @@ private: // members
 
     std::unordered_map<std::string, Entity> m_entityMap;
 
-private: // friends
+    // friends
     friend class Entity;
 };

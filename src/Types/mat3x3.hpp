@@ -4,6 +4,7 @@
 #include "vec3.hpp"
 // std library
 #include <cstdlib>
+#include <ostream>
 
 template <typename UNIT>
 class mat3x3 
@@ -31,12 +32,15 @@ public:
 
     // Conversion constructor to enable casting between mat4x4<OtherUNIT> to mat4x4<UNIT>
     template <typename OtherUNIT>
-    mat3x3(const mat3x3<OtherUNIT>& other) {
-        for (std::size_t i = 0; i < 3; ++i) {
+    mat3x3(const mat3x3<OtherUNIT>& other) 
+    {
+        for (std::size_t i = 0; i < 3; ++i) 
+        {
             data[i] = vec3<UNIT>(other.data[i]);
         }
     }
 };
+
 // Type aliases
 using mat3x3f = mat3x3<float>;
 using mat3x3d = mat3x3<double>;
@@ -51,8 +55,12 @@ template <typename UNIT>
 void mat3x3<UNIT>::set_all(const UNIT& value)
 {
     for (std::size_t i=0; i<3; ++i)
+    {
         for (std::size_t j=0; j<3; ++j)
+        {
             this->data[i].data[j] = value;
+        }
+    }
 }
 
 template <typename UNIT>
@@ -60,8 +68,22 @@ const mat3x3<UNIT>& set_all(const UNIT& value)
 {
     vec3<UNIT> data[3];
     for (std::size_t i=0; i<3; ++i)
-        for (std::size_t j=0; j<3; ++j)
+    {
+        for (std::size_t j=0; j<3; ++j) 
+        {
             data[i].data[j] = value;
+        }
+    }
     
     return data;
+}
+
+template <typename UNIT>
+std::ostream& operator<<(std::ostream& os, const mat3x3<UNIT>& obj)
+{
+    os << obj.data[0] << '\n' 
+       << obj.data[1] << '\n' 
+       << obj.data[2];
+       
+    return os;
 }

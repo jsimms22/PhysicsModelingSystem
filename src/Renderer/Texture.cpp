@@ -22,13 +22,8 @@ Texture::Texture(const std::string& file,
                  std::uint32_t m_pixelType)
     : m_textureType{textureType}
 {
-    struct image
-    {
-        int32_t width;
-        int32_t height;
-        int32_t channels; // color channels count
-    }image;
-    
+    Texture::ImageData image;
+
     // orient the image up
     stbi_set_flip_vertically_on_load(true);
 

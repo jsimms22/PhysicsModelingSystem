@@ -13,7 +13,6 @@
 class Shader
 {
 public:
-    
     // Constructors
     Shader(const std::string& vertexFile, const std::string& fragmentFile);
     // Destructors
@@ -48,13 +47,11 @@ public:
     void SetUniform3dm(const std::string& uniformName, const mat3x3d& values, bool transpose = false); // double
     void SetUniform4dm(const std::string& uniformName, const mat4x4d& values, bool transpose = false); // double
 
-private: // methods
+private:
     std::uint32_t GetUniformLocation(const std::string& uniformName);
-
     std::string ReadFileContents(const std::string& filename);
     std::uint32_t CompileShader(std::uint32_t type, const std::string& fileText);
 
-private: // members
     std::uint32_t m_ID;
     std::unordered_map<std::string, int32_t> m_uniformLocationCache;
 };

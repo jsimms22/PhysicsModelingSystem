@@ -38,6 +38,7 @@ vec3<UNIT> vec3_normal(const vec3<UNIT>& in)
 	const UNIT normal = sqrt((in.data[0] * in.data[0]) + 
                              (in.data[1] * in.data[1]) + 
                              (in.data[2] * in.data[2]));
+
 	return {in.data[0] / normal, 
             in.data[1] / normal, 
             in.data[2] / normal};
@@ -158,6 +159,7 @@ vec3<UNIT> mat3x3_rotate_X(const vec3<UNIT>& in, const UNIT angle)
 	mat3x3<UNIT> r = {vec3<UNIT>{1.0, 0.0, 0.0},
                       vec3<UNIT>{0.0,   c,   s},
                       vec3<UNIT>{0.0,  -s,   c}};
+
 	return mat3x3_mul_vec3(in, r);
 }
 
@@ -170,6 +172,7 @@ vec3<UNIT> mat3x3_rotate_Y(const vec3<UNIT>& in, const UNIT angle)
 	mat3x3<UNIT> r = {vec3<UNIT>{   c, 0.0,  -s},
                       vec3<UNIT>{ 0.0, 1.0, 0.0},
                       vec3<UNIT>{   s, 0.0,   c}};
+
 	return mat3x3_mul_vec3(in, r);
 }
 
@@ -182,6 +185,7 @@ vec3<UNIT> mat3x3_rotate_Z(const vec3<UNIT>& in, const UNIT angle)
 	mat3x3<UNIT> r = {vec3<UNIT>{   c,   s, 0.0},
 		              vec3<UNIT>{  -s,   c, 0.0},
 		              vec3<UNIT>{ 0.0, 0.0, 1.0}};
+
 	return mat3x3_mul_vec3(in, r);
 }
 
@@ -192,23 +196,6 @@ mat4x4<UNIT> mat4x4_ortho(const UNIT l, const UNIT r, const UNIT b, const UNIT t
             {0.0, 2.0/(t-b), 0.0, 0.0},
             {0.0, 0.0, -2.0/(f-n), 0.0},
             {-(r+l)/(r-l), -(t+b)/(t-b), -(f+n)/(f-n), 1.0}};
-    /*
-	M.data[0].data[0] = 2.0/(r-l);
-	M.data[0].data[1] = 0.0;
-    M.data[0].data[2] = 0.0;
-    M.data[0].data[3] = 0.0;
-    M.data[1].data[0] = 0.0;
-	M.data[1].data[1] = 2.0/(t-b);
-    M.data[1].data[2] = 0.0;
-    M.data[1].data[3] = 0.0;
-    M.data[2].data[0] = 0.0;
-    M.data[2].data[1] = 0.0;
-	M.data[2].data[2] = -2.0/(f-n);
-    M.data[2].data[3] = 0.0;
-	M.data[3].data[0] = -(r+l)/(r-l);
-	M.data[3].data[1] = -(t+b)/(t-b);
-	M.data[3].data[2] = -(f+n)/(f-n);
-	M.data[3].data[3] = 1.0;*/
 }
 
 template <typename UNIT>
@@ -282,24 +269,6 @@ mat4x4<UNIT> mat4x4_projection(const UNIT FOV, const UNIT aspect, const UNIT nea
             {0.0, aspect / TRIG_FOV, 0.0, 0.0},
             {0.0, 0.0, -(far + near) / (far - near), -1.0},
             {0.0, 0.0, -(2 * far * near) / (far - near), 0.0}};
-    /*
-    out.data[0].data[0] = 1.0 / TRIG_FOV; // near / right;
-    out.data[0].data[1] = 0.0;
-    out.data[0].data[2] = 0.0;
-    out.data[0].data[3] = 0.0;
-    out.data[1].data[0] = 0.0;
-    out.data[1].data[1] = aspect / TRIG_FOV; // near / top;
-    out.data[1].data[2] = 0.0;
-    out.data[1].data[3] = 0.0;
-    out.data[2].data[0] = 0.0;
-    out.data[2].data[1] = 0.0;
-    out.data[2].data[2] = -(far + near) / (far - near);
-    out.data[2].data[3] = -1.0;
-    out.data[3].data[0] = 0.0;
-    out.data[3].data[1] = 0.0;
-    out.data[3].data[2] = -(2 * far * near) / (far - near);
-    out.data[3].data[3] = 0.0;
-    */
 }
 
 template <typename UNIT>
@@ -359,5 +328,6 @@ mat4x4<UNIT> mat4_eulerAngles(const vec3<UNIT>& r)
     matrix.data[2].data[0] = -sY * cP;
     matrix.data[2].data[1] = sY * sP * cR + cY * sR;
     matrix.data[2].data[2] = -sY * sP * sR + cY * cR;
+
     return matrix;
 }

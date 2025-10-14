@@ -26,7 +26,8 @@ Mesh::Mesh(std::vector<vertex> vertices, std::vector<std::uint32_t> indices, std
     // Color
     m_VA0.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(5*sizeof(float) + 3*sizeof(double)));
 
-    if (m_instanceCount > 1) {
+    if (m_instanceCount > 1) 
+    {
         // Position
         m_VA0.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
         // Normal
@@ -75,7 +76,8 @@ Mesh::Mesh(const std::string& filename, int32_t instances /* = 1*/, std::vector<
     // Color
     m_VA0.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(5*sizeof(float) + 3*sizeof(double)));
 
-    if (m_instanceCount > 1) {
+    if (m_instanceCount > 1) 
+    {
         // Position
         m_VA0.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
         // Normal
@@ -104,7 +106,8 @@ Mesh::Mesh(const std::string& filename, int32_t instances /* = 1*/, std::vector<
 }
 
 // Hash function for mapping specific strings to integers
-int Mesh::HashString(const std::string& str) {
+int Mesh::HashString(const std::string& str) 
+{
     if (str == "v") return 1;
     if (str == "vt") return 2;
     if (str == "vn") return 3;
@@ -113,7 +116,8 @@ int Mesh::HashString(const std::string& str) {
 }
 
 // Function to split a string based on a delimiter
-std::vector<std::string> Mesh::SplitString(const std::string& str, char delimiter) {
+std::vector<std::string> Mesh::SplitString(const std::string& str, char delimiter) 
+{
     std::vector<std::string> tokens;
     std::stringstream ss(str);
     std::string token;
@@ -150,13 +154,15 @@ void Mesh::LoadObject(const std::string& filename, std::vector<vertex>& vertexBi
     v_count = vt_count = vn_count = f_count = 0;
 
     std::ifstream file(filename);
-    if (!file) {
+    if (!file) 
+    {
         std::cout << "Error opening file: " << filename << std::endl; 
         exit(EXIT_FAILURE);
     }
 
     std::string line;
-    while (std::getline(file, line)) {
+    while (std::getline(file, line)) 
+    {
         std::istringstream iss(line);
         std::string firstWord, temp;
         iss >> firstWord;

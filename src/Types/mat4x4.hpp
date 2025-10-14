@@ -38,6 +38,7 @@ public:
         }
     }
 };
+
 // Type aliases
 using mat4x4f = mat4x4<float>;
 using mat4x4d = mat4x4<double>;
@@ -52,8 +53,12 @@ template <typename UNIT>
 void mat4x4<UNIT>::set_all(const UNIT& value)
 {
     for (std::size_t i=0; i<4; ++i)
+    {
         for (std::size_t j=0; j<4; ++j)
+        {
             this->data[i].data[j] = value;
+        }
+    }
 }
 
 template <typename UNIT>
@@ -61,8 +66,12 @@ const mat4x4<UNIT>& set_all(const UNIT& value)
 {
     vec4<UNIT> data[4];
     for (std::size_t i=0; i<4; ++i)
+    {
         for (std::size_t j=0; j<4; ++j)
+        {
             data[i].data[j] = value;
+        }
+    }
     
     return data;
 }
@@ -74,5 +83,6 @@ std::ostream& operator<<(std::ostream& os, const mat4x4<UNIT>& obj)
        << obj.data[1] << '\n' 
        << obj.data[2] << '\n' 
        << obj.data[3];
+
     return os;
 }

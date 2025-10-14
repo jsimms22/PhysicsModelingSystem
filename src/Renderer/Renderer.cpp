@@ -6,14 +6,6 @@
 // std library
 #include <iostream>
 
-struct ModelData 
-{
-    mat4x4d position;
-    mat4x4d rotation;
-    mat4x4d scaling;
-    mat4x4d model;
-};
-
 void Renderer::Init()
 {
     RenderCommand::Init();
@@ -35,13 +27,12 @@ RenderAPI::API Renderer::GetAPI()
     return RenderAPI::GetAPI(); 
 }
 
-void Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
+Renderer::ModelData Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
 {
-    if (!pModel) { return; }
+    if (!pModel) { return {}; }
 
     pModel->Update();
 
-    // Retrive 
     std::shared_ptr<Mesh> mesh = pModel->GetMesh();
     std::shared_ptr<Shader> shader = pModel->GetShader();
     const std::uint32_t mode = pModel->GetRenderMethod();
@@ -50,7 +41,7 @@ void Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
     const double scale = static_cast<double>(pModel->GetScale());
     const vec3d scaling{ scale, scale, scale };
 
-    ModelData data;
+    Renderer::ModelData data;
     /* Position */
     data.position = mat4x4_translation<double>(data.position, position);
 
@@ -81,15 +72,24 @@ void Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
 
     shader->Bind();
     mesh->m_VA0.Bind();
-    if (1 == mesh->m_instanceCount) {
-        if (mesh->m_indices.size() == 0) { 
+    if (1 == mesh->m_instanceCount) 
+    {
+        if (mesh->m_indices.size() == 0) 
+        { 
             glDrawArrays(mode, 0, mesh->m_vertices.size()); 
-        } else { 
+        } 
+        else 
+        { 
             glDrawElements(mode, mesh->m_indices.size(), GL_UNSIGNED_INT, 0); 
         }
-    } else {
+    } 
+    else 
+    {
         glDrawElementsInstanced(mode, mesh->m_indices.size(), GL_UNSIGNED_INT, 0, mesh->m_instanceCount); 
     }
+    
     mesh->m_VA0.Unbind();
     shader->Unbind();
+
+    return data;
 }

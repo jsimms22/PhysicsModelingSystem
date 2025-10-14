@@ -5,7 +5,9 @@
 // TODO: define methods/getters/setters
 
 template <typename UNIT>
-struct vec4 {
+class vec4 
+{
+public:
     UNIT data[4] = {static_cast<UNIT>(0), 
                     static_cast<UNIT>(0), 
                     static_cast<UNIT>(0), 
@@ -19,8 +21,10 @@ struct vec4 {
 
     // Constructor to convert between different types of vec4
     template <typename OtherUNIT>
-    vec4(const vec4<OtherUNIT>& other) {
-        for (std::size_t i = 0; i < 4; ++i) {
+    vec4(const vec4<OtherUNIT>& other) 
+    {
+        for (std::size_t i = 0; i < 4; ++i) 
+        {
             data[i] = static_cast<UNIT>(other[i]);
         }
     }
@@ -29,6 +33,10 @@ struct vec4 {
     const UNIT& operator[](std::size_t index) const { return data[index]; }
 };
 
+// Type aliases
+using vec4f = vec4<float>;
+using vec4d = vec4<double>;
+
 template <typename UNIT>
 std::ostream& operator<<(std::ostream& os, const vec4<UNIT>& obj)
 {
@@ -36,9 +44,6 @@ std::ostream& operator<<(std::ostream& os, const vec4<UNIT>& obj)
        << std::to_string(obj.data[1]) << ", "
        << std::to_string(obj.data[2]) << ", "
        << std::to_string(obj.data[3]);
+
     return os;
 }
-
-// Type aliases
-using vec4f = vec4<float>;
-using vec4d = vec4<double>;

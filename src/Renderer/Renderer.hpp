@@ -17,6 +17,14 @@ class IModel;
 class Renderer
 {
 public:
+    struct ModelData 
+    {
+        mat4x4d position;
+        mat4x4d rotation;
+        mat4x4d scaling;
+        mat4x4d model;
+    };
+
     static void Init();
 
     static void Clear();
@@ -26,5 +34,5 @@ public:
     static RenderAPI::API GetAPI();
     
     // LEGACY
-    void DrawModelMesh(std::shared_ptr<IModel> pModel);
+    ModelData DrawModelMesh(std::shared_ptr<IModel> pModel);
 };

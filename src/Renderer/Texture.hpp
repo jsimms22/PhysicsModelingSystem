@@ -15,6 +15,13 @@
 class Texture
 {
 public:
+    struct ImageData
+    {
+        int32_t width;
+        int32_t height;
+        int32_t channels; // color channels count
+    };
+
     Texture(const std::string& file,
             std::uint32_t textureType, 
             std::uint32_t slotType,
