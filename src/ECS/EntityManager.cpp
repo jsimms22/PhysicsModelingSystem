@@ -6,14 +6,16 @@
 
 EntityManager::EntityManager()
 {
-    for (GUID id = 1; m_availableEntities.size() < MAX_ENTITIES; ++id) {
+    for (GUID id = 1; m_availableEntities.size() < MAX_ENTITIES; ++id) 
+    {
         m_availableEntities.push_back(Entity(id));
     }
 }
 
 Entity EntityManager::CreateEntity()
 {
-    if (m_availableEntities.size() != 1) {
+    if (m_availableEntities.size() != 1) 
+    {
         Entity newEntity = m_availableEntities.back();
         m_availableEntities.pop_back();
         

@@ -28,7 +28,8 @@ void ApplyCollisionForce(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel
 
 void ApplyForces(std::vector<std::shared_ptr<IModel>>& container)
 {
-    for (std::shared_ptr<IModel>& i_model : container) {
+    for (std::shared_ptr<IModel>& i_model : container) 
+    {
         if (!i_model->IsPhysicalized()) 
         { 
             continue; 

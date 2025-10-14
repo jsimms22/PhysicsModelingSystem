@@ -10,6 +10,7 @@ class EventNotifier
 {
     template <typename T>
     using EventFn = std::function<bool(T&)>;
+    
 public:
     EventNotifier(Event& event)
         : m_event(event) {}
@@ -24,6 +25,7 @@ public:
         }
         return false;
     }
+
 private:
     Event& m_event;
 };
