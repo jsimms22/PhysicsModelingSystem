@@ -20,9 +20,9 @@ void OpenGLRenderAPI::Init()
     //glPointSize(3.0f);
 }
 
-void OpenGLRenderAPI::SetViewport(std::uint32_t x, std::uint32_t y, std::uint32_t width, std::uint32_t height)
+void OpenGLRenderAPI::SetViewport(const std::uint32_t x, const std::uint32_t y, const std::uint32_t width, const std::uint32_t height)
 {
-    glViewport(x, y, width, height);
+    glViewport(static_cast<GLint>(x), static_cast<GLint>(y), static_cast<GLsizei>(width), static_cast<GLsizei>(height));
 }
 
 void OpenGLRenderAPI::SetClearColor(const vec4f& color)

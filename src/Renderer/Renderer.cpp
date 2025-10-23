@@ -16,7 +16,7 @@ void Renderer::Clear()
     RenderCommand::Clear();
 }
 
-void Renderer::OnWindowResize(std::uint32_t width, std::uint32_t height)
+void Renderer::OnWindowResize(const std::uint32_t width, const std::uint32_t height)
 {
     
     RenderCommand::SetViewport(0, 0, width, height);
@@ -76,16 +76,16 @@ Renderer::ModelData Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
     {
         if (mesh->m_indices.size() == 0) 
         { 
-            glDrawArrays(mode, 0, mesh->m_vertices.size()); 
+            glDrawArrays(mode, 0, static_cast<GLsizei>(mesh->m_vertices.size())); 
         } 
         else 
         { 
-            glDrawElements(mode, mesh->m_indices.size(), GL_UNSIGNED_INT, 0); 
+            glDrawElements(mode, static_cast<GLsizei>(mesh->m_indices.size()), GL_UNSIGNED_INT, 0); 
         }
     } 
     else 
     {
-        glDrawElementsInstanced(mode, mesh->m_indices.size(), GL_UNSIGNED_INT, 0, mesh->m_instanceCount); 
+        glDrawElementsInstanced(mode, static_cast<GLsizei>(mesh->m_indices.size()), GL_UNSIGNED_INT, 0, mesh->m_instanceCount); 
     }
     
     mesh->m_VA0.Unbind();

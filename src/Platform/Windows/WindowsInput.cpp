@@ -1,8 +1,9 @@
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
 #include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
+#include "WindowsWindow.hpp"
+
 #include "../../Core/Application.hpp"
 #include "../../Core/Input.hpp"
 // std library
@@ -48,7 +49,7 @@ vec2f Input::GetMousePosition()
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
 
-    return { (float)xpos, (float)ypos };
+    return { static_cast<float>(xpos), static_cast<float>(ypos) };
 }
 
 void Input::SetMousePosition(const vec2f position)

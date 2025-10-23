@@ -25,7 +25,7 @@ public:
 
     void Destroy() { glDeleteProgram(m_ID); }
 
-    void AddUniformTypeName(const std::string& name) {}
+    void AddUniformTypeName(const std::string& /*name*/) {}
 
     // Single Value
     void SetInteger(const std::string& uniformName, const int32_t& value);
@@ -48,7 +48,7 @@ public:
     void SetUniform4dm(const std::string& uniformName, const mat4x4d& values, bool transpose = false); // double
 
 private:
-    std::uint32_t GetUniformLocation(const std::string& uniformName);
+    std::int32_t GetUniformLocation(const std::string& uniformName);
     std::string ReadFileContents(const std::string& filename);
     std::uint32_t CompileShader(std::uint32_t type, const std::string& fileText);
 

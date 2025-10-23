@@ -3,6 +3,7 @@
 #include "../Renderer/EditorCamera.hpp"
 #include "../Core/Input.hpp"
 // std library
+#include <cmath>
 
 void EditorCamera::OnUpdate()
 {

@@ -20,7 +20,7 @@ public:
     ~WindowsWindow();
 
     // Update title bar
-    void UpdateWindowTitle(double dt, int numActive) override;
+    void UpdateWindowTitle(double dt, std::size_t numActive) override;
 
     void OnUpdate() override
     {

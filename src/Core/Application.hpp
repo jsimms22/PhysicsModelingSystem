@@ -1,20 +1,16 @@
 #pragma once
 
 // vendors
-#define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../Platform/Windows/WindowsWindow.hpp"
-
-#include "../Events/Event.hpp"
-#include "../Events/WindowEvents.hpp"
-#include "../Events/ApplicationEvents.hpp"
 // std library
 #include <memory>
 #include <cstdlib>
 
-int main(int argc, char** argv);
+class IWindow;
+class Event;
+class WindowCloseEvent;
+class WindowResizeEvent;
+int main(int /*argc*/, char** /*argv*/);
 
 class Application
 {
@@ -30,20 +26,15 @@ public:
     };
 
     // Private Constructor
-    Application(Private p);
+    explicit Application(Private /*p*/);
 
-    static std::shared_ptr<Application> GetApplication()
-    {
-        // If we cannot return a valid instance, then 
-        // we should not create a new application
-        return s_applicationInstance.lock();
-    }
+    static std::shared_ptr<Application> GetApplication();
 
-    Statistics& GetStats() { return m_stats; }
+    Statistics& GetStats();
 
-    IWindow& GetWindow() { return *m_spWindow; }
+    IWindow& GetWindow();
 
-    void Close() { m_bRunning = false; }
+    void Close();
     void OnEvent(Event& e);
 
 private: // Methods

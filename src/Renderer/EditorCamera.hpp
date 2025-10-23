@@ -20,7 +20,7 @@ public:
         : Camera(matrix), m_position{_pos}, m_resetLoc{_pos}, m_width{_width}, m_height{_height} {}
     
     void OnUpdate() override;
-    void OnEvent(Event& e) override {};
+    void OnEvent(Event& /*e*/) override {};
 
     void UpdateViewport(float width, float height);
 

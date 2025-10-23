@@ -1,6 +1,9 @@
 // vendors
 // project headers
-#include "../Core/Window.hpp"
+#include "Window.hpp"
+
+#include "../Events/Event.hpp"
+
 #include "../Platform/Windows/WindowsWindow.hpp"
 // std library
 

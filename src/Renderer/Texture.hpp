@@ -30,7 +30,7 @@ public:
     
     ~Texture() { Destroy(); }
     
-    void UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, std::uint32_t unit);
+    void UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, std::int32_t unit);
 
     void Bind() { glBindTexture(m_textureType, m_ID); }
     void Unbind() { glBindTexture(m_textureType, 0); }

@@ -1,6 +1,7 @@
 // vendors
 // project headers
-#include "../Windows/WindowsWindow.hpp"
+#include "WindowsWindow.hpp"
+
 #include "../../Events/WindowEvents.hpp"
 #include "../../Events/KeyEvents.hpp"
 #include "../../Events/MouseEvents.hpp"
@@ -30,7 +31,7 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
 #endif
 
     // Create window
-    m_pWindow = glfwCreateWindow(m_data.width, m_data.height, m_data.title.c_str(), nullptr, nullptr);
+    m_pWindow = glfwCreateWindow(static_cast<int>(m_data.width), static_cast<int>(m_data.height), m_data.title.c_str(), nullptr, nullptr);
     if (!m_pWindow) { std::cerr << "WindowsWindow creation failure" << std::endl; }
     
     m_upContext = GraphicsContext::Create(m_pWindow);
@@ -39,11 +40,11 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
     // Set our data struct as the pointer format
     glfwSetWindowUserPointer(m_pWindow,&m_data);
 
-    glfwSetWindowSizeCallback(m_pWindow, [](GLFWwindow* window, int width, int height) -> void 
+    glfwSetWindowSizeCallback(m_pWindow, [](GLFWwindow* window, const int width, const int height) -> void 
         { 
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
-            WindowResizeEvent event(width, height);
+            WindowResizeEvent event{static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height)};
             data.width = static_cast<std::uint32_t>(width);
             data.height = static_cast<std::uint32_t>(height);
             data.EventCallback(event);
@@ -56,7 +57,7 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
             data.EventCallback(event);
         });
 
-    glfwSetKeyCallback(m_pWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods) -> void 
+    glfwSetKeyCallback(m_pWindow, [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) -> void 
         {
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
             
@@ -83,7 +84,7 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
             }
         });
     
-    glfwSetMouseButtonCallback(m_pWindow, [](GLFWwindow* window, int button, int action, int mods) -> void
+    glfwSetMouseButtonCallback(m_pWindow, [](GLFWwindow* window, int button, int action, int /*mods*/) -> void
         {
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
             
@@ -126,7 +127,7 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
 
 WindowsWindow::~WindowsWindow() { if (m_pWindow) { glfwDestroyWindow(m_pWindow); } }
 
-void WindowsWindow::UpdateWindowTitle(double dt, int numActive)
+void WindowsWindow::UpdateWindowTitle(double dt, std::size_t numActive)
 {
     std::string title = "FPS: " + std::to_string(static_cast<int>((1.0/dt)-4.0)) + " | Balls: " + std::to_string(numActive);
     glfwSetWindowTitle(m_pWindow, title.c_str());

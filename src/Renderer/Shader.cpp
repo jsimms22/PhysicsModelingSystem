@@ -129,7 +129,7 @@ void Shader::SetUniform4dm(const std::string& uniformName, const mat4x4d& values
     Unbind();
 }
 
-std::uint32_t Shader::GetUniformLocation(const std::string& uniformName) 
+std::int32_t Shader::GetUniformLocation(const std::string& uniformName) 
 {
     std::unordered_map<std::string, int32_t>::const_iterator itr = m_uniformLocationCache.find(uniformName);
 

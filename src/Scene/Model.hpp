@@ -174,11 +174,11 @@ public:
 
     // Overrides
     bool SupportsType(const ModelType type) const override { return type == ModelType::Shape; };
-    void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override { if (shader) { } };
+    void AddMesh(std::shared_ptr<Shader> shader, std::string /*uniformName*/) override { if (shader) { } };
     void Update() override {};
 
     vec4f GetColor() const override { return {}; };
-    void SetColor(const vec4f& color) override {};
+    void SetColor(const vec4f& /*color*/) override {};
 
     // Methods
 };
@@ -198,11 +198,11 @@ public:
 
     // Overrides
     bool SupportsType(const ModelType type) const override { return type == ModelType::Terrain; };
-    void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override { if (shader) { } };
+    void AddMesh(std::shared_ptr<Shader> shader, std::string /*uniformName*/) override { if (shader) { } };
     void Update() override {};
 
     vec4f GetColor() const override { return {}; };
-    void SetColor(const vec4f& color) override {};
+    void SetColor(const vec4f& /*color*/) override {};
 
     // Methods
 };
