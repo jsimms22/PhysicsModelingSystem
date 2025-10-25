@@ -12,7 +12,7 @@ class OpenGLContext : public GraphicsContext
 {
 public:
     OpenGLContext(GLFWwindow* handle)
-    : m_pWindowHandle{handle} {}
+        : m_pWindowHandle{handle} {}
 
     virtual ~OpenGLContext() = default;
 

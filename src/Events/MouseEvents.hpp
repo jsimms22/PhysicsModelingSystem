@@ -2,7 +2,7 @@
 
 // vendors
 // project headers
-#include "../Events/Event.hpp"
+#include "Event.hpp"
 // std library
 #include <bitset>
 #include <sstream>
@@ -24,10 +24,10 @@ public:
     }
 
     static std::bitset<EventCategoryFlag::BitLength> GetStaticCategory() { return m_category; };
-    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const { return GetStaticCategory(); };
+    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const override { return GetStaticCategory(); };
     static EventType GetStaticType() { return EventType::MousePress; }
-    virtual EventType GetType() const { return GetStaticType(); }
-    virtual const char* GetName() const { return "MousePressEvent"; };
+    virtual EventType GetType() const override { return GetStaticType(); }
+    virtual std::string GetName() const override { return "MousePressEvent"; };
 
 private:
     int m_buttonCode;
@@ -52,10 +52,10 @@ public:
     }
     
     static std::bitset<EventCategoryFlag::BitLength> GetStaticCategory() { return m_category; };
-    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const { return GetStaticCategory(); };
+    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const override { return GetStaticCategory(); };
     static EventType GetStaticType() { return EventType::MouseRelease; }
-    virtual EventType GetType() const { return GetStaticType(); }
-    virtual const char* GetName() const { return "MouseReleaseEvent"; };
+    virtual EventType GetType() const override { return GetStaticType(); }
+    virtual std::string GetName() const override { return "MouseReleaseEvent"; };
 
 private:
     int m_buttonCode;
@@ -81,10 +81,10 @@ public:
     }
     
     static std::bitset<EventCategoryFlag::BitLength> GetStaticCategory() { return m_category; };
-    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const { return GetStaticCategory(); };
+    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const override { return GetStaticCategory(); };
     static EventType GetStaticType() { return EventType::MouseScroll; }
-    virtual EventType GetType() const { return GetStaticType(); }
-    virtual const char* GetName() const { return "MouseScrollEvent"; };
+    virtual EventType GetType() const override { return GetStaticType(); }
+    virtual std::string GetName() const override { return "MouseScrollEvent"; };
 
 private:
     float m_xOffSet;
@@ -111,10 +111,10 @@ public:
     }
     
     static std::bitset<EventCategoryFlag::BitLength> GetStaticCategory() { return m_category; };
-    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const { return GetStaticCategory(); };
+    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const override { return GetStaticCategory(); };
     static EventType GetStaticType() { return EventType::MouseMove; }
-    virtual EventType GetType() const { return GetStaticType(); }
-    virtual const char* GetName() const { return "MouseMoveEvent"; };
+    virtual EventType GetType() const override { return GetStaticType(); }
+    virtual std::string GetName() const override { return "MouseMoveEvent"; };
 
 private:
     float m_mouseX;

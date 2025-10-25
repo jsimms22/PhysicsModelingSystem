@@ -3,7 +3,7 @@
 #include "../../vendor/GL/include/GL/glew.h"
 #include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project header
-#include "../OpenGL/OpenGLContext.hpp"
+#include "OpenGLContext.hpp"
 // std library
 #include <iostream>
 #include <string>

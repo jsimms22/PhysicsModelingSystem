@@ -1,4 +1,7 @@
 // vendors
+#define GLFW_INCLUDE_NONE
+#include "../../vendor/GL/include/GL/glew.h"
+#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 #ifdef DEBUG
     #define STB_IMAGE_IMPLEMENTATION
     #include "../../vendor/STB/include/stb_image.h"
@@ -12,7 +15,9 @@
     #pragma GCC diagnostic pop
 #endif
 // project headers
-#include "../Renderer/Texture.hpp"
+#include "Texture.hpp"
+
+#include "Shader.hpp"
 // std library
 
 Texture::Texture(const std::string& file,
@@ -58,9 +63,15 @@ Texture::Texture(const std::string& file,
     Unbind();
 }
 
-void Texture::UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, std::uint32_t unit)
+void Texture::UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, std::int32_t unit)
 {
-    std::uint32_t textureLocation = glGetUniformLocation(shader->GetID(), uniform.c_str());
+    std::int32_t textureLocation = glGetUniformLocation(shader->GetID(), uniform.c_str());
     shader->Bind();
     glUniform1i(textureLocation,unit);
 }
+
+void Texture::Bind() { glBindTexture(m_textureType, m_ID); }
+
+void Texture::Unbind() { glBindTexture(m_textureType, 0); }
+
+void Texture::Destroy() { glDeleteTextures(1, &m_ID); }

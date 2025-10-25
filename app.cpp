@@ -4,10 +4,9 @@
 // std library
 #include <memory>
 
-int main(int argc, char** argv)
+int main(int /*argc*/, char** /*argv*/)
 {
     std::shared_ptr<Application> spApp = Application::Create();
-    
     spApp->Run();
 
     return 0;

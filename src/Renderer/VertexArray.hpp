@@ -1,19 +1,17 @@
 #pragma once
 
 // vendors
-#define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../types.hpp"
-#include "../Renderer/VertexBuffer.hpp"
 // std library
+#include <cstdint>
+
+class VertexBuffer;
 
 class VertexArray
 {
 public:
     // Constructors
-    VertexArray() { glGenVertexArrays(1, &(m_ID)); }
+    VertexArray();
     
     // Destructors
     ~VertexArray() { Destroy(); }
@@ -26,12 +24,10 @@ public:
                        int stride, 
                        void* offset);
 
-    void Bind() { glBindVertexArray(m_ID); }
-    void Unbind() { glBindVertexArray(0); }
-
-    void Destroy() { glDeleteVertexArrays(1, &(m_ID)); }
-
-    std::uint32_t GetID() const { return m_ID; }
+    void Bind();
+    void Unbind();
+    void Destroy();
+    std::uint32_t GetID() const;
 
 private:
     std::uint32_t m_ID;

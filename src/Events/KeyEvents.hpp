@@ -2,10 +2,10 @@
 
 // vendors
 // project headers
-#include "../Events/Event.hpp"
+#include "Event.hpp"
 // std library
-#include <sstream>
 #include <bitset>
+#include <sstream>
 
 class KeyEvent : public Event
 {
@@ -13,8 +13,8 @@ public:
     int GetKeyCode() const { return m_keyCode; }
 
     static std::bitset<EventCategoryFlag::BitLength> GetStaticCategory() { return m_category; };
-    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const { return GetStaticCategory(); };
-    virtual const char* GetName() const { return "KeyEvent"; };
+    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const override { return GetStaticCategory(); };
+    virtual std::string GetName() const override { return "KeyEvent"; };
 
 protected:
     KeyEvent(int code)
@@ -29,7 +29,7 @@ protected:
 class KeyPressEvent : public KeyEvent
 {
 public:
-    KeyPressEvent(int code, int repeatCount)
+    KeyPressEvent(const int code, const int repeatCount)
         : KeyEvent(code), m_repeatCount{repeatCount} {}
     
     int GetRepeatCount() const { return m_repeatCount; }
@@ -42,8 +42,8 @@ public:
     }
     
     static EventType GetStaticType() { return EventType::KeyPress; }
-    virtual EventType GetType() const { return GetStaticType(); }
-    virtual const char* GetName() const { return "KeyPressEvent"; };
+    virtual EventType GetType() const override { return GetStaticType(); }
+    virtual std::string GetName() const override { return "KeyPressEvent"; };
 
 private:
     int m_repeatCount;
@@ -53,7 +53,7 @@ private:
 class KeyReleaseEvent : public KeyEvent
 {
 public:
-    KeyReleaseEvent(int code)
+    KeyReleaseEvent(const int code)
         : KeyEvent(code) {}
 
     std::string_view ToString() const override
@@ -64,8 +64,8 @@ public:
     }
 
     static EventType GetStaticType() { return EventType::KeyRelease; }
-    virtual EventType GetType() const { return GetStaticType(); }
-    virtual const char* GetName() const { return "KeyReleaseEvent"; };
+    virtual EventType GetType() const override { return GetStaticType(); }
+    virtual std::string GetName() const override { return "KeyReleaseEvent"; };
 
 private:
 };
@@ -74,8 +74,8 @@ private:
 class KeyHoldEvent : public KeyEvent
 {
 public:
-    KeyHoldEvent(int code, int repeatCount)
-        : KeyEvent(code) {}
+    KeyHoldEvent(const int code, const int repeatCount)
+        : KeyEvent(code), m_repeatCount{repeatCount} {}
 
     std::string_view ToString() const override
     {
@@ -85,8 +85,9 @@ public:
     }
 
     static EventType GetStaticType() { return EventType::KeyHold; }
-    virtual EventType GetType() const { return GetStaticType(); }
-    virtual const char* GetName() const { return "KeyHoldEvent"; };
+    virtual EventType GetType() const override { return GetStaticType(); }
+    virtual std::string GetName() const override { return "KeyHoldEvent"; };
 
 private:
+    int m_repeatCount;
 };

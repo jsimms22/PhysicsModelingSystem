@@ -1,6 +1,9 @@
 // vendor
+#define GLFW_INCLUDE_NONE
+#include "../../vendor/GL/include/GL/glew.h"
+#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project header
-#include "../OpenGL/OpenGLRenderAPI.hpp"
+#include "OpenGLRenderAPI.hpp"
 // std library
 
 void OpenGLRenderAPI::Init()
@@ -20,14 +23,13 @@ void OpenGLRenderAPI::Init()
     //glPointSize(3.0f);
 }
 
-void OpenGLRenderAPI::SetViewport(std::uint32_t x, std::uint32_t y, std::uint32_t width, std::uint32_t height)
+void OpenGLRenderAPI::SetViewport(const std::uint32_t x, const std::uint32_t y, const std::uint32_t width, const std::uint32_t height)
 {
-    glViewport(x, y, width, height);
+    glViewport(static_cast<GLint>(x), static_cast<GLint>(y), static_cast<GLsizei>(width), static_cast<GLsizei>(height));
 }
 
 void OpenGLRenderAPI::SetClearColor(const vec4f& color)
 {
-    //glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
     glClearColor(color[0], color[1], color[2], color[3]);
 }
 

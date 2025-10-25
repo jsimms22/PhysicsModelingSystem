@@ -2,7 +2,7 @@
 
 // vendors
 // project headers
-#include "../Events/Event.hpp"
+#include "Event.hpp"
 // std library
 #include <bitset>
 #include <sstream>

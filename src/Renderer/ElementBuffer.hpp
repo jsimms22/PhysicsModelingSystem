@@ -5,8 +5,9 @@
 #include "../../vendor/GL/include/GL/glew.h"
 #include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../types.hpp"
 // std library
+#include <cstdint>
+#include <vector>
 
 class ElementBuffer
 {

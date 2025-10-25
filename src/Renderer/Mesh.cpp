@@ -1,112 +1,20 @@
 // vendors
+#define GLFW_INCLUDE_NONE
+#include "../../vendor/GL/include/GL/glew.h"
+#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../Renderer/Mesh.hpp"
+#include "Mesh.hpp"
+
+#include "ElementBuffer.hpp"
+#include "VertexBuffer.hpp"
 // std library
+#include <cstdlib>
 #include <fstream>
-#include <sstream>
 #include <iostream>
-
-Mesh::Mesh(std::vector<vertex> vertices, std::vector<std::uint32_t> indices, std::vector<Texture> textures /* = {}*/, int32_t instances /* = 1*/, std::vector<mat4x4d> matrices /* = {}*/)
-    : m_vertices{vertices}, m_indices{indices}, m_textures{textures}, m_instanceCount{instances}, m_instanceMatrices{matrices}
-{
-    // Bind the Vertex Array Object first,
-    m_VA0.Bind();
-    // Then bind and set vertex buffer(s)
-    VertexBuffer instanceVBO(matrices);
-    VertexBuffer VBO(m_vertices);
-    // Generates Element Buffer Object and links it to indices
-    ElementBuffer EBO(m_indices);
-
-    // Position
-    m_VA0.LinkAttribute(VBO, 0, 3, GL_DOUBLE, sizeof(vertex), reinterpret_cast<void*>(0));
-    // Normal
-    m_VA0.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(double)));
-    // Texture
-    m_VA0.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(float) + 3*sizeof(double)));
-    // Color
-    m_VA0.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(5*sizeof(float) + 3*sizeof(double)));
-
-    if (m_instanceCount > 1) 
-    {
-        // Position
-        m_VA0.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
-        // Normal
-        m_VA0.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(1*sizeof(vec4d)));
-        // Texture
-        m_VA0.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(2*sizeof(vec4d)));
-        // Color(?)
-        m_VA0.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(3*sizeof(vec4d)));
-
-        glVertexAttribDivisor(4, 1);
-        glVertexAttribDivisor(5, 1);
-        glVertexAttribDivisor(6, 1);
-        glVertexAttribDivisor(7, 1);
-    }
-
-    // Unbind all to prevent accidentally modifying them
-    m_VA0.Unbind();
-    VBO.Unbind();
-    instanceVBO.Unbind();
-    EBO.Unbind();
-
-    // uncomment this call to draw in wireframe polygons.
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-}
-
-Mesh::Mesh(const std::string& filename, int32_t instances /* = 1*/, std::vector<mat4x4d> matrices /* = {}*/)
-    : m_instanceCount{instances}, m_instanceMatrices{matrices}
-{
-    // Load vertex data from file
-    LoadObject(filename, m_vertices);
-
-    // Bind the Vertex Array Object first,
-    m_VA0.Bind();
-    // Then bind and set vertex buffer(s)
-    VertexBuffer instanceVBO(matrices);
-    VertexBuffer VBO(m_vertices);
-    // Generates Element Buffer Object and links it to indices
-    ElementBuffer EBO(m_indices);
-
-    // Position
-    m_VA0.LinkAttribute(VBO, 0, 3, GL_DOUBLE, sizeof(vertex), reinterpret_cast<void*>(0));
-    // Normal
-    m_VA0.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(double)));
-    // Texture
-    m_VA0.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(float) + 3*sizeof(double)));
-    // Color
-    m_VA0.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(5*sizeof(float) + 3*sizeof(double)));
-
-    if (m_instanceCount > 1) 
-    {
-        // Position
-        m_VA0.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
-        // Normal
-        m_VA0.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(1*sizeof(vec4d)));
-        // Texture
-        m_VA0.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(2*sizeof(vec4d)));
-        // Color(?)
-        m_VA0.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(3*sizeof(vec4d)));
-
-        // order, 2 -> use for 2 instances
-        // order, 1 -> whole instance
-        // order, 0 -> each vertex
-        glVertexAttribDivisor(4, 1);
-        glVertexAttribDivisor(5, 1);
-        glVertexAttribDivisor(6, 1);
-        glVertexAttribDivisor(7, 1);
-    }
-
-    m_VA0.Unbind();
-    VBO.Unbind();
-    instanceVBO.Unbind();
-    EBO.Unbind();
-
-    // uncomment this call to draw in wireframe polygons.
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-}
+#include <sstream>
 
 // Hash function for mapping specific strings to integers
-int Mesh::HashString(const std::string& str) 
+int HashString(const std::string& str) 
 {
     if (str == "v") return 1;
     if (str == "vt") return 2;
@@ -116,7 +24,7 @@ int Mesh::HashString(const std::string& str)
 }
 
 // Function to split a string based on a delimiter
-std::vector<std::string> Mesh::SplitString(const std::string& str, char delimiter) 
+std::vector<std::string> SplitString(const std::string& str, char delimiter) 
 {
     std::vector<std::string> tokens;
     std::stringstream ss(str);
@@ -127,11 +35,11 @@ std::vector<std::string> Mesh::SplitString(const std::string& str, char delimite
     return tokens;
 }
 
-void Mesh::ProcessVertex(std::vector<vertex>& vertexBin, 
-                    std::vector<std::string>& vertexMarker, 
-                    std::vector<vec3d>& v, 
-                    std::vector<vec2f>& vt, 
-                    std::vector<vec3f>& vn)
+void ProcessVertex(std::vector<vertex>& vertexBin, 
+                   std::vector<std::string>& vertexMarker, 
+                   std::vector<vec3d>& v, 
+                   std::vector<vec2f>& vt, 
+                   std::vector<vec3f>& vn)
 {
     vertex temp;
     std::size_t vertItr = stoull(vertexMarker[0]) - 1;
@@ -144,7 +52,7 @@ void Mesh::ProcessVertex(std::vector<vertex>& vertexBin,
     vertexBin.push_back(temp);
 }
 
-void Mesh::LoadObject(const std::string& filename, std::vector<vertex>& vertexBin)
+void LoadObject(const std::string& filename, std::vector<vertex>& vertexBin)
 {
     std::vector<vec3d> v;
     std::vector<vec3f> vn;
@@ -215,4 +123,106 @@ void Mesh::LoadObject(const std::string& filename, std::vector<vertex>& vertexBi
     // std::cout << "Final counts: " << v_count << ", " << vt_count << ", " << vn_count << ", " << f_count << std::endl;
     // std::cout << "Vertex bin size: " << vertexBin.size() << std::endl;
     file.close();
+}
+
+//Mesh::Mesh(std::vector<vertex> vertices, std::int32_t instances /* = 1 */, std::vector<mat4x4d> matrices /* = {} */) 
+//    : m_vertices{vertices}, m_instanceCount{instances}, m_instanceMatrices{matrices} {}
+
+Mesh::Mesh(std::vector<vertex> vertices, std::vector<std::uint32_t> indices, std::vector<Texture> textures /* = {} */, std::int32_t instances /* = 1 */, std::vector<mat4x4d> matrices /* = {} */)
+    : m_vertices{vertices}, m_indices{indices}, m_textures{textures}, m_instanceCount{instances}, m_instanceMatrices{matrices}
+{
+    // Bind the Vertex Array Object first,
+    m_VAO.Bind();
+    // Then bind and set vertex buffer(s)
+    VertexBuffer instanceVBO(matrices);
+    VertexBuffer VBO(m_vertices);
+    // Generates Element Buffer Object and links it to indices
+    ElementBuffer EBO(m_indices);
+
+    // Position
+    m_VAO.LinkAttribute(VBO, 0, 3, GL_DOUBLE, sizeof(vertex), reinterpret_cast<void*>(0));
+    // Normal
+    m_VAO.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(double)));
+    // Texture
+    m_VAO.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(float) + 3*sizeof(double)));
+    // Color
+    m_VAO.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(5*sizeof(float) + 3*sizeof(double)));
+
+    if (m_instanceCount > 1) 
+    {
+        // Position
+        m_VAO.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
+        // Normal
+        m_VAO.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(1*sizeof(vec4d)));
+        // Texture
+        m_VAO.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(2*sizeof(vec4d)));
+        // Color(?)
+        m_VAO.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(3*sizeof(vec4d)));
+
+        glVertexAttribDivisor(4, 1);
+        glVertexAttribDivisor(5, 1);
+        glVertexAttribDivisor(6, 1);
+        glVertexAttribDivisor(7, 1);
+    }
+
+    // Unbind all to prevent accidentally modifying them
+    m_VAO.Unbind();
+    VBO.Unbind();
+    instanceVBO.Unbind();
+    EBO.Unbind();
+
+    // uncomment this call to draw in wireframe polygons.
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+}
+
+Mesh::Mesh(const std::string& filename, std::int32_t instances /* = 1*/, std::vector<mat4x4d> matrices /* = {}*/)
+    : m_instanceCount{instances}, m_instanceMatrices{matrices}
+{
+    // Load vertex data from file
+    LoadObject(filename, m_vertices);
+
+    // Bind the Vertex Array Object first,
+    m_VAO.Bind();
+    // Then bind and set vertex buffer(s)
+    VertexBuffer instanceVBO(matrices);
+    VertexBuffer VBO(m_vertices);
+    // Generates Element Buffer Object and links it to indices
+    ElementBuffer EBO(m_indices);
+
+    // Position
+    m_VAO.LinkAttribute(VBO, 0, 3, GL_DOUBLE, sizeof(vertex), reinterpret_cast<void*>(0));
+    // Normal
+    m_VAO.LinkAttribute(VBO, 1, 3, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(double)));
+    // Texture
+    m_VAO.LinkAttribute(VBO, 2, 2, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(3*sizeof(float) + 3*sizeof(double)));
+    // Color
+    m_VAO.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(5*sizeof(float) + 3*sizeof(double)));
+
+    if (m_instanceCount > 1) 
+    {
+        // Position
+        m_VAO.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
+        // Normal
+        m_VAO.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(1*sizeof(vec4d)));
+        // Texture
+        m_VAO.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(2*sizeof(vec4d)));
+        // Color(?)
+        m_VAO.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(3*sizeof(vec4d)));
+
+        // order, 2 -> use for 2 instances
+        // order, 1 -> whole instance
+        // order, 0 -> each vertex
+        glVertexAttribDivisor(4, 1);
+        glVertexAttribDivisor(5, 1);
+        glVertexAttribDivisor(6, 1);
+        glVertexAttribDivisor(7, 1);
+    }
+
+    m_VAO.Unbind();
+    VBO.Unbind();
+    instanceVBO.Unbind();
+    EBO.Unbind();
+
+    // uncomment this call to draw in wireframe polygons.
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }

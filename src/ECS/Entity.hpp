@@ -2,7 +2,7 @@
 
 // vendors
 // project headers
-#include "../types.hpp"
+#include "../Types/GUID.hpp"
 // std library
 
 class Entity

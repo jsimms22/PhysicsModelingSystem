@@ -1,9 +1,11 @@
 // vendors
 // project headers
-#include "../Renderer/GraphicsContext.hpp"
+#include "GraphicsContext.hpp"
+
+#include "RenderAPI.hpp"
+#include "Renderer.hpp"
+
 #include "../Platform/OpenGL/OpenGLContext.hpp"
-#include "../Renderer/Renderer.hpp"
-#include "../Renderer/RenderAPI.hpp"
 // std library
 #include <iostream>
 

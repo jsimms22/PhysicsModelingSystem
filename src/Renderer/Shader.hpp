@@ -1,12 +1,11 @@
 #pragma once
 
 // vendors
-#define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
 #include "../types.hpp"
 // std library
+#include <cstdlib>
+#include <cstdint>
 #include <string>
 #include <unordered_map>
 
@@ -18,20 +17,17 @@ public:
     // Destructors
     ~Shader() { Destroy(); }
 
-    std::uint32_t GetID() const { return m_ID; }
-
-    void Bind() { glUseProgram(m_ID); }
-    void Unbind() { glUseProgram(0); }
-
-    void Destroy() { glDeleteProgram(m_ID); }
-
-    void AddUniformTypeName(const std::string& name) {}
+    std::uint32_t GetID() const;
+    void Bind();
+    void Unbind();
+    void Destroy();
+    void AddUniformTypeName(const std::string& /*name*/) {}
 
     // Single Value
-    void SetInteger(const std::string& uniformName, const int32_t& value);
-    void SetUnsigned(const std::string& uniformName, const std::uint32_t& value);
-    void SetFloat(const std::string& uniformName, const float& value);
-    void SetDouble(const std::string& uniformName, const double& value);
+    void SetInteger(const std::string& uniformName, const std::int32_t value);
+    void SetUnsigned(const std::string& uniformName, const std::uint32_t value);
+    void SetFloat(const std::string& uniformName, const float value);
+    void SetDouble(const std::string& uniformName, const double value);
     // Vectors
     // TODO: ints, unsigned ints, bools
     void SetUniform2fv(const std::string& uniformName, const vec2f& values); // float
@@ -48,10 +44,10 @@ public:
     void SetUniform4dm(const std::string& uniformName, const mat4x4d& values, bool transpose = false); // double
 
 private:
-    std::uint32_t GetUniformLocation(const std::string& uniformName);
+    std::int32_t GetUniformLocation(const std::string& uniformName);
     std::string ReadFileContents(const std::string& filename);
     std::uint32_t CompileShader(std::uint32_t type, const std::string& fileText);
 
     std::uint32_t m_ID;
-    std::unordered_map<std::string, int32_t> m_uniformLocationCache;
+    std::unordered_map<std::string, std::int32_t> m_uniformLocationCache;
 };

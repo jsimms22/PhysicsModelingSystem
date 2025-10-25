@@ -1,6 +1,6 @@
 // vendors
 // project headers
-#include "../Renderer/ElementBuffer.hpp"
+#include "ElementBuffer.hpp"
 // std library
 
 ElementBuffer::ElementBuffer(std::vector<std::uint32_t> indices) 

@@ -2,12 +2,13 @@
 
 // vendors
 // project headers
-#include "../ECS/Entity.hpp"
-#include "../ECS/Components.hpp"
-#include "../types.hpp"
+#include "Components.hpp"
 // std library
-#include <vector>
 #include <array>
+#include <cstdint>
+#include <vector>
+
+class Entity;
 
 class EntityManager
 {

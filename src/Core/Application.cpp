@@ -1,33 +1,41 @@
 // vendors
+#define GLFW_INCLUDE_NONE
+#include "../../vendor/GL/include/GL/glew.h"
+#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../fwd_math.hpp"
+#include "Application.hpp"
+#include "Input.hpp"
+#include "Window.hpp"
 
-#include "../types.hpp"
-
-#include "../Core/Application.hpp"
-#include "../Core/Input.hpp"
+#include "../Events/EventNotifier.hpp"
+#include "../Events/Event.hpp"
+#include "../Events/WindowEvents.hpp"
+#include "../Events/ApplicationEvents.hpp"
 
 #include "../Physics/force.hpp"
 
-#include "../Renderer/Graphics.hpp"
-#include "../Renderer/Shader.hpp"
 #include "../Renderer/EditorCamera.hpp"
+#include "../Renderer/Graphics.hpp"
+#include "../Renderer/Mesh.hpp"
 #include "../Renderer/Renderer.hpp"
+#include "../Renderer/Shader.hpp"
+#include "../Renderer/Texture.hpp"
 
 #include "../Scene/Model.hpp"
 
-#include "../Events/EventNotifier.hpp"
+#include "../Types/vec3.hpp"
+#include "../Types/vertex.hpp"
 // std library
-#include <vector>
 #include <cmath>
-#include <string>
 #include <functional>
+#include <string>
 #include <utility>
+#include <vector>
 
 // Define the static member variable outside the class
 std::weak_ptr<Application> Application::s_applicationInstance;
 
-Application::Application(Private p)
+Application::Application(Private /*p*/)
 {
     m_spWindow = IWindow::Create();
     m_spWindow->SetEventCallback([this](Event& e) -> void { this->OnEvent(e); });
@@ -37,15 +45,17 @@ Application::Application(Private p)
 
 void Application::OnEvent(Event& e)
 {
-    //std::cout << e << std::endl;
     EventNotifier notifier(e);
-    notifier.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& e) -> bool { return this->OnWindowClose(e); });
-    notifier.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& e) -> bool { return this->OnWindowResize(e); });
+    notifier.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& close) -> bool { return this->OnWindowClose(close); });
+    notifier.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& resize) -> bool { return this->OnWindowResize(resize); });
 }
 
 bool Application::OnWindowResize(WindowResizeEvent& e)
 {
+#ifdef Debug
     std::cout << "Window resizing\n";
+#endif //Debug
+
     if (e.GetWidth() == 0 || e.GetHeight() == 0)
     {
         m_bMinimized = true;
@@ -59,9 +69,12 @@ bool Application::OnWindowResize(WindowResizeEvent& e)
     return false;
 }
 
-bool Application::OnWindowClose(WindowCloseEvent& e)
+bool Application::OnWindowClose(WindowCloseEvent& /*e*/)
 {
+#ifdef Debug
     std::cout << "Window closing\n";
+#endif //Debug
+
     m_bRunning = false;
     return true;
 }
@@ -116,44 +129,50 @@ void Application::Run()
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
-    lights.back()->SetPosition({5 + rand()%30, 5.0, 5 + rand()%30});
+    lights.back()->SetPosition({static_cast<double>(5 + rand()%30), 5.0, static_cast<double>(5 + rand()%30)});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.1f, 0.5f, 0.9f, 1.f});
     
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
-    lights.back()->SetPosition({5 + -rand()%30, 25.0, 5 + rand()%30});
+    lights.back()->SetPosition({static_cast<double>(5 + -rand()%30), 25.0, static_cast<double>(5 + rand()%30)});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.2f, 0.6f, 1.0f, 1.f});
     
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
-    lights.back()->SetPosition({5 + -rand()%30, -5.0, 5 + -rand()%30});
+    lights.back()->SetPosition({static_cast<double>(5 + -rand()%30), -5.0, static_cast<double>(5 + -rand()%30)});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.3f, 0.7f, 0.9f, 1.f});
     
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
-    lights.back()->SetPosition({5 + -rand()%30, 12.0f, 5 + -rand()%30});
+    lights.back()->SetPosition({static_cast<double>(5 + -rand()%30), 12.0f, static_cast<double>(5 + -rand()%30)});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.4f, 0.8f, 0.7f, 1.f});
     
-    EditorCamera camera = EditorCamera(vec3d({0.0, 0.0, 125.0}), m_spWindow->GetWidth(), m_spWindow->GetHeight());
+    EditorCamera camera = EditorCamera(vec3d({0.0, 0.0, 125.0}), 
+                                       static_cast<float>(m_spWindow->GetWidth()), 
+                                       static_cast<float>(m_spWindow->GetHeight()));
     std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();
 
     m_stats.lastFrameTime = glfwGetTime();
     double theta = 0.0;
+
+#ifdef Debug
     std::cout << "Running\n";
+#endif //Debug
+
     while (m_bRunning) 
     {
         /* Clears back buffer before new buffer is drawn */
         Renderer::Clear();
 
         if (Input::IsKeyPressed(KeyCode::Escape)) { Application::Close(); }
-        camera.UpdateViewport(m_spWindow->GetWidth(),m_spWindow->GetHeight());
+        camera.UpdateViewport(static_cast<float>(m_spWindow->GetWidth()), static_cast<float>(m_spWindow->GetHeight()));
         camera.OnUpdate();
 
         /* Shader Uniforms */
@@ -176,8 +195,8 @@ void Application::Run()
         multiLights->SetFloat("spotLight.constant", 1.0f);
         multiLights->SetFloat("spotLight.linear", 0.09f);
         multiLights->SetFloat("spotLight.quadratic", 0.032f);
-        multiLights->SetFloat("spotLight.cutOff", cos(0.2181662));
-        multiLights->SetFloat("spotLight.outerCutOff", cos(0.61799)); 
+        multiLights->SetFloat("spotLight.cutOff", static_cast<float>(std::cos(0.2181662)));
+        multiLights->SetFloat("spotLight.outerCutOff", static_cast<float>(std::cos(0.61799))); 
         multiLights->SetInteger("numPointLights", static_cast<int>(lights.size()));
         
         std::size_t lightIndex = 0;
@@ -187,22 +206,22 @@ void Application::Run()
             {
                 case 0:
                 {
-                    light->SetPosition({-30.0*cos(theta * (PI/180.0)), light->GetPosition()[1], 30.0*sin(theta * (PI/180.0))});
+                    light->SetPosition({-30.0*std::cos(theta * (PI/180.0)), light->GetPosition()[1], 30.0*std::sin(theta * (PI/180.0))});
                     break;
                 }
                 case 1:
                 {
-                    light->SetPosition({-30.0*cos(theta * (PI/180.0)), -30.0*sin(theta * (PI/180.0)), light->GetPosition()[2]});
+                    light->SetPosition({-30.0*std::cos(theta * (PI/180.0)), -30.0*std::sin(theta * (PI/180.0)), light->GetPosition()[2]});
                     break;
                 }
                 case 2:
                 {
-                    light->SetPosition({30.0*cos(theta * (PI/180.0)), light->GetPosition()[1], -30.0*sin(theta * (PI/180.0))});
+                    light->SetPosition({30.0*std::cos(theta * (PI/180.0)), light->GetPosition()[1], -30.0*std::sin(theta * (PI/180.0))});
                     break;
                 }
                 case 3:
                 {
-                    light->SetPosition({-30.0*cos(theta * (PI/180.0)), light->GetPosition()[1], -30.0*sin(theta * (PI/180.0))});
+                    light->SetPosition({-30.0*std::cos(theta * (PI/180.0)), light->GetPosition()[1], -30.0*std::sin(theta * (PI/180.0))});
                     break;
                 }
             }
@@ -223,7 +242,7 @@ void Application::Run()
         for (std::shared_ptr<IModel> light : lights) 
         {
             lightShader->SetUniform4fv("lightColor", light->GetColor());
-            Renderer::ModelData data = renderer->DrawModelMesh(light);
+            const auto data = renderer->DrawModelMesh(light);
             multiLights->SetUniform4dm("pointLights[" + std::to_string(lightIndex) + "].model", data.model);
             ++lightIndex;
         }
@@ -231,7 +250,7 @@ void Application::Run()
         for (std::shared_ptr<IModel> model : models) 
         {
             multiLights->SetFloat("material.shininess", 0.1f);
-            renderer->DrawModelMesh(model); 
+            renderer->DrawModelMesh(model);
         }
                  
         /* Clean Up and Measure */
@@ -252,11 +271,11 @@ void Application::Run()
 
 void Application::DisplayStats() 
 {
-    m_stats.deltaTime = static_cast<float>(glfwGetTime()) - m_stats.lastFrameTime;
-    while (m_stats.deltaTime < (1.0f / m_stats.targetFPS)) {
-        m_stats.deltaTime = static_cast<float>(glfwGetTime()) - m_stats.lastFrameTime;
+    m_stats.deltaTime = glfwGetTime() - m_stats.lastFrameTime;
+    while (m_stats.deltaTime < (1.0 / static_cast<double>(m_stats.targetFPS))) {
+        m_stats.deltaTime = glfwGetTime() - m_stats.lastFrameTime;
     }
-    m_stats.lastFrameTime = static_cast<float>(glfwGetTime());
+    m_stats.lastFrameTime = glfwGetTime();
     m_stats.totalFrames++;
     if (m_stats.totalFrames % m_stats.targetFPS == 0) { m_spWindow->UpdateWindowTitle(m_stats.deltaTime, m_stats.totalModels); }
 }
@@ -267,3 +286,16 @@ void Application::ClearErrors() const
         std::cout << "error code: " << glGetError() << std::endl;
     }
 }
+
+std::shared_ptr<Application> Application::GetApplication()
+{
+    // If we cannot return a valid instance, then 
+    // we should not create a new application
+    return s_applicationInstance.lock();
+}
+
+Application::Statistics& Application::GetStats() { return m_stats; }
+
+IWindow& Application::GetWindow() { return *m_spWindow; }
+
+void Application::Close() { m_bRunning = false; }

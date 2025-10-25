@@ -1,6 +1,6 @@
 // vendors
 // project headers
-#include "../Events/MouseEvents.hpp"
+#include "MouseEvents.hpp"
 // std library
 
 

@@ -3,8 +3,12 @@
 #include "../../vendor/GL/include/GL/glew.h"
 #include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../Renderer/VertexArray.hpp"
+#include "VertexArray.hpp"
+
+#include "VertexBuffer.hpp"
 // std library
+
+VertexArray::VertexArray() { glGenVertexArrays(1, &(m_ID)); }
 
 void VertexArray::LinkAttribute(VertexBuffer& VBO, 
                                 std::uint32_t order, 
@@ -30,3 +34,11 @@ void VertexArray::LinkAttribute(VertexBuffer& VBO,
     glEnableVertexAttribArray(order);
     VBO.Unbind();
 }
+
+void VertexArray::Bind() { glBindVertexArray(m_ID); }
+
+void VertexArray::Unbind() { glBindVertexArray(0); }
+
+void VertexArray::Destroy() { glDeleteVertexArrays(1, &(m_ID)); }
+
+std::uint32_t VertexArray::GetID() const { return m_ID; }

@@ -1,5 +1,10 @@
+// vendor
+#define GLFW_INCLUDE_NONE
+#include "../../vendor/GL/include/GL/glew.h"
+#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../Renderer/Shader.hpp"
+#include "Shader.hpp"
+// std library
 #include <cerrno>
 #include <iostream>
 #include <cstdlib>
@@ -8,9 +13,9 @@
 
 Shader::Shader(const std::string& vertexFile, const std::string& fragmentFile)
 {    
-#ifdef DEBUG
+#ifdef Debug
     std::cout << "compiling: " << vertexFile << " and " << fragmentFile << std::endl;
-#endif
+#endif //Debug
     // Create a shader object and compile it during runtime
     std::string vertexSource = ReadFileContents(vertexFile);
     std::uint32_t vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSource);
@@ -33,28 +38,36 @@ Shader::Shader(const std::string& vertexFile, const std::string& fragmentFile)
     glDeleteShader(fragmentShader);
 }
 
-void Shader::SetInteger(const std::string& uniformName, const int32_t& value) // int
+std::uint32_t Shader::GetID() const { return m_ID; }
+
+void Shader::Bind() { glUseProgram(m_ID); }
+
+void Shader::Unbind() { glUseProgram(0); }
+
+void Shader::Destroy() { glDeleteProgram(m_ID); }
+
+void Shader::SetInteger(const std::string& uniformName, const std::int32_t value) // int
 {
     Bind();
     glUniform1i(GetUniformLocation(uniformName), value);
     Unbind();
 }
 
-void Shader::SetUnsigned(const std::string& uniformName, const std::uint32_t& value) // unsigned int
+void Shader::SetUnsigned(const std::string& uniformName, const std::uint32_t value) // unsigned int
 {
     Bind();
     glUniform1ui(GetUniformLocation(uniformName), value);
     Unbind();
 }
 
-void Shader::SetFloat(const std::string& uniformName, const float& value) // float
+void Shader::SetFloat(const std::string& uniformName, const float value) // float
 {
     Bind();
     glUniform1f(GetUniformLocation(uniformName), value);
     Unbind();
 }
 
-void Shader::SetDouble(const std::string& uniformName, const double& value) // double
+void Shader::SetDouble(const std::string& uniformName, const double value) // double
 {
     Bind();
     glUniform1d(GetUniformLocation(uniformName), value);
@@ -129,11 +142,11 @@ void Shader::SetUniform4dm(const std::string& uniformName, const mat4x4d& values
     Unbind();
 }
 
-std::uint32_t Shader::GetUniformLocation(const std::string& uniformName) 
+std::int32_t Shader::GetUniformLocation(const std::string& uniformName) 
 {
-    std::unordered_map<std::string, int32_t>::const_iterator itr = m_uniformLocationCache.find(uniformName);
+    std::unordered_map<std::string, std::int32_t>::const_iterator itr = m_uniformLocationCache.find(uniformName);
 
-    int32_t location = -1;
+    std::int32_t location = -1;
 
     if (itr == m_uniformLocationCache.end()) 
     {
@@ -145,14 +158,14 @@ std::uint32_t Shader::GetUniformLocation(const std::string& uniformName)
         location = itr->second;
     }
 
-#ifdef DEBUG
+#ifdef Debug
     // If no id or return is -1
     if (location == -1) 
     {
         // Do not throw, might be useful to continue, but inform caller
         std::cout << "Warning: uniform '" << uniformName << "' does not exist." << std::endl;
     }
-#endif 
+#endif // Debug
 
     return location; 
 }

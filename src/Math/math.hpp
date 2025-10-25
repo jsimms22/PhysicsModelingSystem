@@ -4,8 +4,6 @@
 // project headers
 #include "../types.hpp"
 // std library
-#include <iostream>
-// SIMD
 #include <mmintrin.h>
 
 template <typename UNIT>

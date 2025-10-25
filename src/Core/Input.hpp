@@ -2,12 +2,11 @@
 
 // vendors
 // project headers
-#include "../types.hpp"
+#include "../Types/vec2.hpp"
 // std library
-#include <memory>
-#include <cstdlib>
+#include <cstdint>
 
-enum class MouseCode : uint16_t
+enum class MouseCode : std::uint16_t
 {
     // From glfw3.h
     Button0                = 0,
@@ -25,7 +24,7 @@ enum class MouseCode : uint16_t
     ButtonMiddle           = Button2
 };
 
-enum class KeyCode : uint16_t
+enum class KeyCode : std::uint16_t
 {
     // From glfw3.h
     Space               = 32,

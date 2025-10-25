@@ -2,9 +2,9 @@
 
 // vendors
 // project headers
-#include "../types.hpp"
 // std library
 #include <bitset>
+#include <cstdint>
 
 using ComponentType = std::uint8_t;
 static constexpr ComponentType MAX_COMPONENTS = 32;

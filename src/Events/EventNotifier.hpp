@@ -2,7 +2,7 @@
 
 // vendors
 // project headers
-#include "../Events/Event.hpp"
+#include "Event.hpp"
 // std library
 #include <functional>
 
@@ -13,7 +13,7 @@ class EventNotifier
     
 public:
     EventNotifier(Event& event)
-        : m_event(event) {}
+        : m_event{event} {}
 
     template <typename T>
     bool Dispatch(const EventFn<T>& func)

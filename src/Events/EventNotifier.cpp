@@ -1,4 +1,4 @@
 // vendors
 // project headers
-#include "../Events/EventNotifier.hpp"
+#include "EventNotifier.hpp"
 // std library

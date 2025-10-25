@@ -1,4 +1,4 @@
 // vendors
 // project headers
-#include "../Events/ApplicationEvents.hpp"
+#include "ApplicationEvents.hpp"
 // std library

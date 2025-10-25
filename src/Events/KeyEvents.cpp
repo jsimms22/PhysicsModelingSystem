@@ -1,6 +1,6 @@
 // vendors
 // project headers
-#include "../Events/KeyEvents.hpp"
+#include "KeyEvents.hpp"
 // std library
 
 const std::bitset<EventCategoryFlag::BitLength> KeyEvent::m_category {EventCategoryFlag::Input | 

@@ -1,16 +1,15 @@
 #pragma once
 
 // vendors
-#define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../Events/Event.hpp"
 // std library
-#include <functional>
-#include <string>
-#include <memory>
+#include <cstdlib>
 #include <cstdint>
+#include <functional>
+#include <memory>
+#include <string>
+
+class Event;
 
 struct WindowProps
 {
@@ -31,7 +30,7 @@ public:
 
     virtual ~IWindow() = default;
     
-    virtual void UpdateWindowTitle(double dt, int numActive) = 0;
+    virtual void UpdateWindowTitle(double dt, std::size_t numActive) = 0;
 
     virtual void OnUpdate() = 0;
 

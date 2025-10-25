@@ -1,7 +1,12 @@
 // vendors
 // project headers
-#include "../Physics/force.hpp"
+#include "force.hpp"
+
+#include "../fwd_math.hpp"
+
 #include "../Scene/Model.hpp"
+
+#include "../Types/vec3.hpp"
 // std library
 
 vec3d GRAVITY = { 0.0, -9.8, 0.0 };
@@ -37,19 +42,20 @@ void ApplyForces(std::vector<std::shared_ptr<IModel>>& container)
     
         // Apply simple gravity to the balls
         vec3d result = vec3_add(GRAVITY, i_model->GetPosition());
+        const double scale = static_cast<double>(i_model->GetScale());
         //vec3_scale(settings.GRAVITY, static_cast<float>(glfwGetTime()) - lastFrameTime ,settings.GRAVITY);
         
         
         // Only apply normal gravity vector if the model would not clip into the or be below the floor
-        if (((i_model->GetPosition().data[1] - i_model->GetScale()) > -12.f) && 
-            (result.data[1] - i_model->GetScale()) >= -12.f)
+        if (((i_model->GetPosition().data[1] - scale) > -12.0) && 
+            (result.data[1] - scale) >= -12.0)
         {
             i_model->SetPosition(result);
         } 
         else 
         {
             // If model's bounds has fallen below the floor reset position to floor.y + .5*model height
-            result.data[1] = -12.f + i_model->GetScale();
+            result.data[1] = -12.0 + scale;
             i_model->SetPosition(result);
         }
         

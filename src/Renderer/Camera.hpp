@@ -1,11 +1,9 @@
 // vendors
 // project headers
-#include "../fwd_math.hpp"
-#include "../types.hpp"
-#include "../Renderer/Shader.hpp"
-#include "../Events/Event.hpp"
+#include "../Types/mat4x4.hpp"
 // std library
-#include <cmath>
+
+class Event;
 
 class Camera
 {

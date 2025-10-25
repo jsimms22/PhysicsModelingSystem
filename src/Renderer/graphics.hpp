@@ -2,8 +2,10 @@
 
 // vendors
 // project headers
-#include "../fwd_math.hpp"
+#include "../Types/vertex.hpp"
 // std library
+#include <cstdint>
+#include <vector>
 
 std::vector<vertex> FloorVertex(std::uint32_t vertexCount, double length, double width);
 

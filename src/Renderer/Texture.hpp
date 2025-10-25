@@ -1,15 +1,13 @@
 #pragma once
 
 // vendors
-#define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../types.hpp"
-#include "../Renderer/Shader.hpp"
 // std library
-#include <string>
+#include <cstdint>
 #include <memory>
+#include <string>
+
+class Shader;
 
 // Placeholder
 class Texture
@@ -17,9 +15,9 @@ class Texture
 public:
     struct ImageData
     {
-        int32_t width;
-        int32_t height;
-        int32_t channels; // color channels count
+        std::int32_t width;
+        std::int32_t height;
+        std::int32_t channels; // color channels count
     };
 
     Texture(const std::string& file,
@@ -30,12 +28,11 @@ public:
     
     ~Texture() { Destroy(); }
     
-    void UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, std::uint32_t unit);
+    void UpdateUniform(std::shared_ptr<Shader>& shader, const std::string& uniform, std::int32_t unit);
 
-    void Bind() { glBindTexture(m_textureType, m_ID); }
-    void Unbind() { glBindTexture(m_textureType, 0); }
-
-    void Destroy() { glDeleteTextures(1, &m_ID); }
+    void Bind();
+    void Unbind();
+    void Destroy();
 
 private:
     std::uint32_t m_ID;

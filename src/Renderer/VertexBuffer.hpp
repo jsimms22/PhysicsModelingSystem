@@ -1,12 +1,13 @@
 #pragma once
 
 // vendors
-#define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../types.hpp"
+#include "../Types/mat4x4.hpp"
 // std library
+#include <cstdint>
+#include <vector>
+
+class vertex;
 
 class VertexBuffer
 {
@@ -20,12 +21,10 @@ public:
     // Destructors
     ~VertexBuffer() { Destroy(); }
 
-    void Bind() { glBindBuffer(GL_ARRAY_BUFFER, m_ID); }
-    void Unbind() { glBindBuffer(GL_ARRAY_BUFFER, 0); }
-
-    void Destroy() { glDeleteBuffers(1, &(m_ID));}
-    
-    std::uint32_t GetID() const { return m_ID; }
+    void Bind();
+    void Unbind();
+    void Destroy();
+    std::uint32_t GetID() const;
 
 private:
     std::uint32_t m_ID;

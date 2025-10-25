@@ -1,8 +1,8 @@
 // vendors
 // project headers
-#include "../Renderer/Graphics.hpp"
+#include "Graphics.hpp"
+
 // std library
-#include <vector>
 #include <iostream>
 
 std::vector<vertex> FloorVertex(std::uint32_t vertexCount, double length, double width)

@@ -1,9 +1,20 @@
 // vendor
+#define GLFW_INCLUDE_NONE
+#include "../../vendor/GL/include/GL/glew.h"
+#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project header
-#include "../Renderer/RenderCommand.hpp"
-#include "../Renderer/Renderer.hpp"
+#include "Renderer.hpp"
+
+#include "ElementBuffer.hpp"
+#include "Mesh.hpp"
+#include "RenderCommand.hpp"
+#include "Shader.hpp"
+#include "VertexArray.hpp"
+
 #include "../Scene/Model.hpp"
 // std library
+#include <cstdlib>
+#include <cstdint>
 #include <iostream>
 
 void Renderer::Init()
@@ -16,7 +27,7 @@ void Renderer::Clear()
     RenderCommand::Clear();
 }
 
-void Renderer::OnWindowResize(std::uint32_t width, std::uint32_t height)
+void Renderer::OnWindowResize(const std::uint32_t width, const std::uint32_t height)
 {
     
     RenderCommand::SetViewport(0, 0, width, height);
@@ -29,33 +40,25 @@ RenderAPI::API Renderer::GetAPI()
 
 Renderer::ModelData Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
 {
-    if (!pModel) { return {}; }
+    Renderer::ModelData data;
+    if (!pModel) { return data; }
 
     pModel->Update();
 
-    std::shared_ptr<Mesh> mesh = pModel->GetMesh();
-    std::shared_ptr<Shader> shader = pModel->GetShader();
-    const std::uint32_t mode = pModel->GetRenderMethod();
-    const vec3d position = pModel->GetPosition();
-    const vec3d rotation = pModel->GetRotation();
     const double scale = static_cast<double>(pModel->GetScale());
     const vec3d scaling{ scale, scale, scale };
 
-    Renderer::ModelData data;
     /* Position */
-    data.position = mat4x4_translation<double>(data.position, position);
-
+    data.position = mat4x4_translation<double>(data.position, pModel->GetPosition());
     /* Rotation */
-    data.rotation = mat4_eulerAngles<double>(rotation);
-
+    data.rotation = mat4_eulerAngles<double>(pModel->GetRotation());
     /* Scaling */
     data.scaling = mat4x4_buildScaler<double>(scaling);
-
     /* Model matrix */
     data.model = mat4x4_mul<double>(data.rotation, data.scaling);
     data.model = mat4x4_mul<double>(data.position, data.model);
 
-#ifdef DEBUG
+#ifdef Debug
     std::cout << "POSITION:\n";
     std::cout << data.position << '\n';
     std::cout << "ROTATION:\n";
@@ -64,32 +67,41 @@ Renderer::ModelData Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
     std::cout << data.scaling << '\n';
     std::cout << "MODEL:\n";
     std::cout << data.model << '\n';
-#endif //DEBUG
-
+#endif //Debug
+    
     // TODO: offload normal scaling to here from the vertex shaders
     
-    shader->SetUniform4dm("model", data.model);
+    pModel->GetShader()->SetUniform4dm("model", data.model);
 
-    shader->Bind();
-    mesh->m_VA0.Bind();
-    if (1 == mesh->m_instanceCount) 
+    pModel->GetShader()->Bind();
+    pModel->GetMesh()->GetVAO()->Bind();
+    if (1 == pModel->GetMesh()->GetNumInstances()) 
     {
-        if (mesh->m_indices.size() == 0) 
-        { 
-            glDrawArrays(mode, 0, mesh->m_vertices.size()); 
+        if (pModel->GetMesh()->GetIndices().size() == 0) 
+        {
+            glDrawArrays(pModel->GetRenderMethod(), 
+                         0, 
+                         static_cast<GLsizei>(pModel->GetMesh()->GetVertices().size())); 
         } 
         else 
-        { 
-            glDrawElements(mode, mesh->m_indices.size(), GL_UNSIGNED_INT, 0); 
+        {
+            glDrawElements(pModel->GetRenderMethod(), 
+                           static_cast<GLsizei>(pModel->GetMesh()->GetIndices().size()), 
+                           GL_UNSIGNED_INT, 
+                           0); 
         }
     } 
     else 
     {
-        glDrawElementsInstanced(mode, mesh->m_indices.size(), GL_UNSIGNED_INT, 0, mesh->m_instanceCount); 
+        glDrawElementsInstanced(pModel->GetRenderMethod(), 
+                                static_cast<GLsizei>(pModel->GetMesh()->GetIndices().size()), 
+                                GL_UNSIGNED_INT, 
+                                0, 
+                                pModel->GetMesh()->GetNumInstances()); 
     }
     
-    mesh->m_VA0.Unbind();
-    shader->Unbind();
+    pModel->GetMesh()->GetVAO()->Unbind();
+    pModel->GetShader()->Unbind();
 
     return data;
 }

@@ -1,8 +1,10 @@
 // vendors
 // project headers
-#include "../ECS/EntityManager.hpp"
+#include "EntityManager.hpp"
+
+#include "Components.hpp"
+#include "Entity.hpp"
 // std library
-#include <algorithm>
 
 EntityManager::EntityManager()
 {

@@ -3,9 +3,10 @@
 // vendors
 // project headers
 // std library
-#include <string_view>
-#include <fstream>
 #include <bitset>
+#include <cstdlib>
+#include <fstream>
+#include <string_view>
 
 class EventNotifier;
 
@@ -56,11 +57,11 @@ public:
 
     //virtual void OnExecute() = 0;
 
-    virtual const char* GetName() const = 0;
+    virtual std::string GetName() const { return {}; };
 
-    virtual EventType GetType() const = 0;
+    virtual EventType GetType() const { return {}; };
 
-    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const = 0;
+    virtual std::bitset<EventCategoryFlag::BitLength> GetCategory() const { return {}; };
 
     virtual std::string_view ToString() const 
     { 

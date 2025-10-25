@@ -1,8 +1,15 @@
 // vendors
+#define GLFW_INCLUDE_NONE
+#include "../../vendor/GL/include/GL/glew.h"
+#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../Renderer/EditorCamera.hpp"
+#include "EditorCamera.hpp"
+
+#include "../fwd_math.hpp"
+
 #include "../Core/Input.hpp"
 // std library
+#include <cmath>
 
 void EditorCamera::OnUpdate()
 {
@@ -103,7 +110,7 @@ void EditorCamera::UpdatePosition()
         const vec3d newOrientation = mat3x3_rotate_X(m_orientation, (PI/180.0)*(-rotX));
 
         // Decides whether or not the next vertical orientation is legal or not
-        if (abs(vec3_angle(newOrientation, m_up) - (PI/180.0)*90.0) <= (PI/180.0)*85.0)
+        if (std::abs(vec3_angle(newOrientation, m_up) - (PI/180.0)*90.0) < (PI/180.0)*90.0)
         {
             m_orientation = newOrientation;
         }

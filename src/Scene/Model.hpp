@@ -1,11 +1,9 @@
 #pragma once
 
 // vendors
-#define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
 #include "../fwd_math.hpp"
+
 #include "../Renderer/Mesh.hpp"
 #include "../Renderer/Shader.hpp"
 // std library
@@ -112,7 +110,7 @@ public:
     ~BaseModel() { DestroyMesh(); }
 
     // Overrides from interface
-    virtual void DestroyMesh() override { m_modelMesh->m_VA0.Destroy(); }
+    virtual void DestroyMesh() override { m_modelMesh->GetVAO()->Destroy(); }
     virtual bool SupportsType(const ModelType type) const override = 0;
     virtual void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override = 0;
     virtual void Update() override { /*std::cout << "I am a BaseModel.\n";*/ }
@@ -129,7 +127,7 @@ public:
     void SetShader(std::shared_ptr<Shader> shader) override
     { 
         if (!shader) { return; } 
-        m_modelShader= shader; 
+        m_modelShader = shader; 
     }
 
     vec3d GetPosition() const override { return m_position; }
@@ -156,7 +154,7 @@ protected:
     vec3d m_position = {0.0, 0.0, 0.0};
     vec3d m_rotation = {0.0, 0.0, 0.0};
     float m_scale = 1.0f;
-    std::uint32_t m_renderMethod = GL_TRIANGLES;
+    std::uint32_t m_renderMethod = 0x0004;
     bool m_isPhysicalized = false;
 };
 
@@ -174,11 +172,11 @@ public:
 
     // Overrides
     bool SupportsType(const ModelType type) const override { return type == ModelType::Shape; };
-    void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override { if (shader) { } };
+    void AddMesh(std::shared_ptr<Shader> shader, std::string /*uniformName*/) override { if (shader) { } };
     void Update() override {};
 
     vec4f GetColor() const override { return {}; };
-    void SetColor(const vec4f& color) override {};
+    void SetColor(const vec4f& /*color*/) override {};
 
     // Methods
 };
@@ -198,11 +196,11 @@ public:
 
     // Overrides
     bool SupportsType(const ModelType type) const override { return type == ModelType::Terrain; };
-    void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override { if (shader) { } };
+    void AddMesh(std::shared_ptr<Shader> shader, std::string /*uniformName*/) override { if (shader) { } };
     void Update() override {};
 
     vec4f GetColor() const override { return {}; };
-    void SetColor(const vec4f& color) override {};
+    void SetColor(const vec4f& /*color*/) override {};
 
     // Methods
 };

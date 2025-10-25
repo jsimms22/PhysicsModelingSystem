@@ -74,24 +74,7 @@
         "bitset": "cpp",
         "string_view": "cpp",
         "cstdarg": "cpp",
-        "numeric": "cpp"
-    },
-    "makefile.configurations": [
-        {
-            "name": "debug",
-            "buildLog": "",
-            "makeArgs": ["debug"],
-            "makeDirectory": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\",
-            "makefilePath": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\makefile",
-            "makePath": "C:\\msys64\\usr\\bin\\",
-            "problemMatchers": []
-        },
-    ],
-    "makefile.launchConfigurations": [
-        {
-            "cwd": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\bin\\debug",
-            "binaryPath": "c:\\Users\\work\\Code\\CPP_C\\PhysicsModelSystem\\bin\\debug\\app",
-            "binaryArgs": []
-        }
-    ]
+        "numeric": "cpp",
+        "cerrno": "cpp"
+    }
 }

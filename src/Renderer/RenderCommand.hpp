@@ -18,7 +18,7 @@ public:
         s_renderAPI->Clear();
     }
 
-    static void SetViewport(std::uint32_t x, std::uint32_t y, std::uint32_t width, std::uint32_t height)
+    static void SetViewport(std::uint32_t x, std::uint32_t y, const std::uint32_t width, const std::uint32_t height)
     {
         s_renderAPI->SetViewport(x,y,width,height);
     }

@@ -1,14 +1,12 @@
 #pragma once
 
 // vendors
-#define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
 // project headers
-#include "../fwd_math.hpp"
-#include "../Renderer/Camera.hpp"
+#include "Camera.hpp"
+
+#include "../Types/mat4x4.hpp"
+#include "../Types/vec3.hpp"
 // std library
-#include <cmath>
 
 class EditorCamera : public Camera
 {
@@ -20,7 +18,7 @@ public:
         : Camera(matrix), m_position{_pos}, m_resetLoc{_pos}, m_width{_width}, m_height{_height} {}
     
     void OnUpdate() override;
-    void OnEvent(Event& e) override {};
+    void OnEvent(Event& /*e*/) override {};
 
     void UpdateViewport(float width, float height);
 
