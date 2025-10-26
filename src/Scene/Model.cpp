@@ -1,13 +1,13 @@
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 // project headers
 #include "../Scene/Model.hpp"
 // std library
 
 void Light::Update()
-{ 
+{
     UpdatePosition();
 }
 
@@ -17,7 +17,7 @@ void Light::AddMesh(std::shared_ptr<Shader> shader, std::string uniformName)
     if (shader) { m_shaderUpdateMap[shader].push_back(uniformName); }
 }
 
-void Light::UpdatePosition() 
+void Light::UpdatePosition()
 {
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_UP) == GLFW_PRESS) {
         m_position.data[2] -= 1.0;
@@ -29,9 +29,9 @@ void Light::UpdatePosition()
 
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_LEFT) == GLFW_PRESS) {
         m_position.data[0] -= 1.0;
-    } 
+    }
 
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
         m_position.data[0] += 1.0;
-    } 
+    }
 }

@@ -1,7 +1,7 @@
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 // project headers
 #include "Mesh.hpp"
 
@@ -14,7 +14,7 @@
 #include <sstream>
 
 // Hash function for mapping specific strings to integers
-int HashString(const std::string& str) 
+int HashString(const std::string& str)
 {
     if (str == "v") return 1;
     if (str == "vt") return 2;
@@ -24,7 +24,7 @@ int HashString(const std::string& str)
 }
 
 // Function to split a string based on a delimiter
-std::vector<std::string> SplitString(const std::string& str, char delimiter) 
+std::vector<std::string> SplitString(const std::string& str, char delimiter)
 {
     std::vector<std::string> tokens;
     std::stringstream ss(str);
@@ -35,10 +35,10 @@ std::vector<std::string> SplitString(const std::string& str, char delimiter)
     return tokens;
 }
 
-void ProcessVertex(std::vector<vertex>& vertexBin, 
-                   std::vector<std::string>& vertexMarker, 
-                   std::vector<vec3d>& v, 
-                   std::vector<vec2f>& vt, 
+void ProcessVertex(std::vector<vertex>& vertexBin,
+                   std::vector<std::string>& vertexMarker,
+                   std::vector<vec3d>& v,
+                   std::vector<vec2f>& vt,
                    std::vector<vec3f>& vn)
 {
     vertex temp;
@@ -62,20 +62,20 @@ void LoadObject(const std::string& filename, std::vector<vertex>& vertexBin)
     v_count = vt_count = vn_count = f_count = 0;
 
     std::ifstream file(filename);
-    if (!file) 
+    if (!file)
     {
-        std::cout << "Error opening file: " << filename << std::endl; 
+        std::cout << "Error opening file: " << filename << std::endl;
         exit(EXIT_FAILURE);
     }
 
     std::string line;
-    while (std::getline(file, line)) 
+    while (std::getline(file, line))
     {
         std::istringstream iss(line);
         std::string firstWord, temp;
         iss >> firstWord;
 
-        switch (HashString(firstWord)) 
+        switch (HashString(firstWord))
         {
             case 1: // first word = "v"
             {
@@ -125,7 +125,7 @@ void LoadObject(const std::string& filename, std::vector<vertex>& vertexBin)
     file.close();
 }
 
-//Mesh::Mesh(std::vector<vertex> vertices, std::int32_t instances /* = 1 */, std::vector<mat4x4d> matrices /* = {} */) 
+//Mesh::Mesh(std::vector<vertex> vertices, std::int32_t instances /* = 1 */, std::vector<mat4x4d> matrices /* = {} */)
 //    : m_vertices{vertices}, m_instanceCount{instances}, m_instanceMatrices{matrices} {}
 
 Mesh::Mesh(std::vector<vertex> vertices, std::vector<std::uint32_t> indices, std::vector<Texture> textures /* = {} */, std::int32_t instances /* = 1 */, std::vector<mat4x4d> matrices /* = {} */)
@@ -148,7 +148,7 @@ Mesh::Mesh(std::vector<vertex> vertices, std::vector<std::uint32_t> indices, std
     // Color
     m_VAO.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(5*sizeof(float) + 3*sizeof(double)));
 
-    if (m_instanceCount > 1) 
+    if (m_instanceCount > 1)
     {
         // Position
         m_VAO.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
@@ -198,7 +198,7 @@ Mesh::Mesh(const std::string& filename, std::int32_t instances /* = 1*/, std::ve
     // Color
     m_VAO.LinkAttribute(VBO, 3, 4, GL_FLOAT, sizeof(vertex), reinterpret_cast<void*>(5*sizeof(float) + 3*sizeof(double)));
 
-    if (m_instanceCount > 1) 
+    if (m_instanceCount > 1)
     {
         // Position
         m_VAO.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));

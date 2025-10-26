@@ -1,19 +1,20 @@
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
-#ifdef DEBUG
-    #define STB_IMAGE_IMPLEMENTATION
-    #include "../../vendor/STB/include/stb_image.h"
-#else
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wunused-but-set-variable" 
-    #pragma GCC diagnostic ignored "-Wsign-compare"
-    #pragma GCC diagnostic ignored "-Wstringop-overflow="
-    #define STB_IMAGE_IMPLEMENTATION
-    #include "stb_image.h"
-    #pragma GCC diagnostic pop
-#endif
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wduplicated-branches"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Wdouble-promotion"
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#pragma GCC diagnostic ignored "-Wuseless-cast"
+#pragma GCC diagnostic ignored "-Wstringop-overflow="
+#define STB_IMAGE_IMPLEMENTATION
+#include "../../vendor/STB/include/stb_image.h"
+#pragma GCC diagnostic pop
 // project headers
 #include "Texture.hpp"
 
@@ -21,7 +22,7 @@
 // std library
 
 Texture::Texture(const std::string& file,
-                 std::uint32_t textureType, 
+                 std::uint32_t textureType,
                  std::uint32_t slot,
                  std::uint32_t m_formatType,
                  std::uint32_t m_pixelType)

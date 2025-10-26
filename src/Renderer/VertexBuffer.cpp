@@ -1,7 +1,7 @@
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 // project headers
 #include "VertexBuffer.hpp"
 

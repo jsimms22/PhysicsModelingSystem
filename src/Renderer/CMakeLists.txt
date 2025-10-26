@@ -1,4 +1,4 @@
-set(RENDER_SRC 
+set(RENDER_SRC
     Camera.hpp
     EditorCamera.cpp
     EditorCamera.hpp
@@ -32,8 +32,11 @@ target_include_directories(Renderer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(Renderer
     PRIVATE
+        glad
+        glfw
+        opengl32
+        app_vendor_deps
         Events
         ${PLATFORM_IMPL_OS}
         ${PLATFORM_IMPL_RENDER}
-        app_vendor_deps
 )

@@ -1,7 +1,7 @@
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 // project headers
 #include "Application.hpp"
 #include "Input.hpp"
@@ -52,9 +52,9 @@ void Application::OnEvent(Event& e)
 
 bool Application::OnWindowResize(WindowResizeEvent& e)
 {
-#ifdef Debug
+#ifdef DEBUG
     std::cout << "Window resizing\n";
-#endif //Debug
+#endif //DEBUG
 
     if (e.GetWidth() == 0 || e.GetHeight() == 0)
     {
@@ -63,7 +63,7 @@ bool Application::OnWindowResize(WindowResizeEvent& e)
     }
 
     m_bMinimized = false;
-    
+
     Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
     return false;
@@ -71,9 +71,9 @@ bool Application::OnWindowResize(WindowResizeEvent& e)
 
 bool Application::OnWindowClose(WindowCloseEvent& /*e*/)
 {
-#ifdef Debug
+#ifdef DEBUG
     std::cout << "Window closing\n";
-#endif //Debug
+#endif //DEBUG
 
     m_bRunning = false;
     return true;
@@ -81,11 +81,11 @@ bool Application::OnWindowClose(WindowCloseEvent& /*e*/)
 
 std::shared_ptr<Application> Application::Create()
 {
-    if (auto instance = s_applicationInstance.lock()) 
+    if (auto instance = s_applicationInstance.lock())
     {
         return instance;
-    } 
-    else 
+    }
+    else
     {
         instance = std::make_shared<Application>(Application::Private());
         s_applicationInstance = instance;
@@ -98,12 +98,12 @@ void Application::Run()
     // Shaders
     std::shared_ptr<Shader> multiLights = std::make_shared<Shader>("shaders/multiple_vertex.glsl", "shaders/multiple_fragment.glsl");
     std::shared_ptr<Shader> lightShader = std::make_shared<Shader>("shaders/light_vertex.glsl", "shaders/light_fragment.glsl");
-        
+
     // Meshes
     std::shared_ptr<Mesh> cubeMesh = std::make_shared<Mesh>("models/cube.obj");
     //std::shared_ptr<Mesh> carMesh = std::make_shared<Mesh>("models/sportsCar.obj");
     std::shared_ptr<Mesh> sphereMesh = std::make_shared<Mesh>("models/sphere.obj");
-    
+
     std::vector<std::shared_ptr<IModel>> models;
     std::vector<std::shared_ptr<IModel>> lights;
     // Init floor terrain
@@ -113,60 +113,99 @@ void Application::Run()
     models.back()->SetScale(100.f);
     models.back()->SetRenderMethod(GL_LINES);
     models.back()->SetIsPhysicalized(false);
-    
+
     // Init container
     models.push_back(CreateModelFactory(ModelType::Shape, cubeMesh));
     models.back()->SetShader(multiLights);
     models.back()->SetPosition({0.0, 0.0, 0.0});
     models.back()->SetScale(5.0f);
-    
+
     // Init sphere
     models.push_back(CreateModelFactory(ModelType::Shape, cubeMesh));
     models.back()->SetShader(multiLights);
     models.back()->SetPosition({25.0, 0.0, 0.0});
     models.back()->SetScale(2.0f);
-    
+
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({static_cast<double>(5 + rand()%30), 5.0, static_cast<double>(5 + rand()%30)});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.1f, 0.5f, 0.9f, 1.f});
-    
+
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({static_cast<double>(5 + -rand()%30), 25.0, static_cast<double>(5 + rand()%30)});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.2f, 0.6f, 1.0f, 1.f});
-    
+
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({static_cast<double>(5 + -rand()%30), -5.0, static_cast<double>(5 + -rand()%30)});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.3f, 0.7f, 0.9f, 1.f});
-    
+
     // Init light cube
     lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({static_cast<double>(5 + -rand()%30), 12.0f, static_cast<double>(5 + -rand()%30)});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.4f, 0.8f, 0.7f, 1.f});
-    
-    EditorCamera camera = EditorCamera(vec3d({0.0, 0.0, 125.0}), 
-                                       static_cast<float>(m_spWindow->GetWidth()), 
+
+    const bool bUseDirLight = false;
+    const bool bUseSpotLight = false;
+    // Set up static directional light uniforms
+    if (bUseDirLight)
+    {
+        multiLights->SetUniform3fv("dirLight.direction", {1.0f, 1.0f, 1.0f});
+        multiLights->SetUniform4fv("dirLight.color", {1.0f, 1.0f, 1.0f, 1.0f});
+        multiLights->SetUniform3fv("dirLight.ambient", {0.05f, 0.05f, 0.05f});
+        multiLights->SetUniform3fv("dirLight.diffuse", {0.4f, 0.4f, 0.4f});
+        multiLights->SetUniform3fv("dirLight.specular", {0.5f, 0.5f, 0.5f});
+    }
+
+    // Set up static spot light uniforms
+    if (bUseSpotLight)
+    {
+        multiLights->SetUniform4fv("spotLight.color", {1.0f, 1.0f, 1.0f, 1.0f});
+        multiLights->SetUniform3fv("spotLight.ambient", {0.0f, 0.0f, 0.0f});
+        multiLights->SetUniform3fv("spotLight.diffuse", {1.0f, 1.0f, 1.0f});
+        multiLights->SetUniform3fv("spotLight.specular", {1.0f, 1.0f, 1.0f});
+        multiLights->SetFloat("spotLight.constant", 1.0f);
+        multiLights->SetFloat("spotLight.linear", 0.09f);
+        multiLights->SetFloat("spotLight.quadratic", 0.032f);
+        multiLights->SetFloat("spotLight.cutOff", static_cast<float>(std::cos(0.2181662)));
+        multiLights->SetFloat("spotLight.outerCutOff", static_cast<float>(std::cos(0.61799)));
+    }
+
+    // Set up static point light uniforms
+    std::size_t lightIndex = 0;
+    multiLights->SetInteger("numPointLights", static_cast<int>(lights.size()));
+    for (std::shared_ptr<IModel> light : lights)
+    {
+        multiLights->SetUniform4fv("pointLights[" + std::to_string(lightIndex) + "].color", light->GetColor());
+        multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].ambient", {0.05f, 0.05f, 0.05f});
+        multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].diffuse", {0.8f, 0.8f, 0.8f});
+        multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].specular", {1.f, 1.f, 1.f});
+        multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].constant", 1.0f);
+        multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].linear", 0.045f);
+        multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].quadratic", 0.0075f);
+        ++lightIndex;
+    }
+
+    EditorCamera camera = EditorCamera(vec3d({0.0, 0.0, 125.0}),
+                                       static_cast<float>(m_spWindow->GetWidth()),
                                        static_cast<float>(m_spWindow->GetHeight()));
     std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();
-
     m_stats.lastFrameTime = glfwGetTime();
     double theta = 0.0;
 
-#ifdef Debug
+#ifdef DEBUG
     std::cout << "Running\n";
-#endif //Debug
-
-    while (m_bRunning) 
+#endif //DEBUG
+    while (m_bRunning)
     {
         /* Clears back buffer before new buffer is drawn */
         Renderer::Clear();
@@ -177,30 +216,16 @@ void Application::Run()
 
         /* Shader Uniforms */
         // Multiple Lights Shader Lighting
-        // directional light:
         multiLights->SetUniform4dm("cameraMatrix", camera.GetCameraMatrix());
         multiLights->SetUniform3dv("cameraPosition", camera.GetPosition());
-        multiLights->SetUniform3fv("dirLight.direction", {1.0f, 1.0f, 1.0f});
-        multiLights->SetUniform4fv("dirLight.color", {1.0f, 1.0f, 1.0f, 1.0f});
-        multiLights->SetUniform3fv("dirLight.ambient", {0.05f, 0.05f, 0.05f});
-        multiLights->SetUniform3fv("dirLight.diffuse", {0.4f, 0.4f, 0.4f});
-        multiLights->SetUniform3fv("dirLight.specular", {0.5f, 0.5f, 0.5f});
-        // spotlight
-        multiLights->SetUniform3dv("spotLight.position", camera.GetPosition());
-        multiLights->SetUniform3fv("spotLight.direction", static_cast<vec3f>(camera.GetDirection()));
-        multiLights->SetUniform4fv("spotLight.color", {1.0f, 1.0f, 1.0f, 1.0f});
-        multiLights->SetUniform3fv("spotLight.ambient", {0.0f, 0.0f, 0.0f});
-        multiLights->SetUniform3fv("spotLight.diffuse", {1.0f, 1.0f, 1.0f});
-        multiLights->SetUniform3fv("spotLight.specular", {1.0f, 1.0f, 1.0f});
-        multiLights->SetFloat("spotLight.constant", 1.0f);
-        multiLights->SetFloat("spotLight.linear", 0.09f);
-        multiLights->SetFloat("spotLight.quadratic", 0.032f);
-        multiLights->SetFloat("spotLight.cutOff", static_cast<float>(std::cos(0.2181662)));
-        multiLights->SetFloat("spotLight.outerCutOff", static_cast<float>(std::cos(0.61799))); 
-        multiLights->SetInteger("numPointLights", static_cast<int>(lights.size()));
-        
-        std::size_t lightIndex = 0;
-        for (std::shared_ptr<IModel> light : lights) 
+        if (bUseSpotLight)
+        {
+            multiLights->SetUniform3dv("spotLight.position", camera.GetPosition());
+            multiLights->SetUniform3fv("spotLight.direction", static_cast<vec3f>(camera.GetDirection()));
+        }
+
+        lightIndex = 0;
+        for (std::shared_ptr<IModel> light : lights)
         {
             switch (lightIndex % 4)
             {
@@ -225,21 +250,12 @@ void Application::Run()
                     break;
                 }
             }
-
-            multiLights->SetUniform4fv("pointLights[" + std::to_string(lightIndex) + "].color", light->GetColor());
-            multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].ambient", {0.05f, 0.05f, 0.05f});
-            multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].diffuse", {0.8f, 0.8f, 0.8f});
-            multiLights->SetUniform3fv("pointLights[" + std::to_string(lightIndex) + "].specular", {1.f, 1.f, 1.f});
-            multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].constant", 1.0f);
-            multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].linear", 0.045f);
-            multiLights->SetFloat("pointLights[" + std::to_string(lightIndex) + "].quadratic", 0.0075f);
             ++lightIndex;
         }
-        
-        // Light Shader Lighting - all lights are the same so use the last one
-        lightShader->SetUniform4dm("cameraMatrix", camera.GetCameraMatrix());
+
         lightIndex = 0;
-        for (std::shared_ptr<IModel> light : lights) 
+        lightShader->SetUniform4dm("cameraMatrix", camera.GetCameraMatrix());
+        for (std::shared_ptr<IModel> light : lights)
         {
             lightShader->SetUniform4fv("lightColor", light->GetColor());
             const auto data = renderer->DrawModelMesh(light);
@@ -247,29 +263,31 @@ void Application::Run()
             ++lightIndex;
         }
 
-        for (std::shared_ptr<IModel> model : models) 
+        for (std::shared_ptr<IModel> model : models)
         {
             multiLights->SetFloat("material.shininess", 0.1f);
             renderer->DrawModelMesh(model);
         }
-                 
+
         /* Clean Up and Measure */
         m_spWindow->OnUpdate();
-        //ClearErrors();
+#ifdef DEBUG
+        ClearErrors();
+#endif //DEBUG
         DisplayStats();
 
         if (theta < 360 || theta >= 0)
-        { 
-            theta = theta + (60 * m_stats.deltaTime); 
+        {
+            theta = theta + (60 * m_stats.deltaTime);
         }
-        else 
-        { 
-            theta = theta - (60 * m_stats.deltaTime); 
+        else
+        {
+            theta = theta - (60 * m_stats.deltaTime);
         }
     }
 }
 
-void Application::DisplayStats() 
+void Application::DisplayStats()
 {
     m_stats.deltaTime = glfwGetTime() - m_stats.lastFrameTime;
     while (m_stats.deltaTime < (1.0 / static_cast<double>(m_stats.targetFPS))) {
@@ -289,7 +307,7 @@ void Application::ClearErrors() const
 
 std::shared_ptr<Application> Application::GetApplication()
 {
-    // If we cannot return a valid instance, then 
+    // If we cannot return a valid instance, then
     // we should not create a new application
     return s_applicationInstance.lock();
 }

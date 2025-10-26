@@ -11,6 +11,8 @@ target_include_directories(OpenGL PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(OpenGL
     PRIVATE
+        glad
+        glfw
+        opengl32
         Renderer
-        app_vendor_deps
 )

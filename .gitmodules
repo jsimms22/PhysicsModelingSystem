@@ -1,9 +1,0 @@
-[submodule "vendor/GLFW"]
-	path = vendor/GLFW
-	url = https://github.com/glfw/glfw.git
-[submodule "vendor/GL"]
-	path = vendor/GL
-	url = https://github.com/Perlmint/glew-cmake.git
-[submodule "vendor/GLM"]
-	path = vendor/GLM
-	url = https://github.com/g-truc/glm

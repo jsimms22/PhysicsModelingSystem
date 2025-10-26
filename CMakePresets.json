@@ -1,0 +1,39 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "default-debug",
+      "displayName": "Debug Build",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "PLATFORM_IMPL_OS": "Windows",
+        "PLATFORM_IMPL_RENDER": "OpenGL"
+      }
+    },
+    {
+      "name": "default-release",
+      "displayName": "Release Build",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "PLATFORM_IMPL_OS": "Windows",
+        "PLATFORM_IMPL_RENDER": "OpenGL"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug-build",
+      "displayName": "Build Debug",
+      "configurePreset": "default-debug"
+    },
+    {
+      "name": "release-build",
+      "displayName": "Build Release",
+      "configurePreset": "default-release"
+    }
+  ]
+}

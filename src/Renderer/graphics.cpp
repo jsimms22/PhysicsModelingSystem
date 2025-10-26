@@ -12,9 +12,9 @@ std::vector<vertex> FloorVertex(std::uint32_t vertexCount, double length, double
     double dx = (width / vertexCount);
     double dz = (length / vertexCount);
     std::vector<vertex> floor;
-    for (std::uint32_t i=0; i<vertexCount; ++i) 
+    for (std::uint32_t i=0; i<vertexCount; ++i)
     {
-        for (std::uint32_t j=0; j<vertexCount; ++j) 
+        for (std::uint32_t j=0; j<vertexCount; ++j)
         {
             floor.push_back(vertex
                 {   //position
@@ -28,16 +28,15 @@ std::vector<vertex> FloorVertex(std::uint32_t vertexCount, double length, double
                 });
         }
     }
-    // std::cout << floor.size() << std::endl;
     return floor;
 }
 
 std::vector<std::uint32_t> FloorIndex(std::uint32_t vertexCount)
 {
     std::vector<std::uint32_t> index;
-    for (std::uint32_t i=0; i<vertexCount-1; ++i) 
+    for (std::uint32_t i=0; i<vertexCount-1; ++i)
     {
-        for (std::uint32_t j=0; j<vertexCount-1; ++j) 
+        for (std::uint32_t j=0; j<vertexCount-1; ++j)
         {
             std::uint32_t tl = (i*vertexCount) + j;
             std::uint32_t tr = tl + 1;
@@ -47,14 +46,6 @@ std::vector<std::uint32_t> FloorIndex(std::uint32_t vertexCount)
             index.push_back(tr); index.push_back(bl); index.push_back(br);
         }
     }
-
-#ifdef DEBUG
-    std::cout << index.size() << std::endl;
-    for (int i=0; i<(index.size()-2); i+=3) 
-    {
-        std::cout << index[i] << "/" << index[i+1] << "/" << index[i+2] << std::endl;
-    }
-#endif
 
     return index;
 }

@@ -1,7 +1,7 @@
 // vendor
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 // project header
 #include "OpenGLContext.hpp"
 // std library
@@ -19,7 +19,7 @@ void OpenGLContext::Init()
     //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Initialize GLEW (or any other OpenGL function loader)
-    if (glewInit() != GLEW_OK) 
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
         std::cout << "GLEW initialization failure" << std::endl;
         throw std::runtime_error("Failed to initialize GLEW.");

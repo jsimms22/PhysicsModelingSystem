@@ -1,7 +1,7 @@
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 // project headers
 #include "EditorCamera.hpp"
 
@@ -28,7 +28,7 @@ void EditorCamera::UpdateMatrix()
 void EditorCamera::UpdateProjection()
 {
     m_aspectRatio = m_width / m_height;
-    m_projectionMatrix = mat4x4_projection(static_cast<double>(m_FOV)*(PI / 180.0), 
+    m_projectionMatrix = mat4x4_projection(static_cast<double>(m_FOV)*(PI / 180.0),
                                            m_aspectRatio, m_nearPlane, m_farPlane);
 }
 
@@ -48,52 +48,52 @@ void EditorCamera::UpdateViewport(float width, float height)
 void EditorCamera::UpdatePosition()
 {
     // Handles key inputs
-    if (Input::IsKeyPressed(KeyCode::W)) 
+    if (Input::IsKeyPressed(KeyCode::W))
     {
         m_position = vec3_add(m_position, vec3_scale(m_speed, m_forward));
     }
 
-    if (Input::IsKeyPressed(KeyCode::A)) 
+    if (Input::IsKeyPressed(KeyCode::A))
     {
         m_position = vec3_add(m_position, vec3_scale(-m_speed, m_right));
     }
 
-    if (Input::IsKeyPressed(KeyCode::S)) 
+    if (Input::IsKeyPressed(KeyCode::S))
     {
         m_position = vec3_add(m_position, vec3_scale(-m_speed, m_forward));
     }
-    
-    if (Input::IsKeyPressed(KeyCode::D)) 
+
+    if (Input::IsKeyPressed(KeyCode::D))
     {
         m_position = vec3_add(m_position, vec3_scale(m_speed, m_right));
     }
 
-    if (Input::IsKeyPressed(KeyCode::Space)) 
+    if (Input::IsKeyPressed(KeyCode::Space))
     {
         m_position = vec3_add(m_position, vec3_scale(m_speed, m_up));
     }
-    
-    if (Input::IsKeyPressed(KeyCode::LeftControl)) 
+
+    if (Input::IsKeyPressed(KeyCode::LeftControl))
     {
         m_position = vec3_add(m_position, vec3_scale(-m_speed, m_up));
     }
 
-    if (Input::IsKeyPressed(KeyCode::LeftShift)) 
+    if (Input::IsKeyPressed(KeyCode::LeftShift))
     {
         m_speed = 3.0;
-    } 
-    else if (Input::IsKeyReleased(KeyCode::LeftShift)) 
+    }
+    else if (Input::IsKeyReleased(KeyCode::LeftShift))
     {
         m_speed = 1.0;
     }
 
     // Handles mouse inputs
-    if (Input::IsMouseButtonPressed(MouseCode::ButtonLeft)) 
+    if (Input::IsMouseButtonPressed(MouseCode::ButtonLeft))
     {
         Input::ShowMouseCursor(false);
 
         // Prevents camera from jumping on the first click
-        if (m_firstClick) 
+        if (m_firstClick)
         {
             Input::SetMousePositionCenter();
             m_firstClick = false;
@@ -102,7 +102,7 @@ void EditorCamera::UpdatePosition()
         vec2f mousePosition = Input::GetMousePosition();
 
         // Normalizes and shifts the coordinates of the cursor such that they begin in the middle of the screen
-        // and then "transforms" them into degrees 
+        // and then "transforms" them into degrees
         double rotX = m_sensitivity * static_cast<double>((mousePosition[1] - (m_height / 2)) / m_height); // yaw
         double rotY = m_sensitivity * static_cast<double>((mousePosition[0] - (m_width / 2)) / m_width); // pitch
 
@@ -121,8 +121,8 @@ void EditorCamera::UpdatePosition()
 
         // Sets mouse cursor to the middle of the screen so that it doesn't end up roaming around
         Input::SetMousePositionCenter();
-    } 
-    else if (Input::IsMouseButtonReleased(MouseCode::ButtonLeft)) 
+    }
+    else if (Input::IsMouseButtonReleased(MouseCode::ButtonLeft))
     {
         Input::ShowMouseCursor(true);
         m_firstClick = true;
@@ -131,7 +131,7 @@ void EditorCamera::UpdatePosition()
 
 void EditorCamera::ResetCamera()
 {
-    if (Input::IsKeyPressed(KeyCode::F1)) 
+    if (Input::IsKeyPressed(KeyCode::F1))
     {
         m_position = m_resetLoc;
         m_orientation = m_resetOrient;

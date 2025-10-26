@@ -1,7 +1,7 @@
 // vendors
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 // project headers
 #include "WindowsWindow.hpp"
 
@@ -30,22 +30,22 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
     if (!success) { std::cerr << "GLFW init failure" << std::endl; }
     glfwSetErrorCallback(GLFWErrorCallback);
 
-#ifdef debug
+#ifdef DEBUG
     //glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-#endif
+#endif //DEBUG
 
     // Create window
     m_pWindow = glfwCreateWindow(static_cast<int>(m_data.width), static_cast<int>(m_data.height), m_data.title.c_str(), nullptr, nullptr);
     if (!m_pWindow) { std::cerr << "WindowsWindow creation failure" << std::endl; }
-    
+
     m_upContext = GraphicsContext::Create(m_pWindow);
     m_upContext->Init();
 
     // Set our data struct as the pointer format
     glfwSetWindowUserPointer(m_pWindow,&m_data);
 
-    glfwSetWindowSizeCallback(m_pWindow, [](GLFWwindow* window, const int width, const int height) -> void 
-        { 
+    glfwSetWindowSizeCallback(m_pWindow, [](GLFWwindow* window, const int width, const int height) -> void
+        {
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
             WindowResizeEvent event{static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height)};
@@ -53,7 +53,7 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
             data.height = static_cast<std::uint32_t>(height);
             data.EventCallback(event);
         });
-    glfwSetWindowCloseCallback(m_pWindow, [](GLFWwindow* window) -> void 
+    glfwSetWindowCloseCallback(m_pWindow, [](GLFWwindow* window) -> void
         {
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
 
@@ -61,10 +61,10 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
             data.EventCallback(event);
         });
 
-    glfwSetKeyCallback(m_pWindow, [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) -> void 
+    glfwSetKeyCallback(m_pWindow, [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) -> void
         {
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-            
+
             switch (action)
             {
                 case GLFW_PRESS:
@@ -87,11 +87,11 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
                 }
             }
         });
-    
+
     glfwSetMouseButtonCallback(m_pWindow, [](GLFWwindow* window, int button, int action, int /*mods*/) -> void
         {
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-            
+
             switch (action)
             {
                 case GLFW_PRESS:
@@ -112,7 +112,7 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
     glfwSetScrollCallback(m_pWindow, [](GLFWwindow* window, double offsetX, double offsetY) -> void
         {
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-            
+
             MouseScrollEvent event(static_cast<float>(offsetX),static_cast<float>(offsetY));
             data.EventCallback(event);
         });
@@ -120,12 +120,12 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
     glfwSetCursorPosCallback(m_pWindow, [](GLFWwindow* window, double posX, double posY) -> void
         {
             WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-            
+
             MouseMoveEvent event(static_cast<float>(posX),static_cast<float>(posY));
             data.EventCallback(event);
         });
 
-    
+
     SetVSync(true);
 }
 
@@ -144,14 +144,14 @@ void WindowsWindow::OnUpdate()
 }
 
 void WindowsWindow::SetVSync(bool enabled)
-{ 
-    if (enabled) 
-    { 
-        glfwSwapInterval(1); 
+{
+    if (enabled)
+    {
+        glfwSwapInterval(1);
     }
-    else 
-    { 
-        glfwSwapInterval(0); 
+    else
+    {
+        glfwSwapInterval(0);
     }
 
     m_data.vsync = enabled;

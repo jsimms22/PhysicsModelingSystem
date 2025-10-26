@@ -1,9 +1,3 @@
-find_package(OpenGL REQUIRED)
-
-add_subdirectory(GL/build/cmake)
-add_subdirectory(GLM/glm)
-add_subdirectory(GLFW)
-
 ## STB ##
 set(STB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/vendor/STB/include)
 set(STB_LIB_DIR ${CMAKE_SOURCE_DIR}/vendor/STB/libs)
@@ -16,8 +10,5 @@ set_target_properties(STB PROPERTIES
 add_library(app_vendor_deps INTERFACE)
 
 target_link_libraries(app_vendor_deps INTERFACE
-    glew
-    glm
-    glfw3
     STB
 )

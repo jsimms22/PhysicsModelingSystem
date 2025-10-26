@@ -1,7 +1,7 @@
 // vendor
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 // project headers
 #include "Shader.hpp"
 // std library
@@ -12,14 +12,14 @@
 #include <sstream>
 
 Shader::Shader(const std::string& vertexFile, const std::string& fragmentFile)
-{    
-#ifdef Debug
+{
+#ifdef DEBUG
     std::cout << "compiling: " << vertexFile << " and " << fragmentFile << std::endl;
-#endif //Debug
+#endif //DEBUG
     // Create a shader object and compile it during runtime
     std::string vertexSource = ReadFileContents(vertexFile);
     std::uint32_t vertexShader = CompileShader(GL_VERTEX_SHADER, vertexSource);
-    if (vertexShader == 0) { throw "shader compilation failure"; } 
+    if (vertexShader == 0) { throw "shader compilation failure"; }
 
     // Perform the same steps for the fragment shader
     std::string fragmentSource = ReadFileContents(fragmentFile);
@@ -142,50 +142,50 @@ void Shader::SetUniform4dm(const std::string& uniformName, const mat4x4d& values
     Unbind();
 }
 
-std::int32_t Shader::GetUniformLocation(const std::string& uniformName) 
+std::int32_t Shader::GetUniformLocation(const std::string& uniformName)
 {
     std::unordered_map<std::string, std::int32_t>::const_iterator itr = m_uniformLocationCache.find(uniformName);
 
     std::int32_t location = -1;
 
-    if (itr == m_uniformLocationCache.end()) 
+    if (itr == m_uniformLocationCache.end())
     {
         location = glGetUniformLocation(m_ID, uniformName.c_str());
         m_uniformLocationCache.insert_or_assign(uniformName,location);
-    } 
-    else 
+    }
+    else
     {
         location = itr->second;
     }
 
-#ifdef Debug
+#ifdef DEBUG
     // If no id or return is -1
-    if (location == -1) 
+    if (location == -1)
     {
         // Do not throw, might be useful to continue, but inform caller
         std::cout << "Warning: uniform '" << uniformName << "' does not exist." << std::endl;
     }
-#endif // Debug
+#endif // DEBUG
 
-    return location; 
+    return location;
 }
 
 std::string Shader::ReadFileContents(const std::string& filename)
 {
 #ifdef DEBUG
     std::cout << "Compiling: " << filename << std::endl;
-#endif
+#endif //DEBUG
     std::stringstream buffer;
-    try 
+    try
     {
         std::ifstream file(filename);
         buffer << file.rdbuf();
-    } 
+    }
     catch (std::ifstream::failure& e)
     {
         std::cout << "Failed to read: " << filename << std::endl;
     }
-    
+
     return buffer.str();
 }
 
@@ -203,16 +203,16 @@ std::uint32_t Shader::CompileShader(std::uint32_t type, const std::string& fileT
     int result = 0; int length = 0;
     glGetShaderiv(id, GL_COMPILE_STATUS, &result);
 
-    if (result == GL_FALSE) 
+    if (result == GL_FALSE)
     {
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
         char* msgLog = (char*) alloca(static_cast<std::size_t>(length) * sizeof(char));
         glGetShaderInfoLog(id, length, &length, msgLog);
 
-        std::cout << "Failed to compile " 
-                  << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") 
+        std::cout << "Failed to compile "
+                  << (type == GL_VERTEX_SHADER ? "vertex" : "fragment")
                   << " shader." << std::endl;
-        
+
         std::cout << msgLog << std::endl;
 
         glDeleteShader(id);

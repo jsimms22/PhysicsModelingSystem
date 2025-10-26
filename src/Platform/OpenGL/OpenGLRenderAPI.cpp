@@ -1,7 +1,7 @@
 // vendor
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 // project header
 #include "OpenGLRenderAPI.hpp"
 // std library
@@ -11,14 +11,14 @@ void OpenGLRenderAPI::Init()
     // OpenGL settings
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    
+
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
-    
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
+
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     //glPointSize(3.0f);
 }

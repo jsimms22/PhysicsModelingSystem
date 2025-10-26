@@ -1,0 +1,1 @@
+.\build\release\app.exe

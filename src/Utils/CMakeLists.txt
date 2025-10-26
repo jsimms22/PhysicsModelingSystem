@@ -1,4 +1,4 @@
-set(UTILS_SRC 
+set(UTILS_SRC
     utility.cpp
     utility.hpp
 )

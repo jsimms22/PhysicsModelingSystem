@@ -1,7 +1,7 @@
 // vendor
 #define GLFW_INCLUDE_NONE
-#include "../../vendor/GL/include/GL/glew.h"
-#include "../../vendor/GLFW/include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 // project header
 #include "Renderer.hpp"
 
@@ -29,13 +29,13 @@ void Renderer::Clear()
 
 void Renderer::OnWindowResize(const std::uint32_t width, const std::uint32_t height)
 {
-    
+
     RenderCommand::SetViewport(0, 0, width, height);
 }
 
-RenderAPI::API Renderer::GetAPI() 
-{ 
-    return RenderAPI::GetAPI(); 
+RenderAPI::API Renderer::GetAPI()
+{
+    return RenderAPI::GetAPI();
 }
 
 Renderer::ModelData Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
@@ -58,48 +58,37 @@ Renderer::ModelData Renderer::DrawModelMesh(std::shared_ptr<IModel> pModel)
     data.model = mat4x4_mul<double>(data.rotation, data.scaling);
     data.model = mat4x4_mul<double>(data.position, data.model);
 
-#ifdef Debug
-    std::cout << "POSITION:\n";
-    std::cout << data.position << '\n';
-    std::cout << "ROTATION:\n";
-    std::cout << data.rotation << '\n';
-    std::cout << "SCALING:\n";
-    std::cout << data.scaling << '\n';
-    std::cout << "MODEL:\n";
-    std::cout << data.model << '\n';
-#endif //Debug
-    
     // TODO: offload normal scaling to here from the vertex shaders
-    
+
     pModel->GetShader()->SetUniform4dm("model", data.model);
 
     pModel->GetShader()->Bind();
     pModel->GetMesh()->GetVAO()->Bind();
-    if (1 == pModel->GetMesh()->GetNumInstances()) 
+    if (1 == pModel->GetMesh()->GetNumInstances())
     {
-        if (pModel->GetMesh()->GetIndices().size() == 0) 
+        if (pModel->GetMesh()->GetIndices().size() == 0)
         {
-            glDrawArrays(pModel->GetRenderMethod(), 
-                         0, 
-                         static_cast<GLsizei>(pModel->GetMesh()->GetVertices().size())); 
-        } 
-        else 
-        {
-            glDrawElements(pModel->GetRenderMethod(), 
-                           static_cast<GLsizei>(pModel->GetMesh()->GetIndices().size()), 
-                           GL_UNSIGNED_INT, 
-                           0); 
+            glDrawArrays(pModel->GetRenderMethod(),
+                         0,
+                         static_cast<GLsizei>(pModel->GetMesh()->GetVertices().size()));
         }
-    } 
-    else 
-    {
-        glDrawElementsInstanced(pModel->GetRenderMethod(), 
-                                static_cast<GLsizei>(pModel->GetMesh()->GetIndices().size()), 
-                                GL_UNSIGNED_INT, 
-                                0, 
-                                pModel->GetMesh()->GetNumInstances()); 
+        else
+        {
+            glDrawElements(pModel->GetRenderMethod(),
+                           static_cast<GLsizei>(pModel->GetMesh()->GetIndices().size()),
+                           GL_UNSIGNED_INT,
+                           0);
+        }
     }
-    
+    else
+    {
+        glDrawElementsInstanced(pModel->GetRenderMethod(),
+                                static_cast<GLsizei>(pModel->GetMesh()->GetIndices().size()),
+                                GL_UNSIGNED_INT,
+                                0,
+                                pModel->GetMesh()->GetNumInstances());
+    }
+
     pModel->GetMesh()->GetVAO()->Unbind();
     pModel->GetShader()->Unbind();
 
