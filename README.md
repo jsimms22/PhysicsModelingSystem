@@ -1,6 +1,6 @@
 ## Physics Modeling / Visualizer
 
-Included dependencies are build for Windows only. If you plan to use this on a different architecture then mine, you will have to compile and include the binaries for the vendors yourself. Eventually I will add submodules, but not today.
+Included dependencies are build for Windows only. If you plan to use this on a different architecture then mine, you will have to compile and include the binaries for some of the vendors yourself.
 
 Note about STB 3rd party library use in Texture.cpp:
 - create a .cpp with only the following, where the include is pointing to your stb_image.h header file:
@@ -44,20 +44,16 @@ https://github.com/skypjack/entt
 
 TODO (roadmap):
 
-- [DONE] rewrite build system to use cmake (implemented - needs some cleaning)
-- [DONE] wrap existing vendor dependencies into git submodules
 - research meta-programming libraries (consider: boost::mpl11, boost::hana, hyperion::mpl)
-- bundle mpl submodule w/ project
+- bundle mpl w/ project
 - continue implementing component system
 - implement scene system with new ecs
 - add a logging library (consider: spdlog)
 - implement serializer
-- [DONE] research math libraries (consider: glm)
-- add testing for my own math methods to verify operations using glm
 - move uniform types list into the shader constructor
 - update floor/terrain to be "infinite" by default
 - add instanced rendering for models
-- (delayed) add simple gravity forces 
+- (delayed) add simple gravity forces
 - (delayed) add simple non-elastic collision forces
 - add material texture to model rendering and lighting
 - add a 3rd party model loading library (consider: assimp - likely option for now just to learn and load more complex model data in)
