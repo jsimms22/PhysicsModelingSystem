@@ -2,20 +2,25 @@
 
 // vendors
 // project headers
-#include "../types.hpp"
-#include "../Scene/Model.hpp"
 // std library
+#include <cstdint>
+#include <string>
 #include <unordered_map>
 #include <vector>
-#include <string>
 
 class Entity;
+class Terrain;
+class BaseModel;
+class Light;
 
 class Scene
 {
 public:
     Scene() = default;
     ~Scene() = default;
+
+    bool WriteAttributes();
+    bool ReadAttributes();
 
 private:
     std::uint32_t m_ViewportWidth = 0;
@@ -25,6 +30,9 @@ private:
     bool m_EnablePhysics = false;
 
     std::unordered_map<std::string, Entity> m_entityMap;
+    std::vector<Terrain> m_vTerrain;
+    std::vector<BaseModel> m_vModels;
+    std::vector<Light> m_vLights;
 
     // friends
     friend class Entity;

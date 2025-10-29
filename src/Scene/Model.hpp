@@ -28,7 +28,7 @@ enum class ModelType
 
 template <typename T, typename... Args>
 std::enable_if_t<std::is_constructible<T, Args...>::value, std::shared_ptr<T>>
-Create(Args&&... args) 
+Create(Args&&... args)
 {
     return std::make_shared<T>(std::forward<Args>(args)...);
 }
@@ -37,7 +37,7 @@ template <class... Args>
 std::shared_ptr<IModel> CreateModelFactory(ModelType type, Args&&... args)
 {
     switch (type)
-    {   
+    {
         case ModelType::Shape:
         {
             return Create<Shape>(std::forward<Args>(args)...);
@@ -86,12 +86,15 @@ public:
 
     virtual std::uint32_t GetRenderMethod() const = 0;
     virtual void SetRenderMethod(std::uint32_t rendMethod) = 0;
-    
+
     virtual bool IsPhysicalized() const = 0;
     virtual void SetIsPhysicalized(bool enablePhysics) = 0;
 
     virtual vec4f GetColor() const = 0;
     virtual void SetColor(const vec4f& color) = 0;
+
+    virtual bool WriteAttributes() = 0;
+    virtual bool ReadAttributes() = 0;
 };
 
 class BaseModel : public IModel
@@ -115,19 +118,22 @@ public:
     virtual void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override = 0;
     virtual void Update() override { /*std::cout << "I am a BaseModel.\n";*/ }
 
+    virtual bool WriteAttributes() override;
+    virtual bool ReadAttributes() override;
+
     // Data Member Methods
     std::shared_ptr<Mesh> GetMesh() const override { return m_modelMesh; }
     void SetMesh(std::shared_ptr<Mesh> mesh) override
-    { 
-        if (!mesh) { return; } 
-        m_modelMesh= mesh; 
+    {
+        if (!mesh) { return; }
+        m_modelMesh= mesh;
     }
 
     std::shared_ptr<Shader> GetShader() const override { return m_modelShader; }
     void SetShader(std::shared_ptr<Shader> shader) override
-    { 
-        if (!shader) { return; } 
-        m_modelShader = shader; 
+    {
+        if (!shader) { return; }
+        m_modelShader = shader;
     }
 
     vec3d GetPosition() const override { return m_position; }
@@ -175,10 +181,15 @@ public:
     void AddMesh(std::shared_ptr<Shader> shader, std::string /*uniformName*/) override { if (shader) { } };
     void Update() override {};
 
-    vec4f GetColor() const override { return {}; };
-    void SetColor(const vec4f& /*color*/) override {};
+    virtual bool WriteAttributes() override;
+    virtual bool ReadAttributes() override;
+
+    vec4f GetColor() const override { return m_color; };
+    void SetColor(const vec4f& color) override { m_color = color; };
 
     // Methods
+private:
+    vec4f m_color = {0.5f, 0.5f, 0.5f, 1.0f};
 };
 
 class Terrain : public BaseModel
@@ -198,6 +209,9 @@ public:
     bool SupportsType(const ModelType type) const override { return type == ModelType::Terrain; };
     void AddMesh(std::shared_ptr<Shader> shader, std::string /*uniformName*/) override { if (shader) { } };
     void Update() override {};
+
+    virtual bool WriteAttributes() override;
+    virtual bool ReadAttributes() override;
 
     vec4f GetColor() const override { return {}; };
     void SetColor(const vec4f& /*color*/) override {};
@@ -222,6 +236,9 @@ public:
     bool SupportsType(const ModelType type) const override { return type == ModelType::Light; };
     void AddMesh(std::shared_ptr<Shader> shader, std::string uniformName) override;
     void Update() override;
+
+    virtual bool WriteAttributes() override;
+    virtual bool ReadAttributes() override;
 
     // Methods
     void UpdatePosition(); // Updates positon using arrow keys

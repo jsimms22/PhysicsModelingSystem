@@ -29,6 +29,15 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(glad)
 ## ----- GLAD ----- ##
 
+## ----- TinyXML ----- ##
+set(tinyxml2_SHARED_LIBS OFF CACHE INTERNAL "")
+FetchContent_Declare(
+    tinyxml2
+    GIT_REPOSITORY https://github.com/leethomason/tinyxml2.git
+)
+FetchContent_MakeAvailable(tinyxml2)
+## ----- TinyXML ----- ##
+
 ## SET OUTPUT DIRECTORIES ##
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
@@ -74,6 +83,7 @@ target_link_libraries(app
     glad
     glfw
     opengl32
+    tinyxml2
     app_vendor_deps
     Core
     ECS

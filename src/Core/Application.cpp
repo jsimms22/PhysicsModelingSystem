@@ -98,17 +98,15 @@ void Application::Run()
     // Shaders
     std::shared_ptr<Shader> multiLights = std::make_shared<Shader>("shaders/multiple_vertex.glsl", "shaders/multiple_fragment.glsl");
     std::shared_ptr<Shader> lightShader = std::make_shared<Shader>("shaders/light_vertex.glsl", "shaders/light_fragment.glsl");
-
     // Meshes
     std::shared_ptr<Mesh> cubeMesh = std::make_shared<Mesh>("models/cube.obj");
-    //std::shared_ptr<Mesh> carMesh = std::make_shared<Mesh>("models/sportsCar.obj");
     std::shared_ptr<Mesh> sphereMesh = std::make_shared<Mesh>("models/sphere.obj");
 
     std::vector<std::shared_ptr<IModel>> models;
     std::vector<std::shared_ptr<IModel>> lights;
     // Init floor terrain
     models.push_back(CreateModelFactory(ModelType::Terrain, std::make_shared<Mesh>(FloorVertex(100, 5, 5), FloorIndex(100))));
-    models.back()->SetShader(multiLights);
+    models.back()->SetShader(lightShader);
     models.back()->SetPosition({0.0, -12.0, 0.0});
     models.back()->SetScale(100.f);
     models.back()->SetRenderMethod(GL_LINES);
@@ -119,36 +117,38 @@ void Application::Run()
     models.back()->SetShader(multiLights);
     models.back()->SetPosition({0.0, 0.0, 0.0});
     models.back()->SetScale(5.0f);
+    models.back()->SetColor({1.0, 0.0, 0.0, 1.0});
 
     // Init sphere
-    models.push_back(CreateModelFactory(ModelType::Shape, cubeMesh));
+    models.push_back(CreateModelFactory(ModelType::Shape, sphereMesh));
     models.back()->SetShader(multiLights);
     models.back()->SetPosition({25.0, 0.0, 0.0});
     models.back()->SetScale(2.0f);
+    models.back()->SetColor({1.0, 1.0, 0.0, 1.0});
 
     // Init light cube
-    lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
+    lights.push_back(CreateModelFactory(ModelType::Light, sphereMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({static_cast<double>(5 + rand()%30), 5.0, static_cast<double>(5 + rand()%30)});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.1f, 0.5f, 0.9f, 1.f});
 
     // Init light cube
-    lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
+    lights.push_back(CreateModelFactory(ModelType::Light, sphereMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({static_cast<double>(5 + -rand()%30), 25.0, static_cast<double>(5 + rand()%30)});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.2f, 0.6f, 1.0f, 1.f});
 
     // Init light cube
-    lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
+    lights.push_back(CreateModelFactory(ModelType::Light, sphereMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({static_cast<double>(5 + -rand()%30), -5.0, static_cast<double>(5 + -rand()%30)});
     lights.back()->SetScale(1.0f);
     lights.back()->SetColor({0.3f, 0.7f, 0.9f, 1.f});
 
     // Init light cube
-    lights.push_back(CreateModelFactory(ModelType::Light, cubeMesh));
+    lights.push_back(CreateModelFactory(ModelType::Light, sphereMesh));
     lights.back()->SetShader(lightShader);
     lights.back()->SetPosition({static_cast<double>(5 + -rand()%30), 12.0f, static_cast<double>(5 + -rand()%30)});
     lights.back()->SetScale(1.0f);
@@ -265,7 +265,17 @@ void Application::Run()
 
         for (std::shared_ptr<IModel> model : models)
         {
-            multiLights->SetFloat("material.shininess", 0.1f);
+            multiLights->SetFloat("material.shininess", 0.4f);
+            if (model->SupportsType(ModelType::Shape))
+            {
+                multiLights->SetUniform4fv("modelColor", model->GetColor());
+            }
+            else
+            {
+                // just using it for terrain for now since it is a static color
+                lightShader->SetUniform4fv("lightColor", {1.0,1.0,1.0,0.5});
+            }
+
             renderer->DrawModelMesh(model);
         }
 

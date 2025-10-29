@@ -13,6 +13,7 @@ target_link_libraries(Scene
         glad
         glfw
         opengl32
+        tinyxml2
         Renderer
         ECS
 )
