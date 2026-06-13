@@ -3,6 +3,7 @@ set(TYPES_SRC
     GUID.hpp
     mat3x3.hpp
     mat4x4.hpp
+    Shapes.hpp
     vec2.hpp
     vec3.hpp
     vec4.hpp

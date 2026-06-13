@@ -9,6 +9,7 @@
 #include "Types/mat4x4.hpp"
 #include "Types/vertex.hpp"
 #include "Types/GUID.hpp"
+#include "Types/Shapes.hpp"
 // std library
 #include <cmath>
 #include <vector>

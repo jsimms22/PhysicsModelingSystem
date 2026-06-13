@@ -1,4 +1,5 @@
 set(SCENE_SRC
+    GeometryGenerator.hpp
     Model.cpp
     Model.hpp
     Scene.cpp

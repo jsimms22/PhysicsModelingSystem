@@ -8,6 +8,7 @@
 #include <cerrno>
 #include <iostream>
 #include <cstdlib>
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 
@@ -183,7 +184,10 @@ std::string Shader::ReadFileContents(const std::string& filename)
     }
     catch (std::ifstream::failure& e)
     {
+#ifdef DEBUG
+        std::cout << "Current working directory: " << std::filesystem::current_path() << std::endl;
         std::cout << "Failed to read: " << filename << std::endl;
+#endif //DEBUG
     }
 
     return buffer.str();

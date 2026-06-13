@@ -44,11 +44,11 @@ std::shared_ptr<IModel> CreateModelFactory(ModelType type, Args&&... args)
         }
         case ModelType::Terrain:
         {
-            return  Create<Terrain>(std::forward<Args>(args)...);
+            return Create<Terrain>(std::forward<Args>(args)...);
         }
         case ModelType::Light:
         {
-            return  Create<Light>(std::forward<Args>(args)...);
+            return Create<Light>(std::forward<Args>(args)...);
         }
         default:
         {
@@ -217,6 +217,8 @@ public:
     void SetColor(const vec4f& /*color*/) override {};
 
     // Methods
+private:
+    vec4f m_color = { 1.f, 1.f, 1.f, 1.f };
 };
 
 class Light : public BaseModel

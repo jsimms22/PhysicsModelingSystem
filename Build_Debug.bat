@@ -1,3 +1,3 @@
 cmake . --preset default-debug
 
-cmake --build build/debug --target app
+cmake --build build/debug --parallel --target app

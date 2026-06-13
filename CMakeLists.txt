@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.30)
 cmake_policy(VERSION 3.30)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -52,7 +52,8 @@ endif()
 project(PhysicsModelSystem LANGUAGES CXX)
 
 ## ----- Build and Configure ----- ##
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+   AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     # Add general compile options
     add_compile_options(-Wall
                         -Wextra
@@ -95,4 +96,16 @@ target_link_libraries(app
     Scene
     Types
     Utils
+)
+
+add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/models
+        $<TARGET_FILE_DIR:app>/models
+)
+
+add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/shaders
+        $<TARGET_FILE_DIR:app>/shaders
 )
