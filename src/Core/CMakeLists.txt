@@ -5,6 +5,8 @@ set(CORE_SRC
     Input.hpp
     Window.cpp
     Window.hpp
+    WindowAPI.cpp
+    WindowAPI.hpp
 )
 
 # Create a library for this module

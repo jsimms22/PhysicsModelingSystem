@@ -10,7 +10,7 @@
 class GraphicsContext;
 class GLFWwindow;
 
-class WindowsWindow : public IWindow
+class QT6Window : public IWindow
 {
     struct WindowData
     {
@@ -22,9 +22,9 @@ class WindowsWindow : public IWindow
     };
 
 public:
-    WindowsWindow(const WindowProps& props = WindowProps());
+    QT6Window(const WindowProps& props = WindowProps());
 
-    ~WindowsWindow();
+    ~QT6Window();
 
     // Update title bar
     void UpdateWindowTitle(double dt, std::size_t numActive) override;

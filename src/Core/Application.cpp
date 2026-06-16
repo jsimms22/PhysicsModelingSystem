@@ -107,11 +107,12 @@ void Application::Run()
     std::vector<std::shared_ptr<IModel>> models;
     std::vector<std::shared_ptr<IModel>> lights;
     // Init floor terrain
-    models.push_back(CreateModelFactory(ModelType::Terrain, std::make_shared<Mesh>(FloorVertex(100, 5, 5), FloorIndex(100))));
+    //models.push_back(CreateModelFactory(ModelType::Terrain, std::make_shared<Mesh>(FloorVertex(100, 5, 5), FloorIndex(100))));
+    models.push_back(CreateModelFactory(ModelType::Terrain, Geometry::Generator::Create<double>(Plane<double>{})));
     models.back()->SetShader(multiLights);
     models.back()->SetPosition({0.0, -12.0, 0.0});
     models.back()->SetScale(100.f);
-    models.back()->SetRenderMethod(GL_LINES);
+    //models.back()->SetRenderMethod(GL_LINES);
     models.back()->SetIsPhysicalized(false);
 
     // Init container

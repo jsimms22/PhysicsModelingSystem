@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 // project headers
-#include "WindowsWindow.hpp"
+#include "QT6Window.hpp"
 
 #include "../../Core/Application.hpp"
 #include "../../Core/Input.hpp"

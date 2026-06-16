@@ -26,7 +26,7 @@ set(RENDER_SRC
     VertexBuffer.hpp
 )
 
-add_library(Renderer STATIC ${RENDER_SRC})
+add_library(Renderer STATIC ${RENDER_SRC} "../Core/WindowAPI.cpp")
 
 target_include_directories(Renderer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

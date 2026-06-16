@@ -13,9 +13,9 @@ std::unique_ptr<RenderAPI> RenderAPI::Create()
     {
         case RenderAPI::API::None:    std::cerr << "RendererAPI::None is currently not supported!\n"; return nullptr;
         case RenderAPI::API::OpenGL:  return std::make_unique<OpenGLRenderAPI>();
-        case RenderAPI::API::DX11:    std::cerr << "RendererAPI::None is currently not supported!\n"; return nullptr;
-        case RenderAPI::API::DX12:    std::cerr << "RendererAPI::None is currently not supported!\n"; return nullptr;
-        case RenderAPI::API::Vulkan:  std::cerr << "RendererAPI::None is currently not supported!\n"; return nullptr;
+        case RenderAPI::API::DX11:    std::cerr << "RendererAPI::DX11 is currently not supported!\n"; return nullptr;
+        case RenderAPI::API::DX12:    std::cerr << "RendererAPI::DX12 is currently not supported!\n"; return nullptr;
+        case RenderAPI::API::Vulkan:  std::cerr << "RendererAPI::Vulkan is currently not supported!\n"; return nullptr;
     }
 
     return nullptr;

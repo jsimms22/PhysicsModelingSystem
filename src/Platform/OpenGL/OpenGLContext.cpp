@@ -18,11 +18,11 @@ void OpenGLContext::Init()
 
     //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Initialize GLEW (or any other OpenGL function loader)
+    // Initialize GLAD (or any other OpenGL function loader)
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
-        std::cout << "GLEW initialization failure" << std::endl;
-        throw std::runtime_error("Failed to initialize GLEW.");
+        std::cout << "GLAD initialization failure" << std::endl;
+        throw std::runtime_error("Failed to initialize GLAD.");
     }
 }
 

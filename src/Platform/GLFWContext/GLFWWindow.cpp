@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 // project headers
-#include "WindowsWindow.hpp"
+#include "GLFWWindow.hpp"
 
 #include "../../Events/WindowEvents.hpp"
 #include "../../Events/KeyEvents.hpp"
@@ -19,7 +19,7 @@ static void GLFWErrorCallback(int error, const char* desc)
     throw std::runtime_error("GLFW Error Code(" + std::to_string(error) + "): " + desc);
 }
 
-WindowsWindow::WindowsWindow(const WindowProps& props)
+GLFWWindow::GLFWWindow(const WindowProps& props)
 {
     m_data.width = props.width;
     m_data.height = props.height;
@@ -129,21 +129,21 @@ WindowsWindow::WindowsWindow(const WindowProps& props)
     SetVSync(true);
 }
 
-WindowsWindow::~WindowsWindow() { if (m_pWindow) { glfwDestroyWindow(m_pWindow); } }
+GLFWWindow::~GLFWWindow() { if (m_pWindow) { glfwDestroyWindow(m_pWindow); } }
 
-void WindowsWindow::UpdateWindowTitle(double dt, std::size_t numActive)
+void GLFWWindow::UpdateWindowTitle(double dt, std::size_t numActive)
 {
     std::string title = "FPS: " + std::to_string(static_cast<int>((1.0/dt)-4.0)) + " | Balls: " + std::to_string(numActive);
     glfwSetWindowTitle(m_pWindow, title.c_str());
 }
 
-void WindowsWindow::OnUpdate()
+void GLFWWindow::OnUpdate()
 {
     glfwPollEvents();
     m_upContext->SwapBuffers();
 }
 
-void WindowsWindow::SetVSync(bool enabled)
+void GLFWWindow::SetVSync(bool enabled)
 {
     if (enabled)
     {

@@ -42,7 +42,7 @@ FetchContent_MakeAvailable(tinyxml2)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 ## CHOOSE PLATFORM IMPL ##
-set(PLATFORM_IMPL_OS "Windows")
+set(PLATFORM_IMPL_OS "GLFWContext")
 set(PLATFORM_IMPL_RENDER "OpenGL")
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DDEBUG)
@@ -98,6 +98,7 @@ target_link_libraries(app
     Utils
 )
 
+#[[ # Post build commands
 add_custom_command(TARGET app POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/models
@@ -109,3 +110,4 @@ add_custom_command(TARGET app POST_BUILD
         ${CMAKE_SOURCE_DIR}/shaders
         $<TARGET_FILE_DIR:app>/shaders
 )
+]]
