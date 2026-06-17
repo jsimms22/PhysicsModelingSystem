@@ -1,8 +1,8 @@
 #pragma once
 
 // vendors
+#include <glm/mat4x4.hpp>
 // project headers
-#include "../Types/mat4x4.hpp"
 // std library
 #include <cstdint>
 #include <vector>
@@ -16,7 +16,7 @@ public:
     VertexBuffer() = default;
     // Generates a VBO and links it to a list of vertices
     VertexBuffer(std::vector<vertex>& vertices);
-    VertexBuffer(std::vector<mat4x4d>& matrices);
+    VertexBuffer(std::vector<glm::dmat4>& matrices);
 
     // Destructors
     ~VertexBuffer() { Destroy(); }

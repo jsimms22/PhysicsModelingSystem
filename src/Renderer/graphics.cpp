@@ -18,13 +18,13 @@ std::vector<vertex> FloorVertex(std::uint32_t vertexCount, double length, double
         {
             floor.push_back(vertex
                 {   //position
-                    vec3d{ (coord_x + j*dx), 0.0, (coord_z + i*dz) },
+                    glm::vec3{ (coord_x + j*dx), 0.0, (coord_z + i*dz) },
                     // normal
-                    vec3f{ 1.0f, 1.0f, 1.0f },
+                    glm::vec3{ 1.0f, 1.0f, 1.0f },
                     // texture
-                    vec2f{ 0.0f, 0.0f },
+                    glm::vec2{ 0.0f, 0.0f },
                     // color
-                    vec4f{ 1.f, 1.f, 1.f, 1.f}
+                    glm::vec4{ 1.f, 1.f, 1.f, 1.f}
                 });
         }
     }

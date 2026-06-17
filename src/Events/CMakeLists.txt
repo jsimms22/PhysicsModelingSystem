@@ -1,3 +1,5 @@
+# src/Events/CMakeLists.txt
+
 set(EVENTS_SRC 
     ApplicationEvents.cpp
     ApplicationEvents.hpp
@@ -16,5 +18,12 @@ set(EVENTS_SRC
     WindowEvents.hpp
 )
 
-add_library(Events STATIC ${EVENTS_SRC})
+add_library(Events OBJECT ${EVENTS_SRC})
+
 target_include_directories(Events PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_link_libraries(Events
+    PUBLIC
+)
+
+target_compile_features(Events PUBLIC cxx_std_23)

@@ -1,8 +1,8 @@
 #pragma once
 
 // vendor
+#include <glm/vec4.hpp>
 // project header
-#include "../types.hpp"
 // std library
 #include <memory>
 
@@ -26,7 +26,7 @@ public:
 
     virtual void Init() = 0;
     virtual void SetViewport(const std::uint32_t x, const std::uint32_t y, const std::uint32_t width, const std::uint32_t height) = 0;
-    virtual void SetClearColor(const vec4f& color) = 0;
+    virtual void SetClearColor(const glm::vec4& color) = 0;
     virtual void Clear() = 0;
 
 private:

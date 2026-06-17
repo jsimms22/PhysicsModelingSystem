@@ -1,10 +1,9 @@
 #pragma once
 
 // vendor
+#include <glm/mat4x4.hpp>
 // project header
 #include "RenderAPI.hpp"
-
-#include "../Types/mat4x4.hpp"
 // std library
 #include <cstdint>
 #include <memory>
@@ -16,10 +15,10 @@ class Renderer
 public:
     struct ModelData 
     {
-        mat4x4d position;
-        mat4x4d rotation;
-        mat4x4d scaling;
-        mat4x4d model;
+        glm::mat4x4 position;
+        glm::mat4x4 rotation;
+        glm::mat4x4 scaling;
+        glm::mat4x4 model;
     };
 
     static void Init();

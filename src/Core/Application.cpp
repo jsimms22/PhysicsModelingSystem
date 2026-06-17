@@ -2,6 +2,8 @@
 #define GLFW_INCLUDE_NONE
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/vec3.hpp>
 // project headers
 #include "Application.hpp"
 #include "Input.hpp"
@@ -24,9 +26,6 @@
 #include "../Scene/Model.hpp"
 #include "../Scene/GeometryGenerator.hpp"
 
-#include "../Types/vec3.hpp"
-#include "../Types/vertex.hpp"
-#include "../Types/Shapes.hpp"
 // std library
 #include <cmath>
 #include <functional>
@@ -198,7 +197,7 @@ void Application::Run()
         ++lightIndex;
     }
 
-    EditorCamera camera = EditorCamera(vec3d({0.0, 0.0, 125.0}),
+    EditorCamera camera = EditorCamera(glm::dvec3 ({ 0.0, 0.0, 125.0 }),
                                        static_cast<float>(m_spWindow->GetWidth()),
                                        static_cast<float>(m_spWindow->GetHeight()));
     std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>();
@@ -224,7 +223,7 @@ void Application::Run()
         if (bUseSpotLight)
         {
             multiLights->SetUniform3dv("spotLight.position", camera.GetPosition());
-            multiLights->SetUniform3fv("spotLight.direction", static_cast<vec3f>(camera.GetDirection()));
+            multiLights->SetUniform3fv("spotLight.direction", static_cast<glm::vec3>(camera.GetDirection()));
         }
 
         lightIndex = 0;
@@ -234,22 +233,22 @@ void Application::Run()
             {
                 case 0:
                 {
-                    light->SetPosition({-30.0*std::cos(theta * (PI/180.0)), light->GetPosition()[1], 30.0*std::sin(theta * (PI/180.0))});
+                    light->SetPosition({-30.0*std::cos(theta * (PI/180.0)), light->GetPosition().y, 30.0*std::sin(theta * (PI/180.0))});
                     break;
                 }
                 case 1:
                 {
-                    light->SetPosition({-30.0*std::cos(theta * (PI/180.0)), -30.0*std::sin(theta * (PI/180.0)), light->GetPosition()[2]});
+                    light->SetPosition({-30.0*std::cos(theta * (PI/180.0)), -30.0*std::sin(theta * (PI/180.0)), light->GetPosition().z});
                     break;
                 }
                 case 2:
                 {
-                    light->SetPosition({30.0*std::cos(theta * (PI/180.0)), light->GetPosition()[1], -30.0*std::sin(theta * (PI/180.0))});
+                    light->SetPosition({30.0*std::cos(theta * (PI/180.0)), light->GetPosition().y, -30.0*std::sin(theta * (PI/180.0))});
                     break;
                 }
                 case 3:
                 {
-                    light->SetPosition({-30.0*std::cos(theta * (PI/180.0)), light->GetPosition()[1], -30.0*std::sin(theta * (PI/180.0))});
+                    light->SetPosition({-30.0*std::cos(theta * (PI/180.0)), light->GetPosition().y, -30.0*std::sin(theta * (PI/180.0))});
                     break;
                 }
             }

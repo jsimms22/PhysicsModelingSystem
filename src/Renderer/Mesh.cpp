@@ -38,9 +38,9 @@ std::vector<std::string> SplitString(const std::string& str, char delimiter)
 
 void ProcessVertex(std::vector<vertex>& vertexBin,
                    std::vector<std::string>& vertexMarker,
-                   std::vector<vec3d>& v,
-                   std::vector<vec2f>& vt,
-                   std::vector<vec3f>& vn)
+                   std::vector<glm::vec3>& v,
+                   std::vector<glm::vec2>& vt,
+                   std::vector<glm::vec3>& vn)
 {
     vertex temp;
     std::size_t vertItr = stoull(vertexMarker[0]) - 1;
@@ -55,9 +55,9 @@ void ProcessVertex(std::vector<vertex>& vertexBin,
 
 void LoadObject(const std::string& filename, std::vector<vertex>& vertexBin)
 {
-    std::vector<vec3d> v;
-    std::vector<vec3f> vn;
-    std::vector<vec2f> vt;
+    std::vector<glm::vec3> v;
+    std::vector<glm::vec3> vn;
+    std::vector<glm::vec2> vt;
 
     std::size_t v_count, vt_count, vn_count, f_count;
     v_count = vt_count = vn_count = f_count = 0;
@@ -83,29 +83,29 @@ void LoadObject(const std::string& filename, std::vector<vertex>& vertexBin)
         {
             case 1: // first word = "v"
             {
-                vec3d holdv;
-                if(iss >> temp) { holdv.data[0] = std::stod(temp); }
-                if(iss >> temp) { holdv.data[1] = std::stod(temp); }
-                if(iss >> temp) { holdv.data[2] = std::stod(temp); }
+                glm::vec3 holdv;
+                if(iss >> temp) { holdv[0] = std::stod(temp); }
+                if(iss >> temp) { holdv[1] = std::stod(temp); }
+                if(iss >> temp) { holdv[2] = std::stod(temp); }
                 v.push_back(holdv);
                 ++v_count;
                 break;
             }
             case 2: // first word = "vt"
             {
-                vec2f holdvt;
-                if(iss >> temp) { holdvt.data[0] = std::stof(temp); }
-                if(iss >> temp) { holdvt.data[1] = std::stof(temp); }
+                glm::vec2 holdvt;
+                if(iss >> temp) { holdvt[0] = std::stof(temp); }
+                if(iss >> temp) { holdvt[1] = std::stof(temp); }
                 vt.push_back(holdvt);
                 ++vt_count;
                 break;
             }
             case 3: // first word = "vn"
             {
-                vec3f holdvn;
-                if(iss >> temp) { holdvn.data[0] = std::stof(temp); }
-                if(iss >> temp) { holdvn.data[1] = std::stof(temp); }
-                if(iss >> temp) { holdvn.data[2] = std::stof(temp); }
+                glm::vec3 holdvn;
+                if(iss >> temp) { holdvn[0] = std::stof(temp); }
+                if(iss >> temp) { holdvn[1] = std::stof(temp); }
+                if(iss >> temp) { holdvn[2] = std::stof(temp); }
                 vn.push_back(holdvn);
                 ++vn_count;
                 break;
@@ -129,7 +129,7 @@ void LoadObject(const std::string& filename, std::vector<vertex>& vertexBin)
     file.close();
 }
 
-Mesh::Mesh(std::vector<vertex> vertices, std::int32_t instances /* = 1 */, std::vector<mat4x4d> matrices /* = {} */)
+Mesh::Mesh(std::vector<vertex> vertices, std::int32_t instances /* = 1 */, std::vector <glm::dmat4x4> matrices /* = {} */)
     : m_vertices{vertices}, m_instanceCount{instances}, m_instanceMatrices{matrices} 
 {
     // Bind the Vertex Array Object first,
@@ -152,13 +152,13 @@ Mesh::Mesh(std::vector<vertex> vertices, std::int32_t instances /* = 1 */, std::
     if (m_instanceCount > 1)
     {
         // Position
-        m_VAO.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
+        m_VAO.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(0));
         // Normal
-        m_VAO.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(1 * sizeof(vec4d)));
+        m_VAO.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(1 * sizeof(glm::vec4)));
         // Texture
-        m_VAO.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(2 * sizeof(vec4d)));
+        m_VAO.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(2 * sizeof(glm::vec4)));
         // Color(?)
-        m_VAO.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(3 * sizeof(vec4d)));
+        m_VAO.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(3 * sizeof(glm::vec4)));
 
         glVertexAttribDivisor(4, 1);
         glVertexAttribDivisor(5, 1);
@@ -176,7 +176,7 @@ Mesh::Mesh(std::vector<vertex> vertices, std::int32_t instances /* = 1 */, std::
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-Mesh::Mesh(std::vector<vertex> vertices, std::vector<std::uint32_t> indices, std::vector<Texture> textures /* = {} */, std::int32_t instances /* = 1 */, std::vector<mat4x4d> matrices /* = {} */)
+Mesh::Mesh(std::vector<vertex> vertices, std::vector<std::uint32_t> indices, std::vector<Texture> textures /* = {} */, std::int32_t instances /* = 1 */, std::vector<glm::dmat4x4> matrices /* = {} */)
     : m_vertices{vertices}, m_indices{indices}, m_textures{textures}, m_instanceCount{instances}, m_instanceMatrices{matrices}
 {
     // Bind the Vertex Array Object first,
@@ -199,13 +199,13 @@ Mesh::Mesh(std::vector<vertex> vertices, std::vector<std::uint32_t> indices, std
     if (m_instanceCount > 1)
     {
         // Position
-        m_VAO.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
+        m_VAO.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(0));
         // Normal
-        m_VAO.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(1*sizeof(vec4d)));
+        m_VAO.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(1*sizeof(glm::vec4)));
         // Texture
-        m_VAO.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(2*sizeof(vec4d)));
+        m_VAO.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(2*sizeof(glm::vec4)));
         // Color(?)
-        m_VAO.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(3*sizeof(vec4d)));
+        m_VAO.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(3*sizeof(glm::vec4)));
 
         glVertexAttribDivisor(4, 1);
         glVertexAttribDivisor(5, 1);
@@ -223,7 +223,7 @@ Mesh::Mesh(std::vector<vertex> vertices, std::vector<std::uint32_t> indices, std
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-Mesh::Mesh(const std::string& filename, std::int32_t instances /* = 1*/, std::vector<mat4x4d> matrices /* = {}*/)
+Mesh::Mesh(const std::string& filename, std::int32_t instances /* = 1*/, std::vector<glm::dmat4x4> matrices /* = {}*/)
     : m_instanceCount{instances}, m_instanceMatrices{matrices}
 {
     // Load vertex data from file
@@ -249,13 +249,13 @@ Mesh::Mesh(const std::string& filename, std::int32_t instances /* = 1*/, std::ve
     if (m_instanceCount > 1)
     {
         // Position
-        m_VAO.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(0));
+        m_VAO.LinkAttribute(instanceVBO, 4, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(0));
         // Normal
-        m_VAO.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(1*sizeof(vec4d)));
+        m_VAO.LinkAttribute(instanceVBO, 5, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(1*sizeof(glm::vec4)));
         // Texture
-        m_VAO.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(2*sizeof(vec4d)));
+        m_VAO.LinkAttribute(instanceVBO, 6, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(2*sizeof(glm::vec4)));
         // Color(?)
-        m_VAO.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(mat4x4d), reinterpret_cast<void*>(3*sizeof(vec4d)));
+        m_VAO.LinkAttribute(instanceVBO, 7, 4, GL_DOUBLE, sizeof(glm::mat4x4), reinterpret_cast<void*>(3*sizeof(glm::vec4)));
 
         // order, 2 -> use for 2 instances
         // order, 1 -> whole instance

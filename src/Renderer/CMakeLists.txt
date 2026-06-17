@@ -1,3 +1,5 @@
+# src/Renderer/CMakeLists.txt
+
 set(RENDER_SRC
     Camera.hpp
     EditorCamera.cpp
@@ -26,17 +28,18 @@ set(RENDER_SRC
     VertexBuffer.hpp
 )
 
-add_library(Renderer STATIC ${RENDER_SRC} "../Core/WindowAPI.cpp")
+add_library(Renderer OBJECT ${RENDER_SRC})
 
 target_include_directories(Renderer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(Renderer
-    PRIVATE
+    PUBLIC
         glad
         glfw
         opengl32
+        glm::glm
         app_vendor_deps
         Events
-        ${PLATFORM_IMPL_OS}
-        ${PLATFORM_IMPL_RENDER}
 )
+
+target_compile_features(Renderer PUBLIC cxx_std_23)

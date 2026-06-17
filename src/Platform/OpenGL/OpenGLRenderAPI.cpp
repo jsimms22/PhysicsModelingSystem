@@ -28,7 +28,7 @@ void OpenGLRenderAPI::SetViewport(const std::uint32_t x, const std::uint32_t y, 
     glViewport(static_cast<GLint>(x), static_cast<GLint>(y), static_cast<GLsizei>(width), static_cast<GLsizei>(height));
 }
 
-void OpenGLRenderAPI::SetClearColor(const vec4f& color)
+void OpenGLRenderAPI::SetClearColor(const glm::vec4& color)
 {
     glClearColor(color[0], color[1], color[2], color[3]);
 }

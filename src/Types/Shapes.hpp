@@ -1,7 +1,8 @@
 #pragma once
 
+// vendor
+#include <glm/vec4.hpp>
 // project headers
-#include "vec3.hpp"
 // std library
 #include <cstdint>
 
@@ -15,9 +16,9 @@ struct Sphere
 template <typename UNIT>
 struct Box
 {
-	vec3<UNIT> extents{ static_cast<UNIT>(1), 
-						static_cast<UNIT>(1), 
-						static_cast<UNIT>(1) };
+	glm::vec<3, UNIT> extents{ static_cast<UNIT>(1), 
+								static_cast<UNIT>(1), 
+								static_cast<UNIT>(1) };
 };
 
 template <typename UNIT>

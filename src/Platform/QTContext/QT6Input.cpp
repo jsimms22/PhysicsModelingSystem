@@ -44,16 +44,16 @@ void Input::ShowMouseCursor(const bool show)
     else { glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); }
 }
 
-vec2f Input::GetMousePosition()
+glm::vec2 Input::GetMousePosition()
 {
     GLFWwindow* window = static_cast<GLFWwindow*>(Application::GetApplication()->GetWindow().GetPlatformWindow());
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
 
-    return { static_cast<float>(xpos), static_cast<float>(ypos) };
+    return glm::vec2{ static_cast<float>(xpos), static_cast<float>(ypos) };
 }
 
-void Input::SetMousePosition(const vec2f position)
+void Input::SetMousePosition(const glm::vec2 position)
 {
     GLFWwindow* window = static_cast<GLFWwindow*>(Application::GetApplication()->GetWindow().GetPlatformWindow());
     glfwSetCursorPos(window, (position[0]), (position[1]));

@@ -2,6 +2,7 @@
 #define GLFW_INCLUDE_NONE
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/type_ptr.hpp>
 // project headers
 #include "Shader.hpp"
 // std library
@@ -75,71 +76,71 @@ void Shader::SetDouble(const std::string& uniformName, const double value) // do
     Unbind();
 }
 
-void Shader::SetUniform2fv(const std::string& uniformName, const vec2f& values) // float
+void Shader::SetUniform2fv(const std::string& uniformName, const glm::vec2& values) // float
 {
     Bind();
-    glUniform2fv(GetUniformLocation(uniformName), 1, values.data);
+    glUniform2fv(GetUniformLocation(uniformName), 1, glm::value_ptr(values));
     Unbind();
 }
 
-void Shader::SetUniform3fv(const std::string& uniformName, const vec3f& values) // float
+void Shader::SetUniform3fv(const std::string& uniformName, const glm::vec3& values) // float
 {
     Bind();
-    glUniform3fv(GetUniformLocation(uniformName), 1, values.data);
+    glUniform3fv(GetUniformLocation(uniformName), 1, glm::value_ptr(values));
     Unbind();
 }
 
-void Shader::SetUniform4fv(const std::string& uniformName, const vec4f& values) // float
+void Shader::SetUniform4fv(const std::string& uniformName, const glm::vec4& values) // float
 {
     Bind();
-    glUniform4fv(GetUniformLocation(uniformName), 1, values.data);
+    glUniform4fv(GetUniformLocation(uniformName), 1, glm::value_ptr(values));
     Unbind();
 }
 
-void Shader::SetUniform2dv(const std::string& uniformName, const vec2d& values) // double
+void Shader::SetUniform2dv(const std::string& uniformName, const glm::dvec2& values) // double
 {
     Bind();
-    glUniform2dv(GetUniformLocation(uniformName), 1, values.data);
+    glUniform2dv(GetUniformLocation(uniformName), 1, glm::value_ptr(values));
     Unbind();
 }
-void Shader::SetUniform3dv(const std::string& uniformName, const vec3d& values) // double
+void Shader::SetUniform3dv(const std::string& uniformName, const glm::dvec3& values) // double
 {
     Bind();
-    glUniform3dv(GetUniformLocation(uniformName), 1, values.data);
-    Unbind();
-}
-
-void Shader::SetUniform4dv(const std::string& uniformName, const vec4d& values) // double
-{
-    Bind();
-    glUniform4dv(GetUniformLocation(uniformName), 1, values.data);
+    glUniform3dv(GetUniformLocation(uniformName), 1, glm::value_ptr(values));
     Unbind();
 }
 
-void Shader::SetUniform3fm(const std::string& uniformName, const mat3x3f& values, bool transpose /* = false */) // float
+void Shader::SetUniform4dv(const std::string& uniformName, const glm::dvec4& values) // double
 {
     Bind();
-    glUniformMatrix3fv(GetUniformLocation(uniformName), 1, transpose, values.data->data);
+    glUniform4dv(GetUniformLocation(uniformName), 1, glm::value_ptr(values));
     Unbind();
 }
 
-void Shader::SetUniform4fm(const std::string& uniformName, const mat4x4f& values, bool transpose /* = false */) // float
+void Shader::SetUniform3fm(const std::string& uniformName, const glm::mat3x3& values, bool transpose /* = false */) // float
 {
     Bind();
-    glUniformMatrix4fv(GetUniformLocation(uniformName), 1, transpose, values.data->data);
+    glUniformMatrix3fv(GetUniformLocation(uniformName), 1, transpose, glm::value_ptr(values));
     Unbind();
 }
 
-void Shader::SetUniform3dm(const std::string& uniformName, const mat3x3d& values, bool transpose /* = false */) // double
+void Shader::SetUniform4fm(const std::string& uniformName, const glm::mat4x4& values, bool transpose /* = false */) // float
 {
     Bind();
-    glUniformMatrix3dv(GetUniformLocation(uniformName), 1, transpose, values.data->data);
+    glUniformMatrix4fv(GetUniformLocation(uniformName), 1, transpose, glm::value_ptr(values));
     Unbind();
 }
-void Shader::SetUniform4dm(const std::string& uniformName, const mat4x4d& values, bool transpose /* = false */) // double
+
+void Shader::SetUniform3dm(const std::string& uniformName, const glm::dmat3x3& values, bool transpose /* = false */) // double
 {
     Bind();
-    glUniformMatrix4dv(GetUniformLocation(uniformName), 1, transpose, values.data->data);
+    glUniformMatrix3dv(GetUniformLocation(uniformName), 1, transpose, glm::value_ptr(values));
+    Unbind();
+}
+void Shader::SetUniform4dm(const std::string& uniformName, const glm::dmat4x4& values, bool transpose /* = false */) // double
+{
+    Bind();
+    glUniformMatrix4dv(GetUniformLocation(uniformName), 1, transpose, glm::value_ptr(values));
     Unbind();
 }
 

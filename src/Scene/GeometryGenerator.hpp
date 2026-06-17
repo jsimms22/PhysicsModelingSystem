@@ -31,13 +31,13 @@ namespace Geometry
                     const UNIT u = static_cast<UNIT>(x) / sphere.segments;
                     const UNIT v = static_cast<UNIT>(y) / sphere.segments;
 
-                    const UNIT theta = u * 2.0f * PI;
+                    const UNIT theta = u * 2. * PI;
                     const UNIT phi = v * PI;
 
-                    const vec3<UNIT> pos{ sphere.radius * sin(phi) * cos(theta),
-                                          sphere.radius * cos(phi),
-                                           sphere.radius * sin(phi) * sin(theta) };
-                    const vec3<UNIT> normal = vec3_normal(pos);
+                    const glm::vec<3 ,UNIT> pos{ sphere.radius * sin(phi) * cos(theta),
+                                                 sphere.radius * cos(phi),
+                                                 sphere.radius * sin(phi) * sin(theta) };
+                    const glm::vec<3, UNIT> normal = glm::normalize(pos);
 
                     vertices.emplace_back(vertex{ pos, normal });
                 }
@@ -70,9 +70,9 @@ namespace Geometry
         template <typename UNIT>
         static std::shared_ptr<Mesh> Create(const Box<UNIT>& box)
         {
-            const UNIT hx = box.extents.data[0] * UNIT(0.5);
-            const UNIT hy = box.extents.data[1] * UNIT(0.5);
-            const UNIT hz = box.extents.data[2] * UNIT(0.5);
+            const UNIT hx = box.extents.x * UNIT(0.5);
+            const UNIT hy = box.extents.y * UNIT(0.5);
+            const UNIT hz = box.extents.z * UNIT(0.5);
 
             const std::vector<vertex> vertices =
             {
@@ -124,22 +124,22 @@ namespace Geometry
                     const UNIT u = static_cast<UNIT>(x) / static_cast<UNIT>(segments);
                     const UNIT theta = u * UNIT(2) * PI;
 
-                    vec3<UNIT> normal
+                    glm::vec<3, UNIT> normal
                     {
                         std::sin(phi) * std::cos(theta),
                         std::cos(phi),
                         std::sin(phi) * std::sin(theta)
                     };
 
-                    vec3<UNIT> position = vec3_scale(radius, normal);
+                    glm::vec<3, UNIT> position = radius * normal;
 
-                    if (normal.data[1] > UNIT(0))
+                    if (normal.y > UNIT(0))
                     {
-                        position.data[1] += halfCylinder;
+                        position.y += halfCylinder;
                     }
                     else
                     {
-                        position.data[1] -= halfCylinder;
+                        position.y -= halfCylinder;
                     }
 
                     vertices.emplace_back(vertex{position,normal});

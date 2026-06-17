@@ -1,15 +1,11 @@
 // vendors
+#include <glm/vec3.hpp>
 // project headers
 #include "force.hpp"
-
-#include "../fwd_math.hpp"
-
 #include "../Scene/Model.hpp"
-
-#include "../Types/vec3.hpp"
 // std library
 
-vec3d GRAVITY = { 0.0, -9.8, 0.0 };
+//glm::vec3 GRAVITY = { 0.0, -9.8, 0.0 };
 
 bool IsColliding(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel>& model2)
 {
@@ -33,6 +29,7 @@ void ApplyCollisionForce(std::shared_ptr<IModel>& model1, std::shared_ptr<IModel
 
 void ApplyForces(std::vector<std::shared_ptr<IModel>>& container)
 {
+    /*
     for (std::shared_ptr<IModel>& i_model : container) 
     {
         if (!i_model->IsPhysicalized()) 
@@ -41,7 +38,7 @@ void ApplyForces(std::vector<std::shared_ptr<IModel>>& container)
         }
     
         // Apply simple gravity to the balls
-        vec3d result = vec3_add(GRAVITY, i_model->GetPosition());
+        glm::vec3 result = vec3_add(GRAVITY, i_model->GetPosition());
         const double scale = static_cast<double>(i_model->GetScale());
         //vec3_scale(settings.GRAVITY, static_cast<float>(glfwGetTime()) - lastFrameTime ,settings.GRAVITY);
         
@@ -84,4 +81,5 @@ void ApplyForces(std::vector<std::shared_ptr<IModel>>& container)
             //j_model.position = j_model.position + j_model.velocity;
         }
     }
+    */
 }

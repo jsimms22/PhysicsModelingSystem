@@ -1,8 +1,8 @@
 #pragma once
 
 // vendors
+#include <glm/vec2.hpp>
 // project headers
-#include "../Types/vec2.hpp"
 // std library
 #include <cstdint>
 
@@ -172,9 +172,9 @@ public:
 
     static void ShowMouseCursor(const bool show);
 
-	static vec2f GetMousePosition();
+	static glm::vec2 GetMousePosition();
 
-    static void SetMousePosition(const vec2f position);
+    static void SetMousePosition(const glm::vec2 position);
 
     static void SetMousePositionCenter();
 

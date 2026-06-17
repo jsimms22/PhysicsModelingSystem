@@ -84,18 +84,18 @@ void Light::AddMesh(std::shared_ptr<Shader> shader, std::string uniformName)
 void Light::UpdatePosition()
 {
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_UP) == GLFW_PRESS) {
-        m_position.data[2] -= 1.0;
+        m_position.z -= 1.0;
     }
 
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_DOWN) == GLFW_PRESS) {
-        m_position.data[2] += 1.0;
+        m_position.z += 1.0;
     }
 
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_LEFT) == GLFW_PRESS) {
-        m_position.data[0] -= 1.0;
+        m_position.x -= 1.0;
     }
 
     if (glfwGetKey(glfwGetCurrentContext(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        m_position.data[0] += 1.0;
+        m_position.x += 1.0;
     }
 }

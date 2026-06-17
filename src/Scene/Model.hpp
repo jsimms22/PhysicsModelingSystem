@@ -1,6 +1,8 @@
 #pragma once
 
 // vendors
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 // project headers
 #include "../fwd_math.hpp"
 
@@ -75,11 +77,11 @@ public:
     virtual std::shared_ptr<Shader> GetShader() const = 0;
     virtual void SetShader(std::shared_ptr<Shader> shader) = 0;
 
-    virtual vec3d GetPosition() const = 0;
-    virtual void SetPosition(const vec3d& position) = 0;
+    virtual glm::vec3 GetPosition() const = 0;
+    virtual void SetPosition(const glm::vec3& position) = 0;
 
-    virtual vec3d GetRotation() const = 0;
-    virtual void SetRotation(const vec3d& rotation) = 0;
+    virtual glm::vec3 GetRotation() const = 0;
+    virtual void SetRotation(const glm::vec3& rotation) = 0;
 
     virtual float GetScale() const = 0;
     virtual void SetScale(float scalarVec) = 0;
@@ -90,8 +92,8 @@ public:
     virtual bool IsPhysicalized() const = 0;
     virtual void SetIsPhysicalized(bool enablePhysics) = 0;
 
-    virtual vec4f GetColor() const = 0;
-    virtual void SetColor(const vec4f& color) = 0;
+    virtual glm::vec4 GetColor() const = 0;
+    virtual void SetColor(const glm::vec4& color) = 0;
 
     virtual bool WriteAttributes() = 0;
     virtual bool ReadAttributes() = 0;
@@ -136,11 +138,11 @@ public:
         m_modelShader = shader;
     }
 
-    vec3d GetPosition() const override { return m_position; }
-    void SetPosition(const vec3d& position) override { m_position = position; }
+    glm::vec3 GetPosition() const override { return m_position; }
+    void SetPosition(const glm::vec3& position) override { m_position = position; }
 
-    vec3d GetRotation() const override { return m_rotation; }
-    void SetRotation(const vec3d& rotation) override { m_rotation = rotation; }
+    glm::vec3 GetRotation() const override { return m_rotation; }
+    void SetRotation(const glm::vec3& rotation) override { m_rotation = rotation; }
 
     float GetScale() const override { return m_scale; }
     void SetScale(float scalar) override { m_scale = scalar; }
@@ -151,14 +153,14 @@ public:
     bool IsPhysicalized() const override { return m_isPhysicalized; }
     void SetIsPhysicalized(bool isPhysicalized) override { m_isPhysicalized = isPhysicalized; }
 
-    virtual vec4f GetColor() const override = 0;
-    virtual void SetColor(const vec4f& color) override = 0;
+    virtual glm::vec4 GetColor() const override = 0;
+    virtual void SetColor(const glm::vec4& color) override = 0;
 
 protected:
     std::shared_ptr<Mesh> m_modelMesh;
     std::shared_ptr<Shader> m_modelShader;
-    vec3d m_position = {0.0, 0.0, 0.0};
-    vec3d m_rotation = {0.0, 0.0, 0.0};
+    glm::vec3 m_position = {0.0, 0.0, 0.0};
+    glm::vec3 m_rotation = {0.0, 0.0, 0.0};
     float m_scale = 1.0f;
     std::uint32_t m_renderMethod = 0x0004;
     bool m_isPhysicalized = false;
@@ -184,12 +186,12 @@ public:
     virtual bool WriteAttributes() override;
     virtual bool ReadAttributes() override;
 
-    vec4f GetColor() const override { return m_color; };
-    void SetColor(const vec4f& color) override { m_color = color; };
+    glm::vec4 GetColor() const override { return m_color; };
+    void SetColor(const glm::vec4& color) override { m_color = color; };
 
     // Methods
 private:
-    vec4f m_color = {0.5f, 0.5f, 0.5f, 1.0f};
+    glm::vec4 m_color = {0.5f, 0.5f, 0.5f, 1.0f};
 };
 
 class Terrain : public BaseModel
@@ -213,12 +215,12 @@ public:
     virtual bool WriteAttributes() override;
     virtual bool ReadAttributes() override;
 
-    vec4f GetColor() const override { return {}; };
-    void SetColor(const vec4f& /*color*/) override {};
+    glm::vec4 GetColor() const override { return {}; };
+    void SetColor(const glm::vec4& /*color*/) override {};
 
     // Methods
 private:
-    vec4f m_color = { 1.f, 1.f, 1.f, 1.f };
+    glm::vec4 m_color = { 1.f, 1.f, 1.f, 1.f };
 };
 
 class Light : public BaseModel
@@ -246,10 +248,10 @@ public:
     void UpdatePosition(); // Updates positon using arrow keys
 
     // Data Member Methods
-    vec4f GetColor() const override { return m_color; }
-    void SetColor(const vec4f& color) override { m_color = color; }
+    glm::vec4 GetColor() const override { return m_color; }
+    void SetColor(const glm::vec4& color) override { m_color = color; }
 
 private:
     std::unordered_map<std::shared_ptr<Shader>, std::vector<std::string>> m_shaderUpdateMap;
-    vec4f m_color = {0.4f, 0.9f, 0.8f, 0.9f};
+    glm::vec4 m_color = {0.4f, 0.9f, 0.8f, 0.9f};
 };

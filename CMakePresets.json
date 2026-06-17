@@ -8,7 +8,7 @@
             "binaryDir": "${sourceDir}/build/debug",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "PLATFORM_IMPL_OS": "Windows",
+                "PLATFORM_IMPL_OS": "GLFWContext",
                 "PLATFORM_IMPL_RENDER": "OpenGL"
             }
         },
@@ -19,7 +19,7 @@
             "binaryDir": "${sourceDir}/build/release",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
-                "PLATFORM_IMPL_OS": "Windows",
+                "PLATFORM_IMPL_OS": "GLFWContext",
                 "PLATFORM_IMPL_RENDER": "OpenGL"
             }
         },
@@ -30,7 +30,7 @@
             "binaryDir": "${sourceDir}/build/debug",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "PLATFORM_IMPL_OS": "Windows",
+                "PLATFORM_IMPL_OS": "GLFWContext",
                 "PLATFORM_IMPL_RENDER": "OpenGL"
             },
             "vendor": {
@@ -46,7 +46,7 @@
             "binaryDir": "${sourceDir}/build/release",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
-                "PLATFORM_IMPL_OS": "Windows",
+                "PLATFORM_IMPL_OS": "GLFWContext",
                 "PLATFORM_IMPL_RENDER": "OpenGL"
             },
             "vendor": {

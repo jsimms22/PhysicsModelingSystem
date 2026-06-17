@@ -1,3 +1,5 @@
+# src/Platform/OpenGL/CMakeLists.txt
+
 set(OPENGL_SRC
     OpenGLContext.cpp
     OpenGLContext.hpp
@@ -5,14 +7,16 @@ set(OPENGL_SRC
     OpenGLRenderAPI.hpp
 )
 
-add_library(OpenGL STATIC ${OPENGL_SRC})
+add_library(OpenGL OBJECT ${OPENGL_SRC})
 
 target_include_directories(OpenGL PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(OpenGL
-    PRIVATE
+    PUBLIC
         glad
         glfw
         opengl32
         Renderer
 )
+
+target_compile_features(OpenGL PUBLIC cxx_std_23)
